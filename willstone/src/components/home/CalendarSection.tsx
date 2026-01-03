@@ -38,6 +38,7 @@ const events = [
 
 const DURATION_MS = 5000;
 
+// --- ProgressBar Component ---
 const ProgressBar = ({ isPaused, onComplete }: { isPaused: boolean, onComplete: () => void }) => {
   const progress = useMotionValue(0);
   const width = useTransform(progress, [0, DURATION_MS], ["0%", "100%"]);
@@ -114,7 +115,7 @@ export default function CalendarSection() {
               </motion.div>
             </AnimatePresence>
 
-            <div className="absolute bottom-0 left-0 p-8 md:p-12 z-20 w-full text-left pointer-events-none">
+            <div className="absolute bottom-0 left-0 p-8 md:p-12 z-20 w-full text-left">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeTab}
@@ -123,20 +124,20 @@ export default function CalendarSection() {
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.4 }}
                 >
-                  <span className="px-3 py-1 rounded-md bg-blue-500 text-white text-[10px] font-black uppercase tracking-[0.2em] mb-6 inline-block">
+                  <span className="px-3 py-1 rounded-md bg-blue-500 text-white text-[10px] font-black uppercase tracking-[0.2em] mb-6 inline-block cursor-text select-text">
                     {events[activeTab].category}
                   </span>
-                  <h3 className="text-4xl md:text-5xl font-bold mb-6 text-white leading-none tracking-tighter">
+                  <h3 className="text-4xl md:text-5xl font-bold mb-6 text-white leading-none tracking-tighter cursor-text select-text">
                     {events[activeTab].title}
                   </h3>
                   <div className="flex flex-wrap items-center gap-6 text-slate-300">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 cursor-text select-text">
                       <CalendarIcon className="w-5 h-5 text-blue-400" />
                       <span className="text-sm font-semibold uppercase tracking-wider">
                         {events[activeTab].date.toLocaleDateString("en-US", { month: 'short', day: 'numeric', year: 'numeric' })}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 cursor-text select-text">
                       <MapPin className="w-5 h-5 text-emerald-400" />
                       <span className="text-sm">{events[activeTab].location}</span>
                     </div>
@@ -151,12 +152,12 @@ export default function CalendarSection() {
             {events.map((event, index) => {
               const isActive = activeTab === index;
               return (
-                <button
+                <div
                   key={event.id}
                   onClick={() => setActiveTab(index)}
                   onMouseEnter={() => isActive && setIsPaused(true)}
                   onMouseLeave={() => isActive && setIsPaused(false)}
-                  className={`group relative flex items-start w-full p-6 rounded-2xl transition-all duration-500 overflow-hidden border text-left ${
+                  className={`group relative flex items-start w-full p-6 rounded-2xl transition-all duration-500 overflow-hidden border text-left cursor-pointer ${
                     isActive 
                       ? "bg-slate-800/40 border-slate-700 shadow-xl" 
                       : "bg-transparent border-transparent hover:bg-slate-900/50"
@@ -169,17 +170,15 @@ export default function CalendarSection() {
                     />
                   )}
 
-                  {/* Date UI */}
-                  <div className={`flex-shrink-0 flex flex-col items-center justify-center w-14 h-14 rounded-xl transition-all duration-500 ${
+                  <div className={`flex-shrink-0 flex flex-col items-center justify-center w-14 h-14 rounded-xl transition-all duration-500 pointer-events-none ${
                     isActive ? "bg-white text-slate-950 scale-110" : "bg-slate-900 text-slate-500"
                   }`}>
                     <span className="text-[10px] font-black uppercase">{event.date.toLocaleString('default', { month: 'short' })}</span>
                     <span className="text-xl font-bold leading-none">{event.date.getDate()}</span>
                   </div>
 
-                  {/* Content Area */}
                   <div className="ml-6 flex-1 text-left">
-                    <h4 className={`text-lg font-bold tracking-tight transition-colors ${
+                    <h4 className={`text-lg font-bold tracking-tight transition-colors cursor-text select-text ${
                       isActive ? "text-white" : "text-slate-500"
                     }`}>
                       {event.title}
@@ -194,24 +193,23 @@ export default function CalendarSection() {
                             }}
                             transition={{ duration: 0.4, ease: "circOut" }}
                         >
-                            <p className="text-sm text-slate-400 mt-2 leading-relaxed">
+                            <p className="text-sm text-slate-400 mt-2 leading-relaxed cursor-text select-text">
                                 {event.description}
                             </p>
                         </motion.div>
                     </div>
                   </div>
 
-                  {/* Arrow Action Button */}
                   <Link 
                     href="#"
                     onClick={(e) => e.stopPropagation()}
-                    className={`mt-1 p-2 rounded-full transition-all duration-500 bg-slate-900/50 border border-slate-800 hover:bg-blue-600 hover:border-blue-500 hover:shadow-[0_0_15px_rgba(37,99,235,0.4)] ${
+                    className={`mt-1 p-2 rounded-full transition-all duration-500 bg-slate-900/50 border border-slate-800 hover:bg-blue-600 hover:border-blue-500 ${
                       isActive ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none"
                     }`}
                   >
                     <ArrowRight className="w-5 h-5 text-white" />
                   </Link>
-                </button>
+                </div>
               );
             })}
           </div>
