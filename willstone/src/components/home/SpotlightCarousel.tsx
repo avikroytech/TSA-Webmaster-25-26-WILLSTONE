@@ -103,7 +103,7 @@ export default function SpotlightCarousel() {
   const currentResource = resources[currentIndex];
 
   return (
-    <section className="w-full py-12 px-4 sm:px-6 lg:px-8">
+    <section className="w-full py-12 px-4 sm:px-6 lg:px-8 bg-slate-950">
       <div className="max-w-7xl mx-auto">
         <div
           className="relative w-full h-[600px] bg-[#050505] rounded-3xl overflow-hidden"
