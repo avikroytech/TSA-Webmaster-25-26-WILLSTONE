@@ -1,219 +1,222 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState } from "react";
+import { motion, AnimatePresence, useMotionValue, useAnimationFrame, useTransform } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight, Calendar as CalendarIcon, MapPin } from "lucide-react";
 
-/**
- * Event data structure
- * Each event contains an image, date, title, and description
- */
-interface Event {
-  id: number;
-  title: string;
-  description: string;
-  date: Date;
-  image: string;
-}
-
-/**
- * Sample event data
- * In production, this would typically be fetched from a database or API
- */
-const events: Event[] = [
+// --- Data ---
+const events = [
   {
     id: 1,
     title: "Town Hall Meeting",
+    location: "City Council Chambers",
     description: "Join us for the monthly town hall meeting where we discuss community matters and upcoming projects.",
     date: new Date(2025, 0, 15),
     image: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&h=600&fit=crop&q=80",
+    category: "Government"
   },
   {
     id: 2,
     title: "Community Festival",
+    location: "Willstone Central Park",
     description: "Annual community festival featuring local vendors, live music, and family-friendly activities.",
     date: new Date(2025, 1, 20),
     image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&h=600&fit=crop&q=80",
+    category: "Social"
   },
   {
     id: 3,
     title: "Public Safety Workshop",
+    location: "Fire Station #4",
     description: "Learn about emergency preparedness and public safety measures for your home and neighborhood.",
     date: new Date(2025, 2, 10),
     image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&h=600&fit=crop&q=80",
+    category: "Education"
   },
 ];
 
-/**
- * Formats a date object into a readable string format
- * @param date - The date object to format
- * @returns Formatted date string (e.g., "Jan 15")
- */
-function formatDate(date: Date): string {
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
+const DURATION_MS = 5000;
+
+const ProgressBar = ({ isPaused, onComplete }: { isPaused: boolean, onComplete: () => void }) => {
+  const progress = useMotionValue(0);
+  const width = useTransform(progress, [0, DURATION_MS], ["0%", "100%"]);
+
+  useAnimationFrame((time, delta) => {
+    if (isPaused) return;
+    const nextValue = progress.get() + delta;
+    if (nextValue >= DURATION_MS) {
+      progress.set(DURATION_MS);
+      onComplete();
+    } else {
+      progress.set(nextValue);
+    }
   });
-}
-
-/**
- * Formats a date object to show the full date
- * @param date - The date object to format
- * @returns Formatted date string (e.g., "January 15, 2025")
- */
-function formatFullDate(date: Date): string {
-  return date.toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-}
-
-/**
- * CalendarSection Component
- * 
- * A two-column layout displaying upcoming events:
- * - Left side: Auto-scrolling image carousel showing event images (maximum 3 events)
- * - Right side: Event cards with date, title, and description, plus a header with link to full calendar
- * 
- * Features:
- * - Automatic image carousel rotation every 4 seconds
- * - Three event cards displayed vertically, each with a prominent date on the left
- * - Professional styling appropriate for a government website
- * - Responsive design that adapts to different screen sizes
- * - Smooth transitions and animations
- */
-export default function CalendarSection() {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  /**
-   * Auto-advance the image carousel every 4 seconds
-   */
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % Math.min(events.length, 3));
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // Limit to maximum 3 events for the carousel
-  const carouselEvents = events.slice(0, 3);
 
   return (
-    <section className="w-full py-12 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-          {/* Left Side: Image Carousel */}
-          <div className="relative w-full h-[400px] lg:h-[500px] rounded-xl overflow-hidden shadow-lg">
+    <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-slate-800 pointer-events-none">
+      <motion.div style={{ width }} className="h-full bg-blue-500" />
+    </div>
+  );
+};
+
+export default function CalendarSection() {
+  const [activeTab, setActiveTab] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  const handleNext = () => {
+    setActiveTab((prev) => (prev + 1) % events.length);
+  };
+
+  return (
+    <section className="w-full py-24 bg-slate-950 text-white overflow-hidden">
+      <div className="container mx-auto px-6 lg:px-12">
+        
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 border-b border-slate-800 pb-8">
+          <div className="text-left">
+            <span className="text-blue-400 font-bold tracking-widest uppercase text-xs mb-3 block">
+              City Agenda
+            </span>
+            <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight">
+              Upcoming Events
+            </h2>
+          </div>
+          <Link
+            href="/calendar"
+            className="group flex items-center gap-3 mt-6 md:mt-0 px-6 py-3 bg-slate-900 rounded-full border border-slate-800 text-slate-300 hover:text-white hover:border-slate-600 transition-all"
+          >
+            <span className="text-sm font-bold">Full Calendar</span>
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 min-h-[550px]">
+          
+          {/* LEFT: Visual Stage */}
+          <div className="lg:col-span-7 relative rounded-[2rem] overflow-hidden shadow-2xl bg-slate-900 border border-slate-800">
             <AnimatePresence mode="wait">
-              {carouselEvents.map(
-                (event, index) =>
-                  index === currentImageIndex && (
-                    <motion.div
-                      key={event.id}
-                      initial={{ opacity: 0, scale: 1.1 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.5 }}
-                      className="absolute inset-0"
-                    >
-                      <Image
-                        src={event.image}
-                        alt={event.title}
-                        fill
-                        className="object-cover"
-                        priority={index === 0}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                      <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                        <h3 className="text-2xl font-bold mb-2">{event.title}</h3>
-                        <p className="text-white/90">{formatFullDate(event.date)}</p>
-                      </div>
-                    </motion.div>
-                  )
-              )}
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.6 }}
+                className="absolute inset-0"
+              >
+                <Image
+                  src={events[activeTab].image}
+                  alt={events[activeTab].title}
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+              </motion.div>
             </AnimatePresence>
 
-            {/* Carousel Indicators */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-              {carouselEvents.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentImageIndex(index)}
-                  className="focus:outline-none"
-                  aria-label={`Go to image ${index + 1}`}
-                >
-                  <motion.div
-                    animate={{
-                      width: index === currentImageIndex ? 24 : 8,
-                      backgroundColor:
-                        index === currentImageIndex
-                          ? "rgba(255, 255, 255, 1)"
-                          : "rgba(255, 255, 255, 0.5)",
-                    }}
-                    className="h-2 rounded-full transition-all duration-300"
-                  />
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Right Side: Event Cards */}
-          <div className="flex flex-col">
-            {/* Header with Calendar Link */}
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white font-display">
-                Events
-              </h2>
-              <Link
-                href="/calendar"
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition-colors duration-200 font-sans"
-              >
-                View Calendar
-              </Link>
-            </div>
-
-            {/* Event Cards */}
-            <div className="flex flex-col gap-4">
-              {events.map((event) => (
+            <div className="absolute bottom-0 left-0 p-8 md:p-12 z-20 w-full text-left pointer-events-none">
+              <AnimatePresence mode="wait">
                 <motion.div
-                  key={event.id}
+                  key={activeTab}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200"
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.4 }}
                 >
-                  <div className="flex gap-6">
-                    {/* Date Display */}
-                    <div className="flex-shrink-0">
-                      <div className="flex flex-col items-center justify-center w-20 h-20 bg-blue-600 text-white rounded-lg">
-                        <span className="text-2xl font-bold">
-                          {event.date.getDate()}
-                        </span>
-                        <span className="text-xs uppercase tracking-wide">
-                          {formatDate(event.date).split(" ")[0]}
-                        </span>
-                      </div>
+                  <span className="px-3 py-1 rounded-md bg-blue-500 text-white text-[10px] font-black uppercase tracking-[0.2em] mb-6 inline-block">
+                    {events[activeTab].category}
+                  </span>
+                  <h3 className="text-4xl md:text-5xl font-bold mb-6 text-white leading-none tracking-tighter">
+                    {events[activeTab].title}
+                  </h3>
+                  <div className="flex flex-wrap items-center gap-6 text-slate-300">
+                    <div className="flex items-center gap-2">
+                      <CalendarIcon className="w-5 h-5 text-blue-400" />
+                      <span className="text-sm font-semibold uppercase tracking-wider">
+                        {events[activeTab].date.toLocaleDateString("en-US", { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </span>
                     </div>
-
-                    {/* Event Information */}
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                        {event.title}
-                      </h3>
-                      <p className="text-gray-600 dark:text-gray-300 leading-relaxed font-sans">
-                        {event.description}
-                      </p>
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-5 h-5 text-emerald-400" />
+                      <span className="text-sm">{events[activeTab].location}</span>
                     </div>
                   </div>
                 </motion.div>
-              ))}
+              </AnimatePresence>
             </div>
+          </div>
+
+          {/* RIGHT: List Controls */}
+          <div className="lg:col-span-5 flex flex-col justify-center gap-4">
+            {events.map((event, index) => {
+              const isActive = activeTab === index;
+              return (
+                <button
+                  key={event.id}
+                  onClick={() => setActiveTab(index)}
+                  onMouseEnter={() => isActive && setIsPaused(true)}
+                  onMouseLeave={() => isActive && setIsPaused(false)}
+                  className={`group relative flex items-start w-full p-6 rounded-2xl transition-all duration-500 overflow-hidden border text-left ${
+                    isActive 
+                      ? "bg-slate-800/40 border-slate-700 shadow-xl" 
+                      : "bg-transparent border-transparent hover:bg-slate-900/50"
+                  }`}
+                >
+                  {isActive && (
+                    <ProgressBar 
+                      isPaused={isPaused} 
+                      onComplete={handleNext} 
+                    />
+                  )}
+
+                  {/* Date UI */}
+                  <div className={`flex-shrink-0 flex flex-col items-center justify-center w-14 h-14 rounded-xl transition-all duration-500 ${
+                    isActive ? "bg-white text-slate-950 scale-110" : "bg-slate-900 text-slate-500"
+                  }`}>
+                    <span className="text-[10px] font-black uppercase">{event.date.toLocaleString('default', { month: 'short' })}</span>
+                    <span className="text-xl font-bold leading-none">{event.date.getDate()}</span>
+                  </div>
+
+                  {/* Content Area */}
+                  <div className="ml-6 flex-1 text-left">
+                    <h4 className={`text-lg font-bold tracking-tight transition-colors ${
+                      isActive ? "text-white" : "text-slate-500"
+                    }`}>
+                      {event.title}
+                    </h4>
+                    
+                    <div className="relative overflow-hidden">
+                        <motion.div
+                            initial={false}
+                            animate={{ 
+                                height: isActive ? "auto" : 0, 
+                                opacity: isActive ? 1 : 0 
+                            }}
+                            transition={{ duration: 0.4, ease: "circOut" }}
+                        >
+                            <p className="text-sm text-slate-400 mt-2 leading-relaxed">
+                                {event.description}
+                            </p>
+                        </motion.div>
+                    </div>
+                  </div>
+
+                  {/* Arrow Action Button */}
+                  <Link 
+                    href="#"
+                    onClick={(e) => e.stopPropagation()}
+                    className={`mt-1 p-2 rounded-full transition-all duration-500 bg-slate-900/50 border border-slate-800 hover:bg-blue-600 hover:border-blue-500 hover:shadow-[0_0_15px_rgba(37,99,235,0.4)] ${
+                      isActive ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none"
+                    }`}
+                  >
+                    <ArrowRight className="w-5 h-5 text-white" />
+                  </Link>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
     </section>
   );
 }
-
