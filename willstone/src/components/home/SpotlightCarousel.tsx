@@ -31,7 +31,7 @@ const resources: Resource[] = [
     name: "Parks & Recreation",
     description: "Beautiful parks, walking trails, sports facilities, and outdoor recreation programs for the whole family.",
     image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop&q=80",
-    color: "#7886C7", 
+    color: "#78c78c", 
   },
 ];
 
@@ -158,7 +158,7 @@ export default function SpotlightCarousel() {
                     </h2>
                 </div>
                 
-                <p className="text-[#A9B5DF] text-lg md:text-xl font-medium leading-relaxed max-w-lg border-l-4 border-white/10 pl-6">
+                <p className="text-[#A9B5DF] text-lg md:text-xl font-medium max-w-lg">
                   {currentResource.description}
                 </p>
               </div>
