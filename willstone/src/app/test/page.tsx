@@ -17,8 +17,6 @@ export default async function Test() {
                             <p className="text-slate-300 text-sm mb-4">{resource.category}</p>
                             <p className="text-slate-300 text-sm mb-4">{resource.address}</p>
                             <p className="text-slate-300 text-sm mb-4">{resource.description}</p>
-                            <p className="text-slate-300 text-sm mb-4">{resource.email}</p>
-                            <p className="text-slate-300 text-sm mb-4">{resource.website}</p>
                             <p className="text-slate-300 text-sm mb-4">{JSON.stringify(resource.images, null, 2)}</p>
                         </div>
                     ))}
