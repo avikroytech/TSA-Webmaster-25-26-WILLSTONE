@@ -13,7 +13,7 @@ export default function Request() {
                     {/* Page Header */}
                     <div className="mb-10">
                         <h1 className="text-[#2D336B] font-black uppercase tracking-[0.3em] text-3xl md:text-4xl text-center">
-                            Official Document Portal
+                            Reference Page
                         </h1>
                         <div className="h-1.5 w-24 bg-[#7886C7] mx-auto mt-4" />
                     </div>

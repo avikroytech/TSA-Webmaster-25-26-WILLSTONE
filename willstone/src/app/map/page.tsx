@@ -46,7 +46,7 @@ export default function Request() {
                     {/* Label */}
                     <div className="text-center">
                         <h3 className="text-[#2D336B] font-black uppercase tracking-[0.25em] text-lg">
-                            Train Line Map
+                            Bus Route Map
                         </h3>
                         {/* Decorative accent line */}
                         <div className="h-1 w-12 bg-[#7886C7] mx-auto mt-2" />
