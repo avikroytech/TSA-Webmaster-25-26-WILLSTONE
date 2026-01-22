@@ -12,7 +12,12 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "www.unsplash.com",
+        hostname: "unsplash.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.pixabay.com",
         pathname: "/**",
       },
       {
