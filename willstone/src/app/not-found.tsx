@@ -2,81 +2,118 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowLeft, Home, Search, Map as MapIcon } from "lucide-react";
+import { ArrowLeft, Home, Search, Map as MapIcon, Construction } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <main className="relative min-h-screen bg-slate-950 flex items-center justify-center overflow-hidden px-6">
-      {/* Background Ambient Glows */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-1/4 right-1/4 w-[300px] h-[300px] bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
+    <main className="relative min-h-screen bg-[#FFF2F2] flex items-center justify-center overflow-hidden px-6">
+      {/* Background Blueprint Grid */}
+      <div 
+        className="absolute inset-0 opacity-[0.05] pointer-events-none" 
+        style={{ backgroundImage: `radial-gradient(#2D336B 1px, transparent 1px)`, backgroundSize: '40px 40px' }} 
+      />
 
-      <div className="relative z-10 max-w-2xl w-full text-center">
-        {/* Error Code */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-          <span className="text-blue-500 font-black tracking-[0.3em] uppercase text-sm mb-4 block">
-            Error 404
-          </span>
-          <h1 className="text-[12rem] md:text-[16rem] font-black text-white leading-none tracking-tighter italic select-none opacity-20">
-            404
-          </h1>
-        </motion.div>
+      {/* Decorative "Road Lines" */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1 h-full bg-gradient-to-b from-transparent via-[#2D336B]/10 to-transparent flex flex-col justify-around items-center">
+         {[...Array(10)].map((_, i) => (
+           <div key={i} className="w-1 h-20 bg-[#FFF2F2]" />
+         ))}
+      </div>
 
-        {/* Message */}
-        <motion.div 
-          className="-mt-12 md:-mt-20"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.8 }}
-        >
-          <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight mb-6">
-            Lost in Willstone?
-          </h2>
-          <p className="text-slate-400 text-lg mb-10 max-w-md mx-auto leading-relaxed">
-            The page you are looking for has been moved, deleted, or never existed in the city archives.
-          </p>
+      <div className="relative z-10 max-w-3xl w-full">
+        <div className="flex flex-col items-center text-center">
+          
+          {/* Error Code: Large Signpost style */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="relative mb-8"
+          >
+            <div className="absolute inset-0 bg-[#A9B5DF] transform translate-x-3 translate-y-3 border-2 border-[#2D336B]" />
+            <div className="relative bg-[#2D336B] text-[#FFF2F2] px-12 py-6 border-2 border-[#2D336B]">
+              <h1 className="text-8xl md:text-[10rem] font-display font-black leading-none tracking-tighter">
+                404
+              </h1>
+              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-[#7886C7] text-white px-4 py-1 font-black uppercase tracking-[0.2em] text-[10px] border-2 border-[#2D336B] whitespace-nowrap">
+                Road Closed
+              </div>
+            </div>
+          </motion.div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          {/* Message */}
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="space-y-4"
+          >
+            <h2 className="text-4xl md:text-6xl font-display font-black text-[#2D336B] uppercase tracking-tighter leading-none">
+              Nothing to <span className="text-[#7886C7]">See Here</span>
+            </h2>
+            <p className="text-[#2D336B]/70 font-bold text-sm md:text-base max-w-md mx-auto uppercase tracking-wide leading-relaxed">
+              You have tried to access a page that does not exist!
+            </p>
+          </motion.div>
+
+          {/* Action Buttons: Skewed Highway Style */}
+          <motion.div 
+            className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6 w-full max-w-lg"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
             <Link
               href="/"
-              className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] group"
+              className="group relative w-full sm:w-auto"
             >
-              <Home size={20} />
-              Return Home
+              <div className="absolute inset-0 bg-[#7886C7] transform -skew-x-12 translate-x-1 translate-y-1 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform" />
+              <div className="relative flex items-center justify-center gap-3 px-10 py-4 bg-[#2D336B] text-white transform -skew-x-12 font-black uppercase tracking-widest text-sm transition-all border-2 border-[#2D336B]">
+                <Home size={18} className="skew-x-12" />
+                <span className="skew-x-12">Return Home</span>
+              </div>
             </Link>
             
             <button
               onClick={() => window.history.back()}
-              className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 rounded-2xl font-bold transition-all"
+              className="group relative w-full sm:w-auto"
             >
-              <ArrowLeft size={20} />
-              Go Back
+              <div className="relative flex items-center justify-center gap-3 px-10 py-4 bg-white text-[#2D336B] transform -skew-x-12 font-black uppercase tracking-widest text-sm transition-all border-2 border-[#2D336B] hover:bg-[#FFF2F2]">
+                <ArrowLeft size={18} className="skew-x-12" />
+                <span className="skew-x-12">Backtrack</span>
+              </div>
             </button>
-          </div>
-        </motion.div>
+          </motion.div>
 
-        {/* Quick Help Links */}
-        <motion.div 
-          className="mt-16 pt-10 border-t border-slate-900 grid grid-cols-2 md:grid-cols-3 gap-4"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-        >
-          <Link href="/map" className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-blue-400 transition-colors">
-            <MapIcon size={14} /> City Map
-          </Link>
-          <Link href="/resource-hub" className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-blue-400 transition-colors">
-            <Search size={14} /> Resource Hub
-          </Link>
-          <Link href="/calendar" className="hidden md:flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-blue-400 transition-colors">
-             Calendar
-          </Link>
-        </motion.div>
+          {/* Navigation Directory */}
+          <motion.div 
+            className="mt-20 w-full pt-10 border-t-4 border-[#2D336B]/10 grid grid-cols-2 md:grid-cols-3 gap-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+          >
+            <Link href="/map" className="flex flex-col items-center gap-2 group">
+              <div className="p-3 bg-[#2D336B] border-2 border-[#7886C7] group-hover:bg-[#7886C7] group-hover:text-white transition-colors">
+                <MapIcon size={20} />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#2D336B]">City Map</span>
+            </Link>
+            
+            <Link href="/request" className="flex flex-col items-center gap-2 group">
+              <div className="p-3 bg-[#2D336B] border-2 border-[#7886C7] group-hover:bg-[#7886C7] group-hover:text-white transition-colors">
+                <Construction size={20} />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#2D336B]">Request Hub</span>
+            </Link>
+
+            <Link href="/resource-hub" className="hidden md:flex flex-col items-center gap-2 group">
+              <div className="p-3 bg-[#2D336B] border-2 border-[#7886C7] group-hover:bg-[#7886C7] group-hover:text-white transition-colors">
+                <Search size={20} />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#2D336B]">Search Resource</span>
+            </Link>
+          </motion.div>
+        </div>
       </div>
     </main>
   );
