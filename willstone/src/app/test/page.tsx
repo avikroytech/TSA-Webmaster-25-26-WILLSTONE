@@ -4,7 +4,7 @@ import { supabase } from "@/utils/supabase/server";
 
 export default async function Test() {
     const {data: resources, error} = await supabase.from("community_resources").select();
-    console.log(resources[0]);
+    if (resources) console.log(resources[0]);
 
     return (
         <div className="min-h-screen flex flex-col">
