@@ -58,7 +58,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Webkit browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
-  width: 14px; /* Slightly narrower for a cleaner look */
+  width: 20px; /* Slightly narrower for a cleaner look */
   height: 12px;
 }
 

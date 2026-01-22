@@ -1,284 +1,198 @@
-"use client";
+'use client';
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
-/**
- * Resource data structure
- * Each resource contains an image URL, name, description, and theme color
- */
 interface Resource {
   id: number;
   name: string;
   description: string;
   image: string;
-  color: string; // Theme color for the resource
+  color: string;
 }
 
-/**
- * Sample resource data with theme colors
- * In production, this would typically be fetched from a database or API
- */
 const resources: Resource[] = [
   {
     id: 1,
     name: "Community Center",
     description: "A modern facility offering recreational programs, meeting spaces, and community events for residents of all ages.",
     image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800&h=600&fit=crop&q=80",
-    color: "#3b82f6", // Blue
+    color: "#FFD700", 
   },
   {
     id: 2,
     name: "Public Library",
     description: "Access to thousands of books, digital resources, study spaces, and educational programs for lifelong learning.",
     image: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&h=600&fit=crop&q=80",
-    color: "#8b5cf6", // Purple
+    color: "#A9B5DF", 
   },
   {
     id: 3,
     name: "Parks & Recreation",
     description: "Beautiful parks, walking trails, sports facilities, and outdoor recreation programs for the whole family.",
     image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop&q=80",
-    color: "#10b981", // Green
+    color: "#7886C7", 
   },
 ];
 
 export default function SpotlightCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState(0); // -1 for left, 1 for right
+  const [isFlickering, setIsFlickering] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
 
-  /**
-   * Navigate to a specific resource index
-   * @param newDirection - Direction of navigation (-1 for previous, 1 for next)
-   */
-  const navigate = (newDirection: number) => {
-    setDirection(newDirection);
-    setCurrentIndex(
-      (prev) => (prev + newDirection + resources.length) % resources.length
-    );
+  const triggerTransition = (nextIndex: number) => {
+    setIsFlickering(true);
+    setTimeout(() => {
+      setCurrentIndex(nextIndex);
+      setIsFlickering(false);
+    }, 450);
   };
 
-  /**
-   * Navigate directly to a specific resource
-   * @param index - The index of the resource to navigate to
-   */
-  const goToResource = (index: number) => {
-    const newDirection = index > currentIndex ? 1 : -1;
-    setDirection(newDirection);
-    setCurrentIndex(index);
+  const navigate = (direction: number) => {
+    const next = (currentIndex + direction + resources.length) % resources.length;
+    triggerTransition(next);
   };
 
-  /**
-   * Auto-advance carousel every 5 seconds
-   * Pauses when user hovers over the carousel
-   */
   useEffect(() => {
-    if (isPaused) return;
-
-    const interval = setInterval(() => {
-      navigate(1);
-    }, 5000);
-
+    if (isPaused || isFlickering) return;
+    const interval = setInterval(() => navigate(1), 6000);
     return () => clearInterval(interval);
-  }, [isPaused, currentIndex]);
+  }, [isPaused, currentIndex, isFlickering]);
 
   const currentResource = resources[currentIndex];
 
+  const lightVariants = {
+    on: { opacity: 1, filter: "brightness(1) contrast(1)" },
+    off: { 
+      opacity: [1, 0, 0.4, 0, 0.2, 0],
+      filter: "brightness(0.5) contrast(1.2)",
+      transition: { duration: 0.4 }
+    }
+  };
+
   return (
-    <section className="w-full py-12 px-4 sm:px-6 lg:px-8 bg-slate-950">
-      <div className="max-w-7xl mx-auto">
-        <div
-          className="relative w-full h-[600px] bg-[#050505] rounded-3xl overflow-hidden"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
-          {/* Liquid Circle Mask Background - Expands from center */}
-          <AnimatePresence initial={false} custom={direction}>
-            <motion.div
-              key={`liquid-${currentIndex}`}
-              custom={direction}
-              initial={{ clipPath: "circle(0% at 50% 50%)" }}
-              animate={{ clipPath: "circle(150% at 50% 50%)" }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-              className="absolute inset-0 opacity-20"
-              style={{ backgroundColor: currentResource.color }}
-            />
+    <section className="w-full min-h-screen py-24 bg-[#0A0C1A] overflow-hidden relative flex flex-col justify-center">
+      {/* Background Texture */}
+      <div className="absolute inset-0 opacity-[0.15] bg-[url('https://www.transparenttextures.com/patterns/asphalt-dark.png')] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-6 relative w-full">
+        
+        {/* Streetlight Fixture */}
+        <div className="absolute -top-24 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center">
+            <div className="w-2 h-32 bg-gradient-to-b from-[#1a1c2e] to-[#2D336B]" />
+            <div className="w-24 h-6 bg-[#2D336B] rounded-t-3xl border-b border-white/10" />
+            <div className="w-32 h-10 bg-[#2D336B] rounded-b-3xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] relative flex items-center justify-center">
+                <motion.div 
+                    animate={{ 
+                        backgroundColor: isFlickering ? "#111" : currentResource.color,
+                        boxShadow: isFlickering ? "none" : `0px 0px 50px 15px ${currentResource.color}`
+                    }}
+                    className="w-20 h-4 rounded-full blur-[4px] transition-all duration-500"
+                />
+            </div>
+        </div>
+
+        <div className="relative w-full flex flex-col items-center pt-20">
+          
+          {/* Volumetric Light Cone */}
+          <AnimatePresence mode="wait">
+            {!isFlickering && (
+              <motion.div
+                key={`volumetric-beam-${currentIndex}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, transition: { duration: 0.1 } }}
+                className="absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none z-0"
+                style={{ width: '2000px', height: '1200px' }}
+              >
+                <div 
+                  className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full"
+                  style={{
+                    background: `conic-gradient(from 135deg at 50% 0%, transparent 0deg, ${currentResource.color}20 30deg, ${currentResource.color}30 45deg, ${currentResource.color}20 60deg, transparent 90deg)`,
+                    filter: 'blur(100px)',
+                  }}
+                />
+                <div 
+                  className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-full"
+                  style={{
+                    background: `conic-gradient(from 155deg at 50% 0%, transparent 0deg, ${currentResource.color}35 20deg, ${currentResource.color}35 25deg, transparent 45deg)`,
+                    filter: 'blur(50px)',
+                  }}
+                />
+                <div className="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay" />
+              </motion.div>
+            )}
           </AnimatePresence>
 
-          {/* Main content area */}
-          <div className="relative z-10 h-full flex items-center justify-center px-8 md:px-16">
-            <AnimatePresence mode="wait" custom={direction}>
-              <motion.div
-                key={currentIndex}
-                custom={direction}
-                initial={{ 
-                  x: direction * 100, 
-                  opacity: 0, 
-                  skewX: direction * 10 
-                }}
-                animate={{ 
-                  x: 0, 
-                  opacity: 1, 
-                  skewX: 0 
-                }}
-                exit={{ 
-                  x: direction * -100, 
-                  opacity: 0, 
-                  skewX: direction * -10 
-                }}
-                transition={{ 
-                  type: "spring", 
-                  damping: 20, 
-                  stiffness: 120 
-                }}
-                className="flex flex-col md:flex-row items-center gap-8 w-full max-w-5xl"
-              >
-                {/* Resource Image */}
-                <div className="flex-shrink-0 w-full md:w-1/2">
-                  <motion.div
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.2, duration: 0.5 }}
-                    className="relative w-full h-64 md:h-80 rounded-xl overflow-hidden shadow-lg"
-                  >
-                    <Image
-                      src={currentResource.image}
-                      alt={currentResource.name}
-                      fill
-                      className="object-cover"
-                      priority={currentIndex === 0}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                  </motion.div>
-                </div>
-
-                {/* Resource Information */}
-                <div className="flex-1 text-center md:text-left">
-                  {/* Title with Character Staggering and Glow Effect */}
-                  <motion.h2 
-                    key={`title-${currentIndex}`}
-                    className="text-5xl sm:text-6xl md:text-6xl lg:text-7xl font-black tracking-tight text-white mb-4 leading-[1.1]"
-                    style={{ 
-                      textShadow: `0px 0px 40px ${currentResource.color}66`
-                    }}
-                  >
-                    {currentResource.name.split(" ").map((word, wordIndex, words) => {
-                      // Calculate the starting character index for this word
-                      const startIndex = words.slice(0, wordIndex).reduce((acc, w) => acc + w.length + 1, 0);
-                      
-                      return (
-                        <span key={`word-${wordIndex}`} className="inline-block mr-2">
-                          {word.split("").map((char, charIndex) => {
-                            const globalIndex = startIndex + charIndex;
-                            return (
-                              <motion.span
-                                key={`${currentIndex}-${wordIndex}-${charIndex}`}
-                                initial={{ y: 50, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                transition={{ 
-                                  delay: globalIndex * 0.05, 
-                                  type: "spring",
-                                  stiffness: 300,
-                                  damping: 20
-                                }}
-                                className="inline-block"
-                              >
-                                {char}
-                              </motion.span>
-                            );
-                          })}
-                        </span>
-                      );
-                    })}
-                  </motion.h2>
-
-                  <motion.p
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                    className="text-gray-400 text-xl max-w-lg leading-relaxed font-sans"
-                  >
-                    {currentResource.description}
-                  </motion.p>
-
-                  {/* Interactive Button with hover "Pulse" */}
-                  <motion.button
-                    whileHover={{ 
-                      scale: 1.1, 
-                      boxShadow: `0px 0px 20px ${currentResource.color}` 
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                    className="mt-10 px-10 py-4 border-2 rounded-full font-bold transition-colors font-sans"
-                    style={{ 
-                      borderColor: currentResource.color, 
-                      color: currentResource.color 
-                    }}
-                  >
-                    EXPLORE RESOURCE
-                  </motion.button>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          {/* Vertical Navigation - Left Side */}
-          <div className="absolute inset-y-0 left-0 w-24 flex items-center justify-center z-20">
-            <button 
-              onClick={() => navigate(-1)}
-              className="group flex flex-col items-center gap-4 text-white/30 hover:text-white transition-all font-sans"
-              aria-label="Previous resource"
+          {/* Main Content Grid */}
+          <div className="relative z-10 w-full mt-16 min-h-[500px] flex items-center">
+            <motion.div
+              variants={lightVariants}
+              animate={isFlickering ? "off" : "on"}
+              className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center w-full"
             >
-              <span className="text-xs uppercase tracking-[0.3em] -rotate-90 mb-8">
-                Previous
-              </span>
-              <motion.div 
-                className="w-[2px] bg-white/10 group-hover:bg-white transition-all duration-500"
-                initial={{ height: 96 }}
-                whileHover={{ height: 128 }}
-              />
-            </button>
-          </div>
-
-          {/* Vertical Navigation - Right Side */}
-          <div className="absolute inset-y-0 right-0 w-24 flex items-center justify-center z-20">
-            <button 
-              onClick={() => navigate(1)}
-              className="group flex flex-col items-center gap-4 text-white/30 hover:text-white transition-all font-sans"
-              aria-label="Next resource"
-            >
-              <motion.div 
-                className="w-[2px] bg-white/10 group-hover:bg-white transition-all duration-500"
-                initial={{ height: 96 }}
-                whileHover={{ height: 128 }}
-              />
-              <span className="text-xs uppercase tracking-[0.3em] rotate-90 mt-8">
-                Next
-              </span>
-            </button>
-          </div>
-
-          {/* Indicator Dots */}
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex gap-4">
-            {resources.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => goToResource(index)}
-                className="focus:outline-none"
-                aria-label={`Go to resource ${index + 1}`}
-              >
-                <motion.div
-                  animate={{ 
-                    width: index === currentIndex ? 40 : 12,
-                    backgroundColor: index === currentIndex 
-                      ? resources[index].color 
-                      : "#333" 
-                  }}
-                  className="h-1.5 rounded-full cursor-pointer transition-all duration-300"
+              {/* Image Side */}
+              <div className="relative order-2 lg:order-1">
+                <div 
+                  className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-[110%] h-32 blur-[80px] opacity-20"
+                  style={{ background: `radial-gradient(circle, ${currentResource.color} 0%, transparent 70%)` }}
                 />
-              </button>
-            ))}
+                
+                <div className="absolute inset-0 bg-[#2D336B] transform translate-x-4 translate-y-4 -z-10" />
+                <div className="relative aspect-[4/3] border-[3px] border-[#2D336B] overflow-hidden bg-slate-900 shadow-2xl">
+                  <Image
+                    src={currentResource.image}
+                    alt={currentResource.name}
+                    fill
+                    className="object-cover opacity-90 transition-opacity duration-700"
+                  />
+                  <div className="absolute inset-0 shadow-[inset_0_0_80px_rgba(0,0,0,0.6)]" />
+                </div>
+              </div>
+
+              {/* Text Side */}
+              <div className="flex flex-col justify-center space-y-6 order-1 lg:order-2">
+                <div className="space-y-2">
+                    <h2 className="text-6xl md:text-8xl font-black text-white uppercase tracking-tighter leading-none">
+                        {currentResource.name}
+                    </h2>
+                </div>
+                
+                <p className="text-[#A9B5DF] text-lg md:text-xl font-medium leading-relaxed max-w-lg border-l-4 border-white/10 pl-6">
+                  {currentResource.description}
+                </p>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Navigation Bar */}
+          <div className="w-full flex flex-col md:flex-row justify-between items-center gap-8 mt-24 z-20">
+             {/* Progress Markers */}
+             <div className="flex gap-3">
+                {resources.map((_, i) => (
+                    <button
+                        key={i}
+                        onClick={() => triggerTransition(i)}
+                        className={`h-1.5 transition-all duration-500 rounded-full ${i === currentIndex ? 'w-20 bg-white shadow-[0_0_15px_#fff]' : 'w-8 bg-[#2D336B]'}`}
+                    />
+                ))}
+             </div>
+             
+             {/* Nav Buttons */}
+             <div className="flex gap-4">
+                <button 
+                    onClick={() => navigate(-1)}
+                    className="px-6 py-3 border-2 border-[#2D336B] text-white flex items-center justify-center hover:bg-white hover:text-[#2D336B] transition-all font-bold tracking-widest text-sm"
+                >
+                    PREV
+                </button>
+                <button 
+                    onClick={() => navigate(1)}
+                    className="px-6 py-3 bg-[#2D336B] border-2 border-[#2D336B] text-white flex items-center justify-center hover:bg-[#7886C7] transition-all font-bold tracking-widest text-sm"
+                >
+                    NEXT
+                </button>
+             </div>
           </div>
         </div>
       </div>
