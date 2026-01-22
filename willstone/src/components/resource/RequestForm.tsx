@@ -76,7 +76,7 @@ export default function RequestForm() {
                 <h2 className="text-3xl font-display font-black text-[#2D336B] uppercase tracking-tighter">
                     Submit a <span className="text-[#7886C7]">Resource</span>
                 </h2>
-                <p className="text-[#7886C7] text-sm font-medium mt-1 uppercase tracking-widest">Route your contribution to the community</p>
+                <p className="text-[#7886C7] text-sm font-medium mt-1 uppercase tracking-widest">Suggest a program/service to add to the community</p>
             </div>
 
             {/* Name Fields */}
