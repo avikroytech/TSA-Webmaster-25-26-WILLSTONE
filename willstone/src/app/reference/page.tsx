@@ -42,11 +42,6 @@ export default function Request() {
                             </div>
                         </object>
                     </div>
-
-                    {/* Footer Note */}
-                    <p className="mt-6 text-center text-[#2D336B]/60 font-medium italic">
-                        Last updated: January 2026
-                    </p>
                 </div>
             </main>
 
