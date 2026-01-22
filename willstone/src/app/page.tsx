@@ -4,7 +4,7 @@ import SpotlightCarousel from "@/components/home/SpotlightCarousel";
 import CalendarSection from "@/components/home/CalendarSection";
 import Footer from "@/components/home/Footer";
 
-export default function Home() {
+export default function Request() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
