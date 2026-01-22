@@ -43,23 +43,6 @@ const resources: Resource[] = [
   },
 ];
 
-/**
- * SpotlightCarousel Component
- * 
- * A unique and visually appealing carousel with advanced animations:
- * - Liquid Circle Mask: Circular clip-path expands from center to fill background
- * - Character Staggering: Each letter pops up with back-out spring effect
- * - Skew & Directional Motion: Content skews in the direction of movement
- * - Vertical Navigation: Minimalist vertical lines that grow/shrink on hover
- * - Glow & Depth: Title has text shadow matching theme color
- * 
- * Features:
- * - Displays one main resource at a time with smooth transitions
- * - Each resource card includes an image, name, and description
- * - Auto-advance functionality that cycles through resources every 5 seconds
- * - Pause on hover for better user experience
- * - Professional styling suitable for a government website
- */
 export default function SpotlightCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0); // -1 for left, 1 for right

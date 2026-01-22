@@ -18,9 +18,9 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Resource Hub", href: "/resource-hub" },
+    { name: "Request a Resource", href: "/request" },
     { name: "Map", href: "/map" },
-    { name: "Calendar", href: "/calendar" },
-    { name: "Get Involved", href: "/get-involved" },
+    { name: "Reference", href: "/reference" },
   ];
 
   return (
