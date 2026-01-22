@@ -85,11 +85,8 @@ export default function CalendarSection() {
       <div className="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 border-b-4 border-[#2D336B]/10 pb-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-12">
           <div className="text-left">
-            <span className="text-[#7886C7] font-black tracking-[0.3em] uppercase text-xs mb-4 block">
-              Route & Agenda
-            </span>
             <h2 className="text-5xl md:text-7xl font-display font-black text-[#2D336B] leading-none uppercase tracking-tighter">
               Upcoming <span className="text-[#7886C7]">Events</span>
             </h2>
