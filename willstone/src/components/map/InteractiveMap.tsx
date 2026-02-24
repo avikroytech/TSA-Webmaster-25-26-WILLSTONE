@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef, useCallback } from "react";
+import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 
 // ─── Types ──────────────────────────────────────────────────────────
 type MapMode = "subway" | "bus";
@@ -256,6 +256,60 @@ function getUniqueStations(routes: Route[]): UniqueStation[] {
     return Array.from(map.values());
 }
 
+// ─── Vehicle animation helpers ──────────────────────────────────────
+interface VehiclePos {
+    x: number;
+    y: number;
+    angle: number; // radians
+    routeIndex: number;
+}
+
+interface VehicleInternal {
+    segIndex: number;      // current segment (station pair) index
+    segProgress: number;   // 0..1 along current segment
+    paused: boolean;
+    pauseRemaining: number; // ms left at station
+    phaseOffset: number;    // initial offset along route (0..1)
+}
+
+const VEHICLE_SPEED = 80;     // SVG-units per second
+const STATION_PAUSE = 1000;   // ms to pause at each station
+
+function dist(a: Station, b: Station) {
+    return Math.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2);
+}
+
+function angleBetween(a: Station, b: Station) {
+    return Math.atan2(b.y - a.y, b.x - a.x);
+}
+
+function vehicleCountForRoute(stationCount: number) {
+    if (stationCount <= 3) return 1;
+    if (stationCount <= 6) return 2;
+    return 3;
+}
+
+function initVehicles(routes: Route[]): VehicleInternal[][] {
+    return routes.map((route) => {
+        const count = vehicleCountForRoute(route.stations.length);
+        const segCount = route.stations.length - 1;
+        if (segCount <= 0) return [];
+        return Array.from({ length: count }, (_, i) => {
+            // Spread vehicles evenly along the route
+            const offset = i / count;
+            const startSeg = Math.floor(offset * segCount);
+            const startProgress = (offset * segCount) - startSeg;
+            return {
+                segIndex: startSeg,
+                segProgress: startProgress,
+                paused: false,
+                pauseRemaining: 0,
+                phaseOffset: offset,
+            };
+        });
+    });
+}
+
 // ─── Component ──────────────────────────────────────────────────────
 export default function InteractiveMap() {
     const [mode, setMode] = useState<MapMode>("subway");
@@ -280,6 +334,78 @@ export default function InteractiveMap() {
         setMode(newMode);
         setSelectedRoute(null);
     }, []);
+
+    // ── Vehicle animation ────────────────────────────────────────
+    const vehiclesRef = useRef<VehicleInternal[][]>([]);
+    const animFrameRef = useRef<number>(0);
+    const lastTimeRef = useRef<number>(0);
+    const [vehiclePositions, setVehiclePositions] = useState<VehiclePos[]>([]);
+
+    // Re-init vehicles when routes change
+    useEffect(() => {
+        vehiclesRef.current = initVehicles(routes);
+        lastTimeRef.current = 0;
+    }, [routes]);
+
+    // Animation loop
+    useEffect(() => {
+        const tick = (timestamp: number) => {
+            if (lastTimeRef.current === 0) lastTimeRef.current = timestamp;
+            const dt = Math.min(timestamp - lastTimeRef.current, 100); // cap delta
+            lastTimeRef.current = timestamp;
+
+            const allPositions: VehiclePos[] = [];
+
+            vehiclesRef.current.forEach((vehicleArr, ri) => {
+                const route = routes[ri];
+                if (!route || route.stations.length < 2) return;
+                const segCount = route.stations.length - 1;
+
+                vehicleArr.forEach((v) => {
+                    if (v.paused) {
+                        v.pauseRemaining -= dt;
+                        if (v.pauseRemaining <= 0) {
+                            v.paused = false;
+                            v.pauseRemaining = 0;
+                        }
+                    }
+
+                    if (!v.paused) {
+                        const from = route.stations[v.segIndex];
+                        const to = route.stations[v.segIndex + 1];
+                        const segLen = dist(from, to);
+                        if (segLen > 0) {
+                            const progressDelta = (VEHICLE_SPEED * (dt / 1000)) / segLen;
+                            v.segProgress += progressDelta;
+                        }
+
+                        // Arrived at next station
+                        if (v.segProgress >= 1) {
+                            v.segProgress = 0;
+                            v.segIndex = (v.segIndex + 1) % segCount;
+                            v.paused = true;
+                            v.pauseRemaining = STATION_PAUSE;
+                        }
+                    }
+
+                    // Interpolate position
+                    const from = route.stations[v.segIndex];
+                    const to = route.stations[v.segIndex + 1] ?? route.stations[v.segIndex];
+                    const x = from.x + (to.x - from.x) * v.segProgress;
+                    const y = from.y + (to.y - from.y) * v.segProgress;
+                    const angle = angleBetween(from, to);
+
+                    allPositions.push({ x, y, angle, routeIndex: ri });
+                });
+            });
+
+            setVehiclePositions(allPositions);
+            animFrameRef.current = requestAnimationFrame(tick);
+        };
+
+        animFrameRef.current = requestAnimationFrame(tick);
+        return () => cancelAnimationFrame(animFrameRef.current);
+    }, [routes]);
 
     const hoveredData = useMemo(
         () => uniqueStations.find((s) => s.name === hoveredStation) ?? null,
@@ -451,6 +577,48 @@ export default function InteractiveMap() {
                                     stroke={dimmed ? "#555" : "#2D336B"}
                                     strokeWidth="2.5"
                                     style={{ transition: "r 0.2s ease-out" }}
+                                />
+                            </g>
+                        );
+                    })}
+
+                    {/* Animated vehicles */}
+                    {vehiclePositions.map((vp, i) => {
+                        const route = routes[vp.routeIndex];
+                        if (!route) return null;
+                        const dimmed = selectedRoute !== null && selectedRoute !== route.name;
+                        const angleDeg = (vp.angle * 180) / Math.PI;
+                        const isBus = mode === "bus";
+                        // Bus: 14×9, Train: 18×10
+                        const w = isBus ? 14 : 18;
+                        const h = isBus ? 9 : 10;
+                        return (
+                            <g
+                                key={`vehicle-${i}`}
+                                transform={`translate(${vp.x}, ${vp.y}) rotate(${angleDeg})`}
+                                opacity={dimmed ? 0.15 : 1}
+                                className="transition-opacity duration-300"
+                            >
+                                {/* Vehicle body */}
+                                <rect
+                                    x={-w / 2}
+                                    y={-h / 2}
+                                    width={w}
+                                    height={h}
+                                    rx={isBus ? 3 : 2}
+                                    ry={isBus ? 3 : 2}
+                                    fill={route.color}
+                                    stroke="white"
+                                    strokeWidth="1.5"
+                                />
+                                {/* Windshield (front) */}
+                                <rect
+                                    x={w / 2 - (isBus ? 4 : 5)}
+                                    y={-h / 2 + 1.5}
+                                    width={isBus ? 3 : 4}
+                                    height={h - 3}
+                                    rx="1"
+                                    fill="rgba(255,255,255,0.7)"
                                 />
                             </g>
                         );
