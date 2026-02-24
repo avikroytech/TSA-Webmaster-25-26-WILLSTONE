@@ -396,19 +396,9 @@ export default function InteractiveMap() {
                         />
                     ))}
 
-                    {/* Deduplicated station dots + labels */}
+                    {/* Deduplicated station dots */}
                     {uniqueStations.map((station) => {
                         const isHovered = hoveredStation === station.name;
-                        const off = labelOffset(station.labelDir);
-                        // Approximate text width (7px per char at fontSize 12)
-                        const textW = station.name.length * 7.5 + 10;
-                        const textH = 18;
-
-                        // Background rect position based on label direction
-                        let bgX = station.x + off.dx - 5;
-                        let bgY = station.y + off.dy - 12;
-                        if (off.anchor === "end") bgX = station.x + off.dx - textW + 5;
-                        if (off.anchor === "middle") bgX = station.x + off.dx - textW / 2;
 
                         return (
                             <g
@@ -419,34 +409,6 @@ export default function InteractiveMap() {
                                 onMouseLeave={() => setHoveredStation(null)}
                                 style={{ cursor: "pointer" }}
                             >
-                                {/* Label background pill */}
-                                <rect
-                                    x={bgX}
-                                    y={bgY}
-                                    width={textW}
-                                    height={textH}
-                                    rx="4"
-                                    ry="4"
-                                    fill="white"
-                                    fillOpacity="0.85"
-                                    stroke="#2D336B"
-                                    strokeWidth="0.5"
-                                    strokeOpacity="0.3"
-                                    className="pointer-events-none"
-                                />
-                                {/* Label text */}
-                                <text
-                                    x={station.x + off.dx}
-                                    y={station.y + off.dy}
-                                    fill="#2D336B"
-                                    fontSize="12"
-                                    fontWeight="700"
-                                    fontFamily="system-ui, sans-serif"
-                                    textAnchor={off.anchor}
-                                    className="pointer-events-none select-none"
-                                >
-                                    {station.name}
-                                </text>
                                 {/* Hover ring (larger, subtle glow) */}
                                 <circle
                                     cx={station.x}
