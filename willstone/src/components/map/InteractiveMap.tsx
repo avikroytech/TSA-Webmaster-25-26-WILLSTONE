@@ -383,8 +383,11 @@ export default function InteractiveMap() {
                         if (v.segProgress >= 1) {
                             v.segProgress = 0;
                             v.segIndex = (v.segIndex + 1) % segCount;
-                            v.paused = true;
-                            v.pauseRemaining = STATION_PAUSE;
+                            // 50% chance to stop
+                            if (Math.random() < 0.5) {
+                                v.paused = true;
+                                v.pauseRemaining = STATION_PAUSE;
+                            }
                         }
                     }
 
