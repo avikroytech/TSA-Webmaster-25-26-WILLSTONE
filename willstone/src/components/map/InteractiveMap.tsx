@@ -274,11 +274,26 @@ function labelOffset(dir: UniqueStation["labelDir"]) {
 export default function InteractiveMap() {
     const [mode, setMode] = useState<MapMode>("subway");
     const [hoveredStation, setHoveredStation] = useState<string | null>(null);
+    const [selectedRoute, setSelectedRoute] = useState<string | null>(null);
     const svgRef = useRef<SVGSVGElement>(null);
     const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
     const routes = mode === "subway" ? SUBWAY_ROUTES : BUS_ROUTES;
     const uniqueStations = useMemo(() => getUniqueStations(routes), [routes]);
+
+    // Station names on the selected route (for highlight/dim)
+    const selectedRouteStations = useMemo(() => {
+        if (!selectedRoute) return null;
+        const route = routes.find((r) => r.name === selectedRoute);
+        if (!route) return null;
+        return new Set(route.stations.map((s) => s.name));
+    }, [routes, selectedRoute]);
+
+    // Clear selection when switching modes
+    const handleModeChange = useCallback((newMode: MapMode) => {
+        setMode(newMode);
+        setSelectedRoute(null);
+    }, []);
 
     const hoveredData = useMemo(
         () => uniqueStations.find((s) => s.name === hoveredStation) ?? null,
@@ -318,17 +333,30 @@ export default function InteractiveMap() {
                 <h2 className="text-lg font-black uppercase tracking-[0.15em] mb-3 border-b-2 border-[#7886C7] pb-2">
                     {mode === "subway" ? "Subway Lines" : "Bus Routes"}
                 </h2>
-                {routes.map((route) => (
-                    <div key={route.name} className="flex items-center gap-3 py-1.5">
-                        <span
-                            className="w-5 h-5 rounded-sm shrink-0 border border-white/30"
-                            style={{ backgroundColor: route.color }}
-                        />
-                        <span className="text-sm font-semibold tracking-wide leading-tight">
-                            {route.name}
-                        </span>
-                    </div>
-                ))}
+                {routes.map((route) => {
+                    const isSelected = selectedRoute === route.name;
+                    const isDimmed = selectedRoute !== null && !isSelected;
+                    return (
+                        <div
+                            key={route.name}
+                            onClick={() => setSelectedRoute(isSelected ? null : route.name)}
+                            className={`flex items-center gap-3 py-2 px-2 -mx-2 rounded cursor-pointer transition-all duration-200 ${isSelected
+                                    ? "bg-white/20 ring-1 ring-white/40"
+                                    : isDimmed
+                                        ? "opacity-40"
+                                        : "hover:bg-white/10"
+                                }`}
+                        >
+                            <span
+                                className="w-5 h-5 rounded-sm shrink-0 border border-white/30"
+                                style={{ backgroundColor: route.color }}
+                            />
+                            <span className="text-sm font-semibold tracking-wide leading-tight">
+                                {route.name}
+                            </span>
+                        </div>
+                    );
+                })}
             </div>
 
             {/* ── Map Area ─────────────────────────────────────────── */}
@@ -336,7 +364,7 @@ export default function InteractiveMap() {
                 {/* Toggle buttons */}
                 <div className="absolute top-4 left-4 z-20 flex gap-2">
                     <button
-                        onClick={() => setMode("subway")}
+                        onClick={() => handleModeChange("subway")}
                         className={`px-5 py-2.5 text-sm font-black uppercase tracking-[0.15em] transition-all duration-200 border-[3px] cursor-pointer ${mode === "subway"
                             ? "bg-[#2D336B] text-white border-[#2D336B] shadow-lg"
                             : "bg-white/80 text-[#2D336B] border-[#7886C7] hover:bg-white"
@@ -345,7 +373,7 @@ export default function InteractiveMap() {
                         Subway
                     </button>
                     <button
-                        onClick={() => setMode("bus")}
+                        onClick={() => handleModeChange("bus")}
                         className={`px-5 py-2.5 text-sm font-black uppercase tracking-[0.15em] transition-all duration-200 border-[3px] cursor-pointer ${mode === "bus"
                             ? "bg-[#2D336B] text-white border-[#2D336B] shadow-lg"
                             : "bg-white/80 text-[#2D336B] border-[#7886C7] hover:bg-white"
@@ -381,24 +409,30 @@ export default function InteractiveMap() {
                     />
 
                     {/* Route lines */}
-                    {routes.map((route) => (
-                        <polyline
-                            key={route.name}
-                            points={route.stations
-                                .map((s) => `${s.x},${s.y}`)
-                                .join(" ")}
-                            fill="none"
-                            stroke={route.color}
-                            strokeWidth="5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="transition-opacity duration-300"
-                        />
-                    ))}
+                    {routes.map((route) => {
+                        const dimmed = selectedRoute !== null && selectedRoute !== route.name;
+                        return (
+                            <polyline
+                                key={route.name}
+                                points={route.stations
+                                    .map((s) => `${s.x},${s.y}`)
+                                    .join(" ")}
+                                fill="none"
+                                stroke={dimmed ? "#555" : route.color}
+                                strokeWidth={dimmed ? 3 : 5}
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                opacity={dimmed ? 0.18 : 1}
+                                className="transition-all duration-300"
+                            />
+                        );
+                    })}
 
                     {/* Deduplicated station dots */}
                     {uniqueStations.map((station) => {
                         const isHovered = hoveredStation === station.name;
+                        const onSelectedRoute = selectedRouteStations === null || selectedRouteStations.has(station.name);
+                        const dimmed = !onSelectedRoute;
 
                         return (
                             <g
@@ -408,6 +442,8 @@ export default function InteractiveMap() {
                                 }
                                 onMouseLeave={() => setHoveredStation(null)}
                                 style={{ cursor: "pointer" }}
+                                opacity={dimmed ? 0.18 : 1}
+                                className="transition-opacity duration-300"
                             >
                                 {/* Hover ring (larger, subtle glow) */}
                                 <circle
@@ -425,8 +461,8 @@ export default function InteractiveMap() {
                                     cx={station.x}
                                     cy={station.y}
                                     r={isHovered ? 10 : 6}
-                                    fill="white"
-                                    stroke="#2D336B"
+                                    fill={dimmed ? "#999" : "white"}
+                                    stroke={dimmed ? "#555" : "#2D336B"}
                                     strokeWidth="2.5"
                                     style={{ transition: "r 0.2s ease-out" }}
                                 />
