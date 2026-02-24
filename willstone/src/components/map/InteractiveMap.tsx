@@ -434,15 +434,23 @@ export default function InteractiveMap() {
                         );
                     })}
 
-                    {/* Compass rose (bottom-left) */}
-                    <g transform="translate(120, 900)">
-                        <circle cx="0" cy="0" r="30" fill="none" stroke="#2D336B" strokeWidth="2" />
-                        <line x1="0" y1="-25" x2="0" y2="25" stroke="#2D336B" strokeWidth="1.5" />
-                        <line x1="-25" y1="0" x2="25" y2="0" stroke="#2D336B" strokeWidth="1.5" />
-                        <text x="0" y="-32" textAnchor="middle" fontSize="14" fontWeight="900" fill="#2D336B">N</text>
-                        <text x="0" y="44" textAnchor="middle" fontSize="14" fontWeight="900" fill="#2D336B">S</text>
-                        <text x="34" y="5" textAnchor="middle" fontSize="14" fontWeight="900" fill="#2D336B">E</text>
-                        <text x="-34" y="5" textAnchor="middle" fontSize="14" fontWeight="900" fill="#2D336B">W</text>
+                    {/* Compass rose (bottom-left corner) */}
+                    <g transform="translate(60, 890)">
+                        <circle cx="0" cy="0" r="45" fill="rgba(255,255,255,0.6)" stroke="#2D336B" strokeWidth="3" />
+                        {/* Cross lines */}
+                        <line x1="0" y1="-38" x2="0" y2="38" stroke="#2D336B" strokeWidth="2.5" />
+                        <line x1="-38" y1="0" x2="38" y2="0" stroke="#2D336B" strokeWidth="2.5" />
+                        {/* Diagonal lines */}
+                        <line x1="-22" y1="-22" x2="22" y2="22" stroke="#2D336B" strokeWidth="1" opacity="0.4" />
+                        <line x1="22" y1="-22" x2="-22" y2="22" stroke="#2D336B" strokeWidth="1" opacity="0.4" />
+                        {/* North arrow */}
+                        <polygon points="0,-36 -6,-20 6,-20" fill="#E53935" />
+                        <polygon points="0,36 -6,20 6,20" fill="#2D336B" opacity="0.5" />
+                        {/* Labels */}
+                        <text x="0" y="-52" textAnchor="middle" fontSize="22" fontWeight="900" fill="#2D336B">N</text>
+                        <text x="0" y="68" textAnchor="middle" fontSize="22" fontWeight="900" fill="#2D336B">S</text>
+                        <text x="58" y="8" textAnchor="middle" fontSize="22" fontWeight="900" fill="#2D336B">E</text>
+                        <text x="-58" y="8" textAnchor="middle" fontSize="22" fontWeight="900" fill="#2D336B">W</text>
                     </g>
                 </svg>
 
