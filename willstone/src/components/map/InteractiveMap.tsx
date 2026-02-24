@@ -256,20 +256,6 @@ function getUniqueStations(routes: Route[]): UniqueStation[] {
     return Array.from(map.values());
 }
 
-// ─── Label offset helpers ───────────────────────────────────────────
-function labelOffset(dir: UniqueStation["labelDir"]) {
-    switch (dir) {
-        case "right":
-            return { dx: 14, dy: 5, anchor: "start" as const };
-        case "left":
-            return { dx: -14, dy: 5, anchor: "end" as const };
-        case "above":
-            return { dx: 0, dy: -14, anchor: "middle" as const };
-        case "below":
-            return { dx: 0, dy: 22, anchor: "middle" as const };
-    }
-}
-
 // ─── Component ──────────────────────────────────────────────────────
 export default function InteractiveMap() {
     const [mode, setMode] = useState<MapMode>("subway");
@@ -341,10 +327,10 @@ export default function InteractiveMap() {
                             key={route.name}
                             onClick={() => setSelectedRoute(isSelected ? null : route.name)}
                             className={`flex items-center gap-3 py-2 px-2 -mx-2 rounded cursor-pointer transition-all duration-200 ${isSelected
-                                    ? "bg-white/20 ring-1 ring-white/40"
-                                    : isDimmed
-                                        ? "opacity-40"
-                                        : "hover:bg-white/10"
+                                ? "bg-white/20 ring-1 ring-white/40"
+                                : isDimmed
+                                    ? "opacity-40"
+                                    : "hover:bg-white/10"
                                 }`}
                         >
                             <span
