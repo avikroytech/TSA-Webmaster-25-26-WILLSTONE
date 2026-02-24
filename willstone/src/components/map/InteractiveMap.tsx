@@ -234,8 +234,8 @@ export default function InteractiveMap() {
                     <button
                         onClick={() => setMode("subway")}
                         className={`px-5 py-2.5 text-sm font-black uppercase tracking-[0.15em] transition-all duration-200 border-[3px] cursor-pointer ${mode === "subway"
-                                ? "bg-[#2D336B] text-white border-[#2D336B] shadow-lg"
-                                : "bg-white/80 text-[#2D336B] border-[#7886C7] hover:bg-white"
+                            ? "bg-[#2D336B] text-white border-[#2D336B] shadow-lg"
+                            : "bg-white/80 text-[#2D336B] border-[#7886C7] hover:bg-white"
                             }`}
                     >
                         Subway
@@ -243,8 +243,8 @@ export default function InteractiveMap() {
                     <button
                         onClick={() => setMode("bus")}
                         className={`px-5 py-2.5 text-sm font-black uppercase tracking-[0.15em] transition-all duration-200 border-[3px] cursor-pointer ${mode === "bus"
-                                ? "bg-[#2D336B] text-white border-[#2D336B] shadow-lg"
-                                : "bg-white/80 text-[#2D336B] border-[#7886C7] hover:bg-white"
+                            ? "bg-[#2D336B] text-white border-[#2D336B] shadow-lg"
+                            : "bg-white/80 text-[#2D336B] border-[#7886C7] hover:bg-white"
                             }`}
                     >
                         Bus
