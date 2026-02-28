@@ -3,7 +3,6 @@
 import React, { useState, useMemo } from 'react';
 import { ChevronLeft, ChevronRight, Clock, MapPin } from 'lucide-react';
 import { mockEvents, CalendarEvent } from '@/data/mockEvents';
-import EventModal from './EventModal';
 
 const DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MONTHS = [
@@ -76,10 +75,10 @@ export default function Calendar() {
 
     return (
         <>
-            <div className="w-full max-w-[1400px] mx-auto bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden font-sans">
+            <div className="flex flex-col flex-1 min-h-0 w-full max-w-[1400px] mx-auto bg-white rounded-lg shadow-sm border border-gray-200 font-sans">
 
                 {/* Calendar Header */}
-                <div className="flex items-center gap-4 p-4 border-b border-gray-200 bg-[#FAFAFA]">
+                <div className="flex items-center gap-4 p-4 border-b border-gray-200 bg-[#FAFAFA] flex-shrink-0">
                     <div className="flex items-center gap-1 border border-gray-300 rounded-md bg-white shadow-sm overflow-hidden">
                         <button
                             onClick={prevMonth}
@@ -122,7 +121,7 @@ export default function Calendar() {
                 </div>
 
                 {/* Days Header */}
-                <div className="grid grid-cols-7 border-b border-gray-200 bg-white">
+                <div className="grid grid-cols-7 border-b border-gray-200 bg-white flex-shrink-0">
                     {DAYS_OF_WEEK.map(day => (
                         <div key={day} className="py-3 text-center text-sm font-semibold text-[#2D336B]">
                             {day}
@@ -131,52 +130,85 @@ export default function Calendar() {
                 </div>
 
                 {/* Grid */}
-                <div className="grid grid-cols-7 auto-rows-fr bg-gray-200 gap-px">
-                    {calendarCells.map((cell, idx) => (
-                        <div
-                            key={idx}
-                            className={`min-h-[140px] bg-white p-2 flex flex-col transition-colors ${cell.date ? 'hover:bg-gray-50' : 'bg-gray-50'}`}
-                        >
-                            {cell.date && (
-                                <span className="text-sm font-bold text-gray-500 mb-2 mt-1 ml-1">{String(cell.date).padStart(2, '0')}</span>
-                            )}
-                            <div className="flex flex-col gap-2.5 flex-1">
-                                {cell.events.map(event => (
-                                    <button
-                                        key={event.id}
-                                        onClick={() => setSelectedEvent(event)}
-                                        className="group relative w-full text-left p-2 rounded border border-transparent hover:border-[#7886C7]/30 hover:bg-[#7886C7]/5 transition-colors focus:outline-none focus:ring-2 focus:ring-[#7886C7]"
-                                    >
-                                        <div className="text-xs">
-                                            <div className="font-semibold text-[#2D336B] leading-tight line-clamp-2">
-                                                {event.title}
-                                            </div>
-                                            {event.time && (
-                                                <div className="text-gray-500 mt-1 line-clamp-1 truncate flex items-center gap-1">
-                                                    <Clock size={10} className="inline flex-shrink-0" />
-                                                    {event.time}
+                <div className="flex-1 bg-gray-200 flex flex-col min-h-0">
+                    <div className="grid grid-cols-7 gap-px flex-1">
+                        {calendarCells.map((cell, idx) => {
+                            const colIndex = idx % 7;
+                            const rowIndex = Math.floor(idx / 7);
+                            const hasSelectedEvent = cell.events.some(e => e.id === selectedEvent?.id);
+
+                            return (
+                                <div
+                                    key={idx}
+                                    className={`bg-white p-2 md:p-3 flex flex-col transition-colors ${cell.date ? 'hover:bg-gray-50' : 'bg-gray-50'} ${hasSelectedEvent ? 'relative z-50' : 'relative z-10'}`}
+                                >
+                                    {cell.date && (
+                                        <span className="text-sm font-bold text-gray-500 mb-2 ml-1">{String(cell.date).padStart(2, '0')}</span>
+                                    )}
+                                    <div className="flex flex-col gap-1.5 flex-1 w-full h-full relative">
+                                        {cell.events.map(event => {
+                                            const isExpanded = selectedEvent?.id === event.id;
+
+                                            // Smart positioning logic to keep the popover within the bounds of the calendar grid
+                                            const verticalPosition = rowIndex < 2 ? 'top-full mt-2' : 'bottom-full mb-2';
+                                            const horizontalPosition = colIndex > 3 ? 'right-0' : 'left-0';
+
+                                            return (
+                                                <div key={event.id} className={`relative ${isExpanded ? 'z-50' : 'z-20'}`}>
+                                                    <button
+                                                        onClick={() => setSelectedEvent(isExpanded ? null : event)}
+                                                        className={`group relative w-full text-left p-1.5 md:p-2 rounded border transition-colors focus:outline-none focus:ring-2 focus:ring-[#7886C7] shrink-0
+                                                    ${isExpanded ? 'bg-[#7886C7] text-white border-transparent' : 'bg-transparent text-[#2D336B] border-transparent hover:bg-[#7886C7]/10 hover:border-[#7886C7]/30'}
+                                                `}
+                                                    >
+                                                        <div className="text-xs">
+                                                            <div className={`font-semibold leading-tight line-clamp-2 ${isExpanded ? 'text-white' : 'text-[#2D336B]'}`}>
+                                                                {event.title}
+                                                            </div>
+                                                        </div>
+                                                    </button>
+
+                                                    {/* Floating Popover on Click (No Image/Description) */}
+                                                    {isExpanded && (
+                                                        <div className={`absolute w-64 bg-white shadow-[0_10px_40px_rgba(0,0,0,0.15)] rounded-lg border border-[#e5e7eb] z-[60] overflow-hidden ${verticalPosition} ${horizontalPosition}`}>
+                                                            <div className="p-4 flex flex-col gap-3 relative bg-white">
+                                                                <h4 className="font-bold text-[#2D336B] text-base leading-tight">
+                                                                    {event.title}
+                                                                </h4>
+
+                                                                <div className="flex flex-col gap-1.5 text-xs text-gray-600 font-medium">
+                                                                    {event.time && (
+                                                                        <div className="flex items-center gap-2">
+                                                                            <Clock size={14} className="text-[#7886C7]" />
+                                                                            <span>{event.time}</span>
+                                                                        </div>
+                                                                    )}
+                                                                    {event.address && (
+                                                                        <div className="flex items-center gap-2">
+                                                                            <MapPin size={14} className="text-[#7886C7]" />
+                                                                            <span className="line-clamp-2">{event.address}</span>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                 </div>
-                                            )}
-                                            {event.address && (
-                                                <div className="text-gray-400 mt-0.5 line-clamp-1 truncate text-[10px] flex items-center gap-1">
-                                                    <MapPin size={10} className="inline flex-shrink-0" />
-                                                    {event.address}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    ))}
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
                 </div>
             </div>
 
-            {/* Detail Modal */}
+            {/* Dark overlay backdrop to allow closing popover by clicking outside */}
             {selectedEvent && (
-                <EventModal
-                    event={selectedEvent}
-                    onClose={() => setSelectedEvent(null)}
+                <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setSelectedEvent(null)}
                 />
             )}
         </>
