@@ -56,9 +56,9 @@ const ProgressBar = ({ isPaused, onComplete }: { isPaused: boolean, onComplete: 
 
   return (
     <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#A9B5DF]/30 pointer-events-none">
-      <motion.div 
-        style={{ width }} 
-        className="h-full bg-[#2D336B]" 
+      <motion.div
+        style={{ width }}
+        className="h-full bg-[#2D336B]"
       />
     </div>
   );
@@ -75,7 +75,7 @@ export default function CalendarSection() {
   return (
     <section className="w-full py-24 bg-[#FFF2F2] text-[#2D336B] overflow-hidden relative">
       {/* Background Texture Overlay (Subtle) */}
-      <div 
+      <div
         className="absolute inset-0 opacity-[0.03] pointer-events-none"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
@@ -83,7 +83,7 @@ export default function CalendarSection() {
       />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
-        
+
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-12">
           <div className="text-left">
@@ -94,9 +94,9 @@ export default function CalendarSection() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 min-h-[600px]">
-          
+
           {/* LEFT: Visual Stage */}
-          <div className="lg:col-span-7 relative rounded-2xl overflow-hidden shadow-2xl bg-[#2D336B] border-4 border-[#2D336B]/5 transform -rotate-1">
+          <div className="lg:col-span-7 relative rounded-2xl overflow-hidden shadow-2xl bg-[#2D336B] border-4 border-[#2D336B]/5">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
@@ -158,39 +158,36 @@ export default function CalendarSection() {
                   onClick={() => setActiveTab(index)}
                   onMouseEnter={() => isActive && setIsPaused(true)}
                   onMouseLeave={() => isActive && setIsPaused(false)}
-                  className={`group relative flex items-start w-full p-6 transition-all duration-500 overflow-hidden cursor-pointer transform -skew-x-6 border-l-8 ${
-                    isActive 
-                      ? "bg-[#2D336B] border-[#7886C7] shadow-[10px_10px_0px_#A9B5DF]" 
-                      : "bg-white border-transparent hover:border-[#7886C7]/30 shadow-sm hover:shadow-md"
-                  }`}
+                  className={`group relative flex items-start w-full p-6 transition-all duration-500 overflow-hidden cursor-pointer transform -skew-x-6 border-l-8 ${isActive
+                    ? "bg-[#2D336B] border-[#7886C7] shadow-[10px_10px_0px_#A9B5DF]"
+                    : "bg-white border-transparent hover:border-[#7886C7]/30 shadow-sm hover:shadow-md"
+                    }`}
                 >
                   {isActive && (
-                    <ProgressBar 
-                      isPaused={isPaused} 
-                      onComplete={handleNext} 
+                    <ProgressBar
+                      isPaused={isPaused}
+                      onComplete={handleNext}
                     />
                   )}
 
-                  <div className={`flex-shrink-0 flex flex-col items-center justify-center w-16 h-16 transition-all duration-500 transform skew-x-6 ${
-                    isActive ? "bg-[#FFF2F2] text-[#2D336B] scale-110" : "bg-[#A9B5DF]/20 text-[#2D336B]"
-                  }`}>
+                  <div className={`flex-shrink-0 flex flex-col items-center justify-center w-16 h-16 transition-all duration-500 transform skew-x-6 ${isActive ? "bg-[#FFF2F2] text-[#2D336B] scale-110" : "bg-[#A9B5DF]/20 text-[#2D336B]"
+                    }`}>
                     <span className="text-[10px] font-black uppercase">{event.date.toLocaleString('default', { month: 'short' })}</span>
                     <span className="text-2xl font-black leading-none">{event.date.getDate()}</span>
                   </div>
 
                   <div className="ml-8 flex-1 transform skew-x-6">
-                    <h4 className={`text-xl font-black uppercase tracking-tight transition-colors ${
-                      isActive ? "text-[#FFF2F2]" : "text-[#2D336B]"
-                    }`}>
+                    <h4 className={`text-xl font-black uppercase tracking-tight transition-colors ${isActive ? "text-[#FFF2F2]" : "text-[#2D336B]"
+                      }`}>
                       {event.title}
                     </h4>
-                    
+
                     <div className="relative overflow-hidden">
                       <motion.div
                         initial={false}
-                        animate={{ 
-                          height: isActive ? "auto" : 0, 
-                          opacity: isActive ? 1 : 0 
+                        animate={{
+                          height: isActive ? "auto" : 0,
+                          opacity: isActive ? 1 : 0
                         }}
                         transition={{ duration: 0.4, ease: "circOut" }}
                       >
@@ -201,9 +198,8 @@ export default function CalendarSection() {
                     </div>
                   </div>
 
-                  <div className={`mt-1 transform skew-x-6 transition-all duration-500 ${
-                    isActive ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
-                  }`}>
+                  <div className={`mt-1 transform skew-x-6 transition-all duration-500 ${isActive ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
+                    }`}>
                     <ArrowRight className="w-6 h-6 text-[#7886C7]" />
                   </div>
                 </div>

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Home, Briefcase, Compass } from "lucide-react";
+import { ArrowRight, Home, Briefcase, HeartHandshake } from "lucide-react";
 
 // Helper component for the counting animation
 const Counter = ({ end, duration = 2000 }: { end: number, duration?: number }) => {
@@ -93,10 +93,8 @@ export default function Hero() {
       {/* --- ENLARGED TICKERS WITH ANIMATION --- */}
       <div className="relative z-10 w-full mt-20 bg-[#2D336B]/90 backdrop-blur-md border-y-4 border-[#7886C7]">
         <div className="flex flex-wrap justify-center md:justify-around py-10 gap-12 px-4">
-
-          {/* Ticker 1: Residents */}
           <div className="flex items-center gap-6 min-w-[280px]">
-            <div className="p-4 bg-[#7886C7]/20 rounded-xl transform -rotate-3">
+            <div className="p-4 bg-[#7886C7]/20 rounded-xl transform">
               <Home className="text-[#FFF2F2]" size={44} />
             </div>
             <div>
@@ -107,9 +105,8 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Ticker 2: Projects */}
           <div className="flex items-center gap-6 min-w-[280px]">
-            <div className="p-4 bg-[#7886C7]/20 rounded-xl transform rotate-3">
+            <div className="p-4 bg-[#7886C7]/20 rounded-xl transform">
               <Briefcase className="text-[#FFF2F2]" size={44} />
             </div>
             <div>
@@ -120,16 +117,15 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Ticker 3: Area */}
           <div className="flex items-center gap-6 min-w-[280px]">
-            <div className="p-4 bg-[#7886C7]/20 rounded-xl transform -rotate-2">
-              <Compass className="text-[#FFF2F2]" size={44} />
+            <div className="p-4 bg-[#7886C7]/20 rounded-xl transform">
+              <HeartHandshake className="text-[#FFF2F2]" size={44} />
             </div>
             <div>
               <div className="text-[#FFF2F2] font-black text-5xl leading-none uppercase">
-                <Counter end={18} />
+                <Counter end={35} />
               </div>
-              <div className="text-[#A9B5DF] uppercase text-[10px] tracking-[0.4em] font-bold mt-2">Square Miles</div>
+              <div className="text-[#A9B5DF] uppercase text-[10px] tracking-[0.4em] font-bold mt-2">Non-Profits</div>
             </div>
           </div>
 
