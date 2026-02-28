@@ -15,11 +15,7 @@ export default function Footer() {
 
   return (
     <footer className="w-full bg-[#0A0C1A] border-t-4 border-[#2D336B] text-[#A9B5DF] font-sans relative overflow-hidden">
-      {/* Subtle asphalt texture overlay to match the main sections */}
-      <div className="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/asphalt-dark.png')] pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-6 py-16 relative z-10">
-        
+      <div className="max-w-7xl mx-auto py-6 relative z-10">
         {/* Top Row: Brand & Primary Nav */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-12 mb-12">
           <Link href="/" className="flex items-center space-x-4 group">
@@ -51,29 +47,29 @@ export default function Footer() {
         </div>
 
         {/* Middle Row: Contact Info with Theme Borders */}
-        <div className="flex flex-wrap justify-center md:justify-start gap-8 mb-12 pb-12 border-b border-[#2D336B]/50">
+        <div className="flex flex-wrap justify-center md:justify-start gap-6 mb-12 pb-2 border-b border-[#2D336B]/50">
           <a href="tel:+1234567890" className="flex items-center gap-3 hover:text-white transition-colors group">
             <div className="p-2 bg-[#2D336B]/30 rounded-sm group-hover:bg-[#2D336B]">
-                <Phone size={16} className="text-[#7886C7]" />
+              <Phone size={16} className="text-[#7886C7]" />
             </div>
             <span className="font-bold tracking-tight">(123) 456-7890</span>
           </a>
           <a href="mailto:info@willstone.gov" className="flex items-center gap-3 hover:text-white transition-colors group">
             <div className="p-2 bg-[#2D336B]/30 rounded-sm group-hover:bg-[#2D336B]">
-                <Mail size={16} className="text-[#7886C7]" />
+              <Mail size={16} className="text-[#7886C7]" />
             </div>
             <span className="font-bold tracking-tight">info@willstone.gov</span>
           </a>
           <div className="flex items-center gap-3 group">
             <div className="p-2 bg-[#2D336B]/30 rounded-sm">
-                <MapPin size={16} className="text-[#7886C7]" />
+              <MapPin size={16} className="text-[#7886C7]" />
             </div>
             <span className="font-bold tracking-tight text-[#A9B5DF]">123 Main St, Willstone</span>
           </div>
         </div>
 
         {/* Bottom Row: Legal & Reference */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#A9B5DF]/40">
             © {currentYear} Willstone Government
           </p>
