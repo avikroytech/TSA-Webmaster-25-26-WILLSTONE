@@ -25,10 +25,28 @@ const Counter = ({ end, duration = 2000 }: { end: number, duration?: number }) =
 };
 
 export default function Hero() {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    if (typeof window !== "undefined") {
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+      setMousePos({ x, y });
+    }
+  };
+
   return (
-    <section className="relative w-full min-h-[85vh] flex flex-col justify-center overflow-hidden">
+    <section
+      className="relative w-full min-h-[85vh] flex flex-col justify-center overflow-hidden"
+      onMouseMove={handleMouseMove}
+    >
       {/* --- BACKGROUND LAYER --- */}
-      <div className="absolute inset-0 z-0">
+      <div
+        className="absolute inset-[-5%] z-0 transition-transform duration-200 ease-out"
+        style={{
+          transform: `translate(${mousePos.x * -2}%, ${mousePos.y * -2}%)`
+        }}
+      >
         <Image
           src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&q=80&w=2000"
           alt="City Skyline"
@@ -36,7 +54,7 @@ export default function Hero() {
           className="object-cover brightness-[0.35] contrast-[1.1]"
           priority
         />
-        <div 
+        <div
           className="absolute inset-0 opacity-30 mix-blend-overlay"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
@@ -48,24 +66,19 @@ export default function Hero() {
       {/* --- MAIN CONTENT --- */}
       <div className="relative z-10 w-full px-6 lg:px-10">
         <div className="max-w-[1400px] mx-auto">
-          
+
           {/* STACKED TITLE */}
           <div className="w-full mb-8 flex flex-col">
             <h1 className="text-[#FFF2F2] font-display font-black text-5xl md:text-7xl lg:text-9xl leading-[0.9] uppercase tracking-tighter">
               Building Together
             </h1>
             <h2 className="text-[#7886C7] font-display font-black text-3xl md:text-5xl lg:text-7xl leading-[0.9] uppercase tracking-tighter mt-2">
-              <span className="text-[#FFF2F2]">Building the </span> Future of Willstone
+              <span className="text-[#FFF2F2]">the </span> Future of Willstone
             </h2>
           </div>
 
           {/* SUBTEXT & RESOURCE HUB CTA */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8 mt-12 border-t border-[#FFF2F2]/10 pt-8">
-            <p className="text-[#A9B5DF] text-lg md:text-xl max-w-xl font-sans leading-relaxed">
-              Access the tools and community connections needed to drive Willstone forward. 
-              Your central destination for growth and local impact.
-            </p>
-            
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8 mt-12">
             <Link href="/resource-hub" className="group flex items-center gap-4">
               <div className="px-10 py-5 bg-[#FFF2F2] text-[#2D336B] font-black uppercase tracking-widest text-sm transform -skew-x-12 group-hover:bg-[#A9B5DF] transition-all shadow-[8px_8px_0px_#7886C7]">
                 <div className="transform skew-x-12 flex items-center gap-3">
@@ -80,7 +93,7 @@ export default function Hero() {
       {/* --- ENLARGED TICKERS WITH ANIMATION --- */}
       <div className="relative z-10 w-full mt-20 bg-[#2D336B]/90 backdrop-blur-md border-y-4 border-[#7886C7]">
         <div className="flex flex-wrap justify-center md:justify-around py-10 gap-12 px-4">
-          
+
           {/* Ticker 1: Residents */}
           <div className="flex items-center gap-6 min-w-[280px]">
             <div className="p-4 bg-[#7886C7]/20 rounded-xl transform -rotate-3">
@@ -110,7 +123,7 @@ export default function Hero() {
           {/* Ticker 3: Area */}
           <div className="flex items-center gap-6 min-w-[280px]">
             <div className="p-4 bg-[#7886C7]/20 rounded-xl transform -rotate-2">
-               <Compass className="text-[#FFF2F2]" size={44} />
+              <Compass className="text-[#FFF2F2]" size={44} />
             </div>
             <div>
               <div className="text-[#FFF2F2] font-black text-5xl leading-none uppercase">
