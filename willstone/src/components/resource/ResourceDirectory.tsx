@@ -1,9 +1,28 @@
 "use client";
 import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Filter, LayoutGrid, List as ListIcon, FileText, Loader2 } from "lucide-react";
+import { Search, Filter, LayoutGrid, List as ListIcon, FileText, Loader2, Stethoscope, Utensils, Home, BookOpen, Briefcase, Scale, Car, Heart, Shield, Activity, Globe, Folder } from "lucide-react";
 import Image from "next/image";
 import { supabase } from "@/utils/supabase/client";
+
+const getCategoryIcon = (category: string) => {
+  if (!category) return <Folder size={20} />;
+  const cat = category.toLowerCase();
+
+  if (cat.includes("health") || cat.includes("medical")) return <Stethoscope size={20} />;
+  if (cat.includes("food") || cat.includes("dining") || cat.includes("meal")) return <Utensils size={20} />;
+  if (cat.includes("housing") || cat.includes("shelter")) return <Home size={20} />;
+  if (cat.includes("education") || cat.includes("school") || cat.includes("learning")) return <BookOpen size={20} />;
+  if (cat.includes("employment") || cat.includes("job") || cat.includes("career")) return <Briefcase size={20} />;
+  if (cat.includes("legal") || cat.includes("law")) return <Scale size={20} />;
+  if (cat.includes("transport") || cat.includes("transit")) return <Car size={20} />;
+  if (cat.includes("community") || cat.includes("family")) return <Heart size={20} />;
+  if (cat.includes("safety") || cat.includes("police") || cat.includes("fire") || cat.includes("emergency")) return <Shield size={20} />;
+  if (cat.includes("recreation") || cat.includes("park") || cat.includes("sport") || cat.includes("art")) return <Activity size={20} />;
+  if (cat === "all") return <Globe size={20} />;
+
+  return <Folder size={20} />;
+};
 
 export default function ResourceDirectory() {
   const [resources, setResources] = useState<any[]>([]);
@@ -131,12 +150,13 @@ export default function ResourceDirectory() {
                     <button
                       key={cat}
                       onClick={() => setActiveCategory(cat)}
-                      className={`text-left px-4 py-3 text-sm font-black uppercase tracking-widest transition-all border-2 ${activeCategory === cat
+                      className={`text-left px-4 py-3 text-sm font-black uppercase tracking-widest transition-all border-2 flex items-center gap-3 ${activeCategory === cat
                         ? "bg-[#2D336B] text-white border-[#2D336B] translate-x-2"
                         : "bg-transparent text-[#2D336B] border-transparent hover:border-[#2D336B]/20 hover:bg-[#FFF2F2]/50"
                         }`}
                     >
-                      {cat}
+                      {getCategoryIcon(cat)}
+                      <span>{cat}</span>
                     </button>
                   ))}
                 </div>
@@ -206,8 +226,8 @@ export default function ResourceDirectory() {
 
                         {/* Content Section */}
                         <div className="flex-1 p-8 flex flex-col">
-                          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#7886C7] mb-3">
-                            {resource.category}
+                          <span className="text-[#7886C7] mb-3 flex items-center" title={resource.category}>
+                            {getCategoryIcon(resource.category)}
                           </span>
 
                           <h3 className="font-black text-[#2D336B] text-2xl uppercase tracking-tighter mb-3 leading-none group-hover:text-[#7886C7] transition-colors">
