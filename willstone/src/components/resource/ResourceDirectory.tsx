@@ -13,7 +13,7 @@ const getCategoryIcon = (category: string) => {
   if (cat.includes("food") || cat.includes("dining") || cat.includes("meal")) return <Utensils size={20} />;
   if (cat.includes("housing") || cat.includes("shelter")) return <Home size={20} />;
   if (cat.includes("education") || cat.includes("school") || cat.includes("learning")) return <BookOpen size={20} />;
-  if (cat.includes("employment") || cat.includes("job") || cat.includes("career")) return <Briefcase size={20} />;
+  if (cat.includes("employment") || cat.includes("job") || cat.includes("career") || cat.includes("business")) return <Briefcase size={20} />;
   if (cat.includes("legal") || cat.includes("law")) return <Scale size={20} />;
   if (cat.includes("transport") || cat.includes("transit")) return <Car size={20} />;
   if (cat.includes("community") || cat.includes("family")) return <Heart size={20} />;
