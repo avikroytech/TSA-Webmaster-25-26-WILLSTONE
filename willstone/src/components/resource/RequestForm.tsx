@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { supabase } from "@/utils/supabase/client";
-import { Send, MapPin, Tag, Info } from "lucide-react";
+import { Send, MapPin, Tag, Info, AlertTriangle, CheckCircle } from "lucide-react";
 
 export default function RequestForm() {
     const [formData, setFormData] = useState({
@@ -18,13 +18,15 @@ export default function RequestForm() {
     });
 
     const [charCount, setCharCount] = useState(0);
-    const [loading, setLoading] = useState(false);
+    const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+    const [errorMessage, setErrorMessage] = useState("");
+    const [submittedData, setSubmittedData] = useState<typeof formData | null>(null);
     const maxChars = 500;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-        
+
         if (name === "description") {
             setCharCount(value.length);
         }
@@ -32,7 +34,8 @@ export default function RequestForm() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
+        setStatus("submitting");
+        setErrorMessage("");
 
         try {
             const { error } = await supabase
@@ -41,10 +44,13 @@ export default function RequestForm() {
 
             if (error) {
                 console.error("Error inserting record:", error);
-                alert("Failed to submit resource");
+                setStatus("error");
+                setErrorMessage("Failed to submit resource to the database.");
                 return;
             }
 
+            setSubmittedData(formData);
+            setStatus("success");
             setFormData({
                 first_name: "",
                 last_name: "",
@@ -57,11 +63,10 @@ export default function RequestForm() {
                 address: "",
             });
             setCharCount(0);
-            alert("Resource submitted successfully!");
         } catch (err) {
             console.error("Unexpected error:", err);
-        } finally {
-            setLoading(false);
+            setStatus("error");
+            setErrorMessage("An unexpected error occurred while submitting.");
         }
     };
 
@@ -69,15 +74,74 @@ export default function RequestForm() {
     const inputClasses = "w-full px-4 py-3 bg-white border-2 border-[#2D336B]/20 text-[#2D336B] focus:outline-none focus:border-[#7886C7] focus:ring-1 focus:ring-[#7886C7] transition-all placeholder:text-[#A9B5DF]";
     const labelClasses = "flex items-center gap-2 text-[#2D336B] font-black uppercase tracking-widest text-xs mb-2";
 
+    if (status === "success" && submittedData) {
+        return (
+            <div className="bg-[#FFF2F2] p-8 md:p-12 border-4 border-[#2D336B] shadow-[12px_12px_0px_#A9B5DF] animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="border-b-2 border-[#2D336B]/10 pb-6 mb-8 text-center flex flex-col items-center">
+                    <CheckCircle size={48} className="text-[#7886C7] mb-4" />
+                    <h2 className="text-3xl font-display font-black text-[#2D336B] uppercase tracking-tighter">
+                        Resource <span className="text-[#7886C7]">Submitted</span>
+                    </h2>
+                    <p className="text-[#2D336B] text-sm font-medium mt-2 uppercase tracking-widest">Thank you for contributing to Willstone</p>
+                </div>
+
+                <div className="space-y-4 mb-10">
+                    <h3 className="font-black text-[#2D336B] uppercase tracking-widest text-sm border-b-2 border-[#7886C7]/30 pb-2 flex items-center gap-2"><Info size={16} /> Submission Details</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-white/50 border-2 border-[#2D336B]/10">
+                        <div>
+                            <p className="text-[#7886C7] text-[10px] font-bold uppercase tracking-widest mb-1">Submitted By</p>
+                            <p className="text-[#2D336B] font-medium">{submittedData.first_name} {submittedData.last_name}</p>
+                            <p className="text-[#2D336B]/70 text-sm mt-1">{submittedData.email}</p>
+                            <p className="text-[#2D336B]/70 text-sm">{submittedData.phone}</p>
+                        </div>
+                        <div>
+                            <p className="text-[#7886C7] text-[10px] font-bold uppercase tracking-widest mb-1">Resource Info</p>
+                            <p className="text-[#2D336B] font-black text-lg">{submittedData.title}</p>
+                            <p className="text-[#2D336B] capitalize text-sm font-bold my-1">
+                                {submittedData.category === 'other' ? submittedData.custom_category : submittedData.category}
+                            </p>
+                            <p className="text-[#2D336B]/80 text-sm flex items-start gap-1 mt-2">
+                                <MapPin size={14} className="mt-0.5 shrink-0" /> {submittedData.address}
+                            </p>
+                        </div>
+                        <div className="md:col-span-2 pt-4 border-t-2 border-[#2D336B]/10">
+                            <p className="text-[#7886C7] text-[10px] font-bold uppercase tracking-widest mb-2">Description</p>
+                            <p className="text-[#2D336B] font-medium leading-relaxed italic border-l-4 border-[#7886C7] pl-4">{submittedData.description}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button
+                    onClick={() => { setStatus("idle"); setSubmittedData(null); }}
+                    className="group w-full relative overflow-hidden"
+                >
+                    <div className="bg-[#2D336B] text-[#FFF2F2] font-black uppercase tracking-[0.2em] text-sm py-4 transform -skew-x-12 group-hover:bg-[#7886C7] transition-all flex items-center justify-center gap-3 shadow-[8px_8px_0px_#A9B5DF] active:translate-y-1 active:shadow-none">
+                        <div className="transform skew-x-12">Submit Another Resource</div>
+                    </div>
+                </button>
+            </div>
+        );
+    }
+
     return (
         <form onSubmit={handleSubmit} className="space-y-8 bg-[#FFF2F2] p-8 md:p-12 border-4 border-[#2D336B] shadow-[12px_12px_0px_#A9B5DF]">
-            
+
             <div className="border-b-2 border-[#2D336B]/10 pb-6 mb-8">
                 <h2 className="text-3xl font-display font-black text-[#2D336B] uppercase tracking-tighter">
                     Submit a <span className="text-[#7886C7]">Resource</span>
                 </h2>
                 <p className="text-[#7886C7] text-sm font-medium mt-1 uppercase tracking-widest">Suggest a program/service to add to the community</p>
             </div>
+
+            {status === "error" && (
+                <div className="bg-red-50 border-2 border-red-500 p-4 mb-8 flex items-start gap-3 animate-in fade-in zoom-in-95 duration-300 shadow-[4px_4px_0px_rgba(239,68,68,0.2)]">
+                    <AlertTriangle className="text-red-500 shrink-0 mt-0.5" size={20} />
+                    <div>
+                        <p className="font-black uppercase tracking-widest text-red-600 text-sm mb-1">Submission Error</p>
+                        <p className="text-red-800 font-medium text-sm">{errorMessage}</p>
+                    </div>
+                </div>
+            )}
 
             {/* Name Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -137,7 +201,7 @@ export default function RequestForm() {
 
             {/* Resource Title */}
             <div>
-                <label className={labelClasses}><Info size={14}/> Resource Title</label>
+                <label className={labelClasses}><Info size={14} /> Resource Title</label>
                 <input
                     type="text"
                     name="title"
@@ -152,7 +216,7 @@ export default function RequestForm() {
             {/* Category */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                 <div>
-                    <label className={labelClasses}><Tag size={14}/> Category</label>
+                    <label className={labelClasses}><Tag size={14} /> Category</label>
                     <select
                         name="category"
                         value={formData.category}
@@ -167,7 +231,7 @@ export default function RequestForm() {
                         <option value="other">Other</option>
                     </select>
                 </div>
-                
+
                 {formData.category === "other" && (
                     <div className="animate-in fade-in slide-in-from-top-2 duration-300">
                         <label className={labelClasses}>Custom Category</label>
@@ -186,7 +250,7 @@ export default function RequestForm() {
 
             {/* Address */}
             <div>
-                <label className={labelClasses}><MapPin size={14}/> Location / Address</label>
+                <label className={labelClasses}><MapPin size={14} /> Location / Address</label>
                 <input
                     type="text"
                     name="address"
@@ -218,12 +282,12 @@ export default function RequestForm() {
             {/* Submit Button */}
             <button
                 type="submit"
-                disabled={loading}
+                disabled={status === "submitting"}
                 className="group w-full relative overflow-hidden"
             >
                 <div className="bg-[#2D336B] text-[#FFF2F2] font-black uppercase tracking-[0.2em] text-sm py-4 transform -skew-x-12 group-hover:bg-[#7886C7] transition-all flex items-center justify-center gap-3 shadow-[8px_8px_0px_#A9B5DF] active:translate-y-1 active:shadow-none">
                     <div className="transform skew-x-12 flex items-center gap-2">
-                        {loading ? "Processing..." : (
+                        {status === "submitting" ? "Processing..." : (
                             <>
                                 Submit Entry <Send size={16} className="group-hover:translate-x-1 transition-transform" />
                             </>
