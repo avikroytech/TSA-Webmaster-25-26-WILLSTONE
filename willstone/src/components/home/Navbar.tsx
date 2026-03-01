@@ -24,10 +24,9 @@ export default function Navbar() {
   ];
 
   return (
-    <nav 
-      className={`sticky top-0 z-[100] w-full transition-all duration-300 ${
-        isScrolled ? "py-2 shadow-[0_10px_40px_rgba(0,0,0,0.5)]" : "py-5"
-      }`}
+    <nav
+      className={`sticky top-0 z-[100] w-full transition-all duration-300 ${isScrolled ? "py-2 shadow-[0_10px_40px_rgba(0,0,0,0.5)]" : "py-5"
+        }`}
       style={{
         backgroundColor: "#2D336B",
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.1'/%3E%3C/svg%3E")`,
@@ -40,14 +39,14 @@ export default function Navbar() {
 
       <div className="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
         <div className="flex items-center justify-between h-20">
-          
+
           {/* --- LOGO (Left Aligned) --- */}
           <Link href="/" className="flex items-center group flex-shrink-0">
             <div className="relative h-16 px-8 bg-[#FFF2F2] rounded-lg transform -skew-x-12 flex items-center justify-center shadow-[6px_6px_0px_#7886C7] transition-all group-hover:translate-y-1 group-hover:shadow-none">
               <div className="transform skew-x-12 flex items-center gap-4">
                 <div className="relative w-10 h-10">
                   <Image
-                    src="/logo.png" 
+                    src="/logo.png"
                     alt="Logo"
                     fill
                     className="object-contain"
@@ -62,15 +61,6 @@ export default function Navbar() {
 
           {/* --- THE HIGHWAY (Links Right Aligned) --- */}
           <div className="hidden md:flex items-center flex-grow justify-end relative h-full ml-12">
-            
-            {/* SEAMLESS DASHED LINE (Behind Links) */}
-            <div className="absolute inset-0 flex items-center pointer-events-none opacity-20">
-              <div className="w-full h-1" style={{
-                backgroundImage: `repeating-linear-gradient(90deg, #A9B5DF 0px, #A9B5DF 30px, transparent 30px, transparent 70px)`,
-                transform: "skewX(-20deg)"
-              }} />
-            </div>
-
             <div className="flex items-center gap-3 relative z-10">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
@@ -79,16 +69,16 @@ export default function Navbar() {
                     <div className={`
                       relative px-7 py-3 transition-all duration-300 transform -skew-x-[20deg]
                       border-b-4 
-                      ${isActive 
-                        ? "bg-[#FFF2F2] border-[#A9B5DF] shadow-[0_10px_20px_rgba(0,0,0,0.3)] scale-105" 
+                      ${isActive
+                        ? "bg-[#FFF2F2] border-[#A9B5DF] shadow-[0_10px_20px_rgba(0,0,0,0.3)] scale-105"
                         : "bg-[#7886C7] border-[#2D336B] hover:bg-[#FFF2F2] hover:border-[#A9B5DF] hover:shadow-[0_10px_20px_rgba(0,0,0,0.3)]"
                       }
                     `}>
                       <div className="transform skew-x-[20deg] whitespace-nowrap">
                         <span className={`
                           font-black text-[11px] uppercase tracking-[0.2em] transition-colors duration-300
-                          ${isActive 
-                            ? "text-[#2D336B]" 
+                          ${isActive
+                            ? "text-[#2D336B]"
                             : "text-[#FFF2F2] group-hover:text-[#2D336B]"
                           }
                         `}>
@@ -117,9 +107,8 @@ export default function Navbar() {
       </div>
 
       {/* MOBILE MENU */}
-      <div className={`md:hidden absolute w-full transition-all duration-500 ease-in-out ${
-        mobileMenuOpen ? "max-h-screen opacity-100 border-t-4 border-[#7886C7]" : "max-h-0 opacity-0 overflow-hidden"
-      }`} style={{ backgroundColor: "#2D336B" }}>
+      <div className={`md:hidden absolute w-full transition-all duration-500 ease-in-out ${mobileMenuOpen ? "max-h-screen opacity-100 border-t-4 border-[#7886C7]" : "max-h-0 opacity-0 overflow-hidden"
+        }`} style={{ backgroundColor: "#2D336B" }}>
         <div className="px-6 py-10 space-y-4">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
@@ -128,9 +117,8 @@ export default function Navbar() {
                 key={link.name}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`block px-8 py-5 rounded-lg font-black uppercase tracking-widest text-center transform -skew-x-6 transition-all ${
-                  isActive ? "bg-[#FFF2F2] text-[#2D336B]" : "bg-[#7886C7] text-[#FFF2F2]"
-                }`}
+                className={`block px-8 py-5 rounded-lg font-black uppercase tracking-widest text-center transform -skew-x-6 transition-all ${isActive ? "bg-[#FFF2F2] text-[#2D336B]" : "bg-[#7886C7] text-[#FFF2F2]"
+                  }`}
               >
                 <div className="transform skew-x-6">{link.name}</div>
               </Link>
