@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { supabase } from "@/utils/supabase/client";
+import { sendConfirmationEmail } from "@/utils/sendEmail";
 import { Send, MapPin, Tag, Info, AlertTriangle, CheckCircle } from "lucide-react";
 
 export default function RequestForm() {
@@ -47,6 +48,17 @@ export default function RequestForm() {
                 setStatus("error");
                 setErrorMessage("Failed to submit resource to the database.");
                 return;
+            }
+
+            // 2. Trigger Server-Side Email
+            const emailResult = await sendConfirmationEmail(
+                formData.email,
+                formData.first_name,
+                formData.title
+            );
+
+            if (!emailResult.success) {
+                console.warn("Database succeeded, but email failed:", emailResult.error);
             }
 
             setSubmittedData(formData);
