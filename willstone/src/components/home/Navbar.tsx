@@ -225,23 +225,23 @@ function NavItem({ link, isActive, onNavigate }: NavItemProps) {
       role="menuitem"
       onClick={onNavigate}
       className={`
-        group flex items-center gap-3 px-4 py-3 rounded-xl
+        group flex items-center gap-3 px-4 py-3 rounded-xl border-2
         transition-all duration-200
         focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#C59F82]
         ${isActive
-          ? "bg-[#264D52] text-[#f5f0eb] shadow-md"
-          : "text-[#1c2b2b] hover:bg-[#70AC90]/20"
+          ? "bg-[#264D52] text-[#f5f0eb] border-[#264D52] shadow-md"
+          : "bg-transparent border-transparent text-[#1c2b2b] hover:bg-[#70AC90]/15 hover:border-[#264D52] hover:scale-[1.04] hover:shadow-sm"
         }
       `}
     >
       <Icon
-        size={20}
-        className={`shrink-0 transition-colors duration-200 ${isActive
+        size={22}
+        className={`shrink-0 transition-all duration-200 group-hover:scale-110 ${isActive
           ? "text-[#C59F82]"
           : "text-[#496A49] group-hover:text-[#264D52]"
           }`}
       />
-      <span className={`text-sm font-semibold tracking-wide ${isActive ? "text-[#f5f0eb]" : ""
+      <span className={`font-semibold tracking-wide transition-all duration-200 ${isActive ? "text-[15px] text-[#f5f0eb]" : "text-sm group-hover:text-[15px]"
         }`}>
         {link.name}
       </span>
