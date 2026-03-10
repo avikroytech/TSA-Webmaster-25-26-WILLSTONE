@@ -1,31 +1,15 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight, Home, Briefcase, HeartHandshake } from "lucide-react";
-
-// Helper component for the counting animation
-const Counter = ({ end, duration = 2000 }: { end: number, duration?: number }) => {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    let startTimestamp: number | null = null;
-    const step = (timestamp: number) => {
-      if (!startTimestamp) startTimestamp = timestamp;
-      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-      setCount(Math.floor(progress * end));
-      if (progress < 1) {
-        window.requestAnimationFrame(step);
-      }
-    };
-    window.requestAnimationFrame(step);
-  }, [end, duration]);
-
-  return <span>{count.toLocaleString()}</span>;
-};
+import { Sparkles, ArrowDown } from "lucide-react";
 
 export default function Hero() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     if (typeof window !== "undefined") {
@@ -37,7 +21,7 @@ export default function Hero() {
 
   return (
     <section
-      className="relative w-full min-h-[85vh] flex flex-col justify-center overflow-hidden"
+      className="relative w-full h-screen flex flex-col items-center justify-center overflow-hidden"
       onMouseMove={handleMouseMove}
     >
       {/* --- BACKGROUND LAYER --- */}
@@ -64,71 +48,37 @@ export default function Hero() {
       </div>
 
       {/* --- MAIN CONTENT --- */}
-      <div className="relative z-10 w-full px-6 lg:px-10">
-        <div className="max-w-[1400px] mx-auto">
+      <div className="relative z-10 w-full px-6 flex flex-col items-center justify-center mt-12">
+        <h1
+          className={`text-4xl md:text-5xl lg:text-7xl font-display font-medium text-[#f5f0eb] text-center transition-all duration-1000 ease-out transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+            }`}
+        >
+          What do you want to do?
+        </h1>
 
-          {/* STACKED TITLE */}
-          <div className="w-full mb-8 flex flex-col">
-            <h1 className="text-[#f5f0eb] font-display font-black text-5xl md:text-7xl lg:text-9xl leading-[0.9] uppercase tracking-tighter">
-              Building Together
-            </h1>
-            <h2 className="text-[#496A49] font-display font-black text-3xl md:text-5xl lg:text-7xl leading-[0.9] uppercase tracking-tighter mt-2">
-              <span className="text-[#f5f0eb]">the </span> Future of Willstone
-            </h2>
-          </div>
-
-          {/* SUBTEXT & RESOURCE HUB CTA */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8 mt-12">
-            <Link href="/resource-hub" className="group flex items-center gap-4">
-              <div className="px-10 py-5 bg-[#f5f0eb] text-[#264D52] font-black uppercase tracking-widest text-sm transform -skew-x-12 group-hover:bg-[#C59F82] transition-all shadow-[8px_8px_0px_#496A49]">
-                <div className="transform skew-x-12 flex items-center gap-3">
-                  Explore Resource Hub <ArrowRight size={20} />
-                </div>
-              </div>
-            </Link>
-          </div>
+        <div
+          className={`mt-10 relative w-full max-w-lg transition-opacity duration-1000 delay-500 ${isLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
+        >
+          <input
+            type="text"
+            placeholder="ex. pay my taxes"
+            className="w-full pl-6 pr-14 py-4 rounded-full bg-[#f5f0eb] border-2 border-[#496A49] text-[#1c2b2b] placeholder-[#1c2b2b]/60 focus:outline-none focus:ring-4 focus:ring-[#70AC90]/50 text-lg transition-all"
+          />
+          <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-[#264D52] hover:bg-[#70AC90] active:bg-[#496A49] text-[#f5f0eb] rounded-full transition-colors shadow-sm cursor-pointer group">
+            <Sparkles size={20} className="group-hover:rotate-12 transition-transform" />
+          </button>
         </div>
       </div>
 
-      {/* --- ENLARGED TICKERS WITH ANIMATION --- */}
-      <div className="relative z-10 w-full mt-20 bg-[#264D52]/90 backdrop-blur-md border-y-4 border-[#496A49]">
-        <div className="flex flex-wrap justify-center md:justify-around py-10 gap-12 px-4">
-          <div className="flex items-center gap-6 min-w-[280px]">
-            <div className="p-4 bg-[#496A49]/20 rounded-xl transform">
-              <Home className="text-[#f5f0eb]" size={44} />
-            </div>
-            <div>
-              <div className="text-[#f5f0eb] font-black text-5xl leading-none uppercase">
-                <Counter end={45} />k
-              </div>
-              <div className="text-[#C59F82] uppercase text-[10px] tracking-[0.4em] font-bold mt-2">Residents</div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-6 min-w-[280px]">
-            <div className="p-4 bg-[#496A49]/20 rounded-xl transform">
-              <Briefcase className="text-[#f5f0eb]" size={44} />
-            </div>
-            <div>
-              <div className="text-[#f5f0eb] font-black text-5xl leading-none uppercase">
-                <Counter end={13} />
-              </div>
-              <div className="text-[#C59F82] uppercase text-[10px] tracking-[0.4em] font-bold mt-2">Active Projects</div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-6 min-w-[280px]">
-            <div className="p-4 bg-[#496A49]/20 rounded-xl transform">
-              <HeartHandshake className="text-[#f5f0eb]" size={44} />
-            </div>
-            <div>
-              <div className="text-[#f5f0eb] font-black text-5xl leading-none uppercase">
-                <Counter end={35} />
-              </div>
-              <div className="text-[#C59F82] uppercase text-[10px] tracking-[0.4em] font-bold mt-2">Non-Profits</div>
-            </div>
-          </div>
-
+      {/* --- EXPLORE BOTTOM --- */}
+      <div
+        className={`absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center text-[#f5f0eb] transition-opacity duration-1000 delay-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+      >
+        <div className="animate-bounce flex flex-col items-center cursor-pointer hover:text-white/80 transition-colors">
+          <span className="text-sm font-semibold tracking-[0.2em] uppercase mb-2">Explore</span>
+          <ArrowDown size={24} />
         </div>
       </div>
     </section>
