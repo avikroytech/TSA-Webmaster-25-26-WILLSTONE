@@ -33,7 +33,7 @@ export default function Request() {
     }, []);
 
     return (
-        <div className="min-h-screen flex flex-col relative overflow-hidden bg-[#FFF2F2]">
+        <div className="min-h-screen flex flex-col relative overflow-hidden bg-[#f5f0eb]">
             <Navbar />
 
             {/* Animated Brick Background */}
@@ -67,7 +67,7 @@ export default function Request() {
                         flex-shrink: 0;
                         width: 80px;
                         height: 35px;
-                        background-color: #A9B5DF;
+                        background-color: #C59F82;
                         border-radius: 4px;
                         opacity: 0.15; /* Subtle by default */
                         transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -75,7 +75,7 @@ export default function Request() {
                     }
                     .brick:hover {
                         transform: scale(1.15) translateY(-2px);
-                        background-color: #7886C7; /* Brand medium */
+                        background-color: #496A49; /* Brand medium */
                         opacity: 0.5;
                         box-shadow: 0 4px 12px rgba(45, 51, 107, 0.15);
                         z-index: 10;
@@ -103,7 +103,7 @@ export default function Request() {
             <main className="flex-1 p-8 py-16 relative z-10 flex flex-col justify-center pointer-events-none">
                 <div className="max-w-2xl w-full mx-auto relative group pointer-events-auto">
                     {/* Soft glow behind form to ensure readability */}
-                    <div className="absolute -inset-6 bg-[#FFF2F2] rounded-3xl blur-2xl opacity-80 -z-10 pointer-events-none"></div>
+                    <div className="absolute -inset-6 bg-[#f5f0eb] rounded-3xl blur-2xl opacity-80 -z-10 pointer-events-none"></div>
                     <RequestForm />
                 </div>
             </main>

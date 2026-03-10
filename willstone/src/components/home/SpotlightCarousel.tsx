@@ -24,7 +24,7 @@ const resources: Resource[] = [
     name: "Public Library",
     description: "Access to thousands of books, digital resources, study spaces, and educational programs for lifelong learning.",
     image: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&h=600&fit=crop&q=80",
-    color: "#A9B5DF", 
+    color: "#C59F82", 
   },
   {
     id: 3,
@@ -71,7 +71,7 @@ export default function SpotlightCarousel() {
   };
 
   return (
-    <section className="w-full min-h-screen py-24 bg-[#0A0C1A] overflow-hidden relative flex flex-col justify-center">
+    <section className="w-full min-h-screen py-24 bg-[#0f1f1f] overflow-hidden relative flex flex-col justify-center">
       {/* Background Texture */}
       <div className="absolute inset-0 opacity-[0.15] bg-[url('https://www.transparenttextures.com/patterns/asphalt-dark.png')] pointer-events-none" />
 
@@ -79,9 +79,9 @@ export default function SpotlightCarousel() {
         
         {/* Streetlight Fixture */}
         <div className="absolute -top-24 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center">
-            <div className="w-2 h-32 bg-gradient-to-b from-[#1a1c2e] to-[#2D336B]" />
-            <div className="w-24 h-6 bg-[#2D336B] rounded-t-3xl border-b border-white/10" />
-            <div className="w-32 h-10 bg-[#2D336B] rounded-b-3xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] relative flex items-center justify-center">
+            <div className="w-2 h-32 bg-gradient-to-b from-[#1a1c2e] to-[#264D52]" />
+            <div className="w-24 h-6 bg-[#264D52] rounded-t-3xl border-b border-white/10" />
+            <div className="w-32 h-10 bg-[#264D52] rounded-b-3xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] relative flex items-center justify-center">
                 <motion.div 
                     animate={{ 
                         backgroundColor: isFlickering ? "#111" : currentResource.color,
@@ -138,8 +138,8 @@ export default function SpotlightCarousel() {
                   style={{ background: `radial-gradient(circle, ${currentResource.color} 0%, transparent 70%)` }}
                 />
                 
-                <div className="absolute inset-0 bg-[#2D336B] transform translate-x-4 translate-y-4 -z-10" />
-                <div className="relative aspect-[4/3] border-[3px] border-[#2D336B] overflow-hidden bg-slate-900 shadow-2xl">
+                <div className="absolute inset-0 bg-[#264D52] transform translate-x-4 translate-y-4 -z-10" />
+                <div className="relative aspect-[4/3] border-[3px] border-[#264D52] overflow-hidden bg-slate-900 shadow-2xl">
                   <Image
                     src={currentResource.image}
                     alt={currentResource.name}
@@ -158,7 +158,7 @@ export default function SpotlightCarousel() {
                     </h2>
                 </div>
                 
-                <p className="text-[#A9B5DF] text-lg md:text-xl font-medium max-w-lg">
+                <p className="text-[#C59F82] text-lg md:text-xl font-medium max-w-lg">
                   {currentResource.description}
                 </p>
               </div>
@@ -173,7 +173,7 @@ export default function SpotlightCarousel() {
                     <button
                         key={i}
                         onClick={() => triggerTransition(i)}
-                        className={`h-1.5 transition-all duration-500 rounded-full ${i === currentIndex ? 'w-20 bg-white shadow-[0_0_15px_#fff]' : 'w-8 bg-[#2D336B]'}`}
+                        className={`h-1.5 transition-all duration-500 rounded-full ${i === currentIndex ? 'w-20 bg-white shadow-[0_0_15px_#fff]' : 'w-8 bg-[#264D52]'}`}
                     />
                 ))}
              </div>
@@ -182,13 +182,13 @@ export default function SpotlightCarousel() {
              <div className="flex gap-4">
                 <button 
                     onClick={() => navigate(-1)}
-                    className="px-6 py-3 border-2 border-[#2D336B] text-white flex items-center justify-center hover:bg-white hover:text-[#2D336B] transition-all font-bold tracking-widest text-sm"
+                    className="px-6 py-3 border-2 border-[#264D52] text-white flex items-center justify-center hover:bg-white hover:text-[#264D52] transition-all font-bold tracking-widest text-sm"
                 >
                     PREV
                 </button>
                 <button 
                     onClick={() => navigate(1)}
-                    className="px-6 py-3 bg-[#2D336B] border-2 border-[#2D336B] text-white flex items-center justify-center hover:bg-[#7886C7] transition-all font-bold tracking-widest text-sm"
+                    className="px-6 py-3 bg-[#264D52] border-2 border-[#264D52] text-white flex items-center justify-center hover:bg-[#496A49] transition-all font-bold tracking-widest text-sm"
                 >
                     NEXT
                 </button>

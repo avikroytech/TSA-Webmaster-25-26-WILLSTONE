@@ -106,7 +106,7 @@ const SUBWAY_ROUTES: Route[] = [
     },
     {
         name: "Crosstown Line",
-        color: "#2D336B",
+        color: "#264D52",
         stations: [
             { name: "Westbrook", x: 170, y: 590 },
             { name: "Transit Plaza", x: 250, y: 570 },
@@ -167,7 +167,7 @@ const BUS_ROUTES: Route[] = [
     },
     {
         name: "Ironclad Route",
-        color: "#2D336B",
+        color: "#264D52",
         stations: [
             { name: "Westgate Pavillion", x: 270, y: 440 },
             { name: "Driftwood's Pass", x: 340, y: 530 },
@@ -444,8 +444,8 @@ export default function InteractiveMap() {
     return (
         <div className="relative w-full flex" style={{ height: "100%", minHeight: 0 }}>
             {/* ── Legend Panel (left side) ─────────────────────────── */}
-            <div className="w-56 shrink-0 bg-[#2D336B]/90 backdrop-blur-sm text-white p-5 flex flex-col gap-2 z-10 border-r-4 border-[#7886C7]">
-                <h2 className="text-lg font-black uppercase tracking-[0.15em] mb-3 border-b-2 border-[#7886C7] pb-2">
+            <div className="w-56 shrink-0 bg-[#264D52]/90 backdrop-blur-sm text-white p-5 flex flex-col gap-2 z-10 border-r-4 border-[#496A49]">
+                <h2 className="text-lg font-black uppercase tracking-[0.15em] mb-3 border-b-2 border-[#496A49] pb-2">
                     {mode === "subway" ? "Subway Lines" : "Bus Routes"}
                 </h2>
                 {routes.map((route) => {
@@ -475,14 +475,14 @@ export default function InteractiveMap() {
             </div>
 
             {/* ── Map Area ─────────────────────────────────────────── */}
-            <div className="flex-1 relative bg-[#A9B5DF] overflow-hidden map-container">
+            <div className="flex-1 relative bg-[#C59F82] overflow-hidden map-container">
                 {/* Toggle buttons */}
                 <div className="absolute top-4 left-4 z-20 flex gap-2">
                     <button
                         onClick={() => handleModeChange("subway")}
                         className={`px-5 py-2.5 text-sm font-black uppercase tracking-[0.15em] transition-all duration-200 border-[3px] cursor-pointer ${mode === "subway"
-                            ? "bg-[#2D336B] text-white border-[#2D336B] shadow-lg"
-                            : "bg-white/80 text-[#2D336B] border-[#7886C7] hover:bg-white"
+                            ? "bg-[#264D52] text-white border-[#264D52] shadow-lg"
+                            : "bg-white/80 text-[#264D52] border-[#496A49] hover:bg-white"
                             }`}
                     >
                         Subway
@@ -490,8 +490,8 @@ export default function InteractiveMap() {
                     <button
                         onClick={() => handleModeChange("bus")}
                         className={`px-5 py-2.5 text-sm font-black uppercase tracking-[0.15em] transition-all duration-200 border-[3px] cursor-pointer ${mode === "bus"
-                            ? "bg-[#2D336B] text-white border-[#2D336B] shadow-lg"
-                            : "bg-white/80 text-[#2D336B] border-[#7886C7] hover:bg-white"
+                            ? "bg-[#264D52] text-white border-[#264D52] shadow-lg"
+                            : "bg-white/80 text-[#264D52] border-[#496A49] hover:bg-white"
                             }`}
                     >
                         Bus
@@ -500,7 +500,7 @@ export default function InteractiveMap() {
 
                 {/* Title */}
                 <div className="absolute top-4 right-6 z-20">
-                    <h1 className="text-2xl md:text-3xl font-black text-[#2D336B] uppercase tracking-[0.1em] drop-shadow-sm">
+                    <h1 className="text-2xl md:text-3xl font-black text-[#264D52] uppercase tracking-[0.1em] drop-shadow-sm">
                         {mode === "subway"
                             ? "Willstone Subway Map"
                             : "Willstone Bus Lines Map"}
@@ -518,7 +518,7 @@ export default function InteractiveMap() {
                     <path
                         d={CITY_OUTLINE}
                         fill="#FAFAD2"
-                        stroke="#2D336B"
+                        stroke="#264D52"
                         strokeWidth="3"
                         strokeLinejoin="round"
                     />
@@ -566,7 +566,7 @@ export default function InteractiveMap() {
                                     cy={station.y}
                                     r={isHovered ? 14 : 0}
                                     fill="none"
-                                    stroke="#7886C7"
+                                    stroke="#496A49"
                                     strokeWidth="2"
                                     opacity={isHovered ? 0.5 : 0}
                                     style={{ transition: "r 0.2s, opacity 0.2s" }}
@@ -577,7 +577,7 @@ export default function InteractiveMap() {
                                     cy={station.y}
                                     r={isHovered ? 10 : 6}
                                     fill={dimmed ? "#999" : "white"}
-                                    stroke={dimmed ? "#555" : "#2D336B"}
+                                    stroke={dimmed ? "#555" : "#264D52"}
                                     strokeWidth="2.5"
                                     style={{ transition: "r 0.2s ease-out" }}
                                 />
@@ -629,21 +629,21 @@ export default function InteractiveMap() {
 
                     {/* Compass rose (bottom-left corner) */}
                     <g transform="translate(60, 890)">
-                        <circle cx="0" cy="0" r="45" fill="rgba(255,255,255,0.6)" stroke="#2D336B" strokeWidth="3" />
+                        <circle cx="0" cy="0" r="45" fill="rgba(255,255,255,0.6)" stroke="#264D52" strokeWidth="3" />
                         {/* Cross lines */}
-                        <line x1="0" y1="-38" x2="0" y2="38" stroke="#2D336B" strokeWidth="2.5" />
-                        <line x1="-38" y1="0" x2="38" y2="0" stroke="#2D336B" strokeWidth="2.5" />
+                        <line x1="0" y1="-38" x2="0" y2="38" stroke="#264D52" strokeWidth="2.5" />
+                        <line x1="-38" y1="0" x2="38" y2="0" stroke="#264D52" strokeWidth="2.5" />
                         {/* Diagonal lines */}
-                        <line x1="-22" y1="-22" x2="22" y2="22" stroke="#2D336B" strokeWidth="1" opacity="0.4" />
-                        <line x1="22" y1="-22" x2="-22" y2="22" stroke="#2D336B" strokeWidth="1" opacity="0.4" />
+                        <line x1="-22" y1="-22" x2="22" y2="22" stroke="#264D52" strokeWidth="1" opacity="0.4" />
+                        <line x1="22" y1="-22" x2="-22" y2="22" stroke="#264D52" strokeWidth="1" opacity="0.4" />
                         {/* North arrow */}
                         <polygon points="0,-36 -6,-20 6,-20" fill="#E53935" />
-                        <polygon points="0,36 -6,20 6,20" fill="#2D336B" opacity="0.5" />
+                        <polygon points="0,36 -6,20 6,20" fill="#264D52" opacity="0.5" />
                         {/* Labels */}
-                        <text x="0" y="-52" textAnchor="middle" fontSize="22" fontWeight="900" fill="#2D336B">N</text>
-                        <text x="0" y="68" textAnchor="middle" fontSize="22" fontWeight="900" fill="#2D336B">S</text>
-                        <text x="58" y="8" textAnchor="middle" fontSize="22" fontWeight="900" fill="#2D336B">E</text>
-                        <text x="-58" y="8" textAnchor="middle" fontSize="22" fontWeight="900" fill="#2D336B">W</text>
+                        <text x="0" y="-52" textAnchor="middle" fontSize="22" fontWeight="900" fill="#264D52">N</text>
+                        <text x="0" y="68" textAnchor="middle" fontSize="22" fontWeight="900" fill="#264D52">S</text>
+                        <text x="58" y="8" textAnchor="middle" fontSize="22" fontWeight="900" fill="#264D52">E</text>
+                        <text x="-58" y="8" textAnchor="middle" fontSize="22" fontWeight="900" fill="#264D52">W</text>
                     </g>
                 </svg>
 
@@ -658,12 +658,12 @@ export default function InteractiveMap() {
                         }}
                     >
                         <div
-                            className="bg-white/95 backdrop-blur-sm border-2 border-[#2D336B] rounded-lg shadow-xl px-4 py-3 min-w-[180px]"
+                            className="bg-white/95 backdrop-blur-sm border-2 border-[#264D52] rounded-lg shadow-xl px-4 py-3 min-w-[180px]"
                             style={{
                                 animation: "fadeUp 0.2s ease-out forwards",
                             }}
                         >
-                            <h3 className="text-sm font-black text-[#2D336B] uppercase tracking-wider mb-2">
+                            <h3 className="text-sm font-black text-[#264D52] uppercase tracking-wider mb-2">
                                 {hoveredData.name}
                             </h3>
                             <div className="flex flex-col gap-1">
@@ -673,14 +673,14 @@ export default function InteractiveMap() {
                                             className="w-3 h-3 rounded-full shrink-0"
                                             style={{ backgroundColor: r.color }}
                                         />
-                                        <span className="text-xs font-semibold text-[#2D336B]/80">
+                                        <span className="text-xs font-semibold text-[#264D52]/80">
                                             {r.name}
                                         </span>
                                     </div>
                                 ))}
                             </div>
                             {/* Arrow */}
-                            <div className="absolute left-1/2 -translate-x-1/2 -bottom-[7px] w-3 h-3 bg-white/95 border-r-2 border-b-2 border-[#2D336B] rotate-45" />
+                            <div className="absolute left-1/2 -translate-x-1/2 -bottom-[7px] w-3 h-3 bg-white/95 border-r-2 border-b-2 border-[#264D52] rotate-45" />
                         </div>
                     </div>
                 )}

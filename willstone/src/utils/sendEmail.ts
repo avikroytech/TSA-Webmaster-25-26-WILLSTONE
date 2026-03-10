@@ -17,7 +17,7 @@ export async function sendConfirmationEmail(userEmail: string, userName: string,
             to: userEmail,
             subject: 'Resource Submission Received - Willstone',
             html: `
-                <div style="font-family: sans-serif; color: #2D336B;">
+                <div style="font-family: sans-serif; color: #264D52;">
                     <h2>Thank you, ${userName}!</h2>
                     <p>We have successfully received your submission for the resource: <strong>${resourceTitle}</strong>.</p>
                     <p>Our team will review your suggestion to add it to the Willstone community hub.</p>

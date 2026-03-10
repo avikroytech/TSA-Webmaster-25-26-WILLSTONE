@@ -76,7 +76,7 @@ export default function ResourceDirectory() {
   }, [search, activeCategory, resources, sortBy]);
 
   return (
-    <section className="w-full py-24 bg-[#FFF2F2] min-h-screen relative overflow-hidden">
+    <section className="w-full py-24 bg-[#f5f0eb] min-h-screen relative overflow-hidden">
       <div className="absolute inset-0 opacity-[0.2] bg-[url('https://www.transparenttextures.com/patterns/asphalt-light.png')] pointer-events-none" />
 
       <div className="container mx-auto px-6 relative z-10">
@@ -89,22 +89,22 @@ export default function ResourceDirectory() {
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter uppercase text-[#2D336B] leading-none whitespace-nowrap text-center lg:flex-none"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter uppercase text-[#264D52] leading-none whitespace-nowrap text-center lg:flex-none"
           >
             Resource Directory
           </motion.h2>
 
           <div className="flex w-full lg:flex-1 justify-center lg:justify-end">
-            <div className="flex bg-white p-1 border-2 border-[#2D336B] shadow-[4px_4px_0px_#2D336B]">
+            <div className="flex bg-white p-1 border-2 border-[#264D52] shadow-[4px_4px_0px_#264D52]">
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-2 transition-all ${viewMode === "grid" ? "bg-[#2D336B] text-white" : "text-[#2D336B] hover:bg-[#2D336B]/10"}`}
+                className={`p-2 transition-all ${viewMode === "grid" ? "bg-[#264D52] text-white" : "text-[#264D52] hover:bg-[#264D52]/10"}`}
               >
                 <LayoutGrid size={20} />
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`p-2 transition-all ${viewMode === "list" ? "bg-[#2D336B] text-white" : "text-[#2D336B] hover:bg-[#2D336B]/10"}`}
+                className={`p-2 transition-all ${viewMode === "list" ? "bg-[#264D52] text-white" : "text-[#264D52] hover:bg-[#264D52]/10"}`}
               >
                 <ListIcon size={20} />
               </button>
@@ -119,20 +119,20 @@ export default function ResourceDirectory() {
             <div className="sticky top-8 flex flex-col gap-8">
 
               {/* Sort By Filter */}
-              <div className="bg-white p-6 border-4 border-[#2D336B] shadow-[8px_8px_0px_#2D336B]">
-                <h3 className="font-black text-[#2D336B] text-xl uppercase tracking-tighter mb-4">
+              <div className="bg-white p-6 border-4 border-[#264D52] shadow-[8px_8px_0px_#264D52]">
+                <h3 className="font-black text-[#264D52] text-xl uppercase tracking-tighter mb-4">
                   Sort By
                 </h3>
                 <div className="relative">
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as "asc" | "desc")}
-                    className="w-full appearance-none bg-[#FFF2F2]/50 border-2 border-[#2D336B]/20 py-3 pl-4 pr-10 text-sm focus:outline-none focus:border-[#2D336B] transition-all text-[#2D336B] font-bold uppercase tracking-wider cursor-pointer"
+                    className="w-full appearance-none bg-[#f5f0eb]/50 border-2 border-[#264D52]/20 py-3 pl-4 pr-10 text-sm focus:outline-none focus:border-[#264D52] transition-all text-[#264D52] font-bold uppercase tracking-wider cursor-pointer"
                   >
                     <option value="asc">A - Z (Ascending)</option>
                     <option value="desc">Z - A (Descending)</option>
                   </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#2D336B]">
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#264D52]">
                     <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                       <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                     </svg>
@@ -141,8 +141,8 @@ export default function ResourceDirectory() {
               </div>
 
               {/* Categories Filter */}
-              <div className="bg-white p-6 border-4 border-[#2D336B] shadow-[8px_8px_0px_#2D336B]">
-                <h3 className="font-black text-[#2D336B] text-xl uppercase tracking-tighter mb-4">
+              <div className="bg-white p-6 border-4 border-[#264D52] shadow-[8px_8px_0px_#264D52]">
+                <h3 className="font-black text-[#264D52] text-xl uppercase tracking-tighter mb-4">
                   Categories
                 </h3>
                 <div className="flex flex-col gap-2">
@@ -151,8 +151,8 @@ export default function ResourceDirectory() {
                       key={cat}
                       onClick={() => setActiveCategory(cat)}
                       className={`text-left px-4 py-3 text-sm font-black uppercase tracking-widest transition-all border-2 flex items-center gap-3 ${activeCategory === cat
-                        ? "bg-[#2D336B] text-white border-[#2D336B] translate-x-2"
-                        : "bg-transparent text-[#2D336B] border-transparent hover:border-[#2D336B]/20 hover:bg-[#FFF2F2]/50"
+                        ? "bg-[#264D52] text-white border-[#264D52] translate-x-2"
+                        : "bg-transparent text-[#264D52] border-transparent hover:border-[#264D52]/20 hover:bg-[#f5f0eb]/50"
                         }`}
                     >
                       {getCategoryIcon(cat)}
@@ -169,24 +169,24 @@ export default function ResourceDirectory() {
           <div className="w-full lg:w-3/4 flex flex-col">
 
             {/* Search Bar - Now above cards */}
-            <div className="mb-8 p-3 bg-white border-4 border-[#2D336B] shadow-[8px_8px_0px_#2D336B]">
+            <div className="mb-8 p-3 bg-white border-4 border-[#264D52] shadow-[8px_8px_0px_#264D52]">
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#2D336B]/40" size={20} />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#264D52]/40" size={20} />
                 <input
                   type="text"
                   placeholder="SEARCH DATABASE..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full bg-[#FFF2F2]/50 border-2 border-[#2D336B]/10 py-4 pl-12 pr-4 text-base focus:outline-none focus:border-[#2D336B] transition-all placeholder-[#2D336B]/30 text-[#2D336B] font-bold uppercase tracking-wider"
+                  className="w-full bg-[#f5f0eb]/50 border-2 border-[#264D52]/10 py-4 pl-12 pr-4 text-base focus:outline-none focus:border-[#264D52] transition-all placeholder-[#264D52]/30 text-[#264D52] font-bold uppercase tracking-wider"
                 />
               </div>
             </div>
 
             {/* Content Display */}
             {loading ? (
-              <div className="flex flex-col items-center justify-center py-32 bg-white border-4 border-[#2D336B] shadow-[8px_8px_0px_#2D336B]">
-                <Loader2 className="animate-spin text-[#2D336B] mb-4" size={48} />
-                <p className="font-black uppercase tracking-widest text-[#2D336B]">Accessing Archives...</p>
+              <div className="flex flex-col items-center justify-center py-32 bg-white border-4 border-[#264D52] shadow-[8px_8px_0px_#264D52]">
+                <Loader2 className="animate-spin text-[#264D52] mb-4" size={48} />
+                <p className="font-black uppercase tracking-widest text-[#264D52]">Accessing Archives...</p>
               </div>
             ) : (
               <motion.div className={`grid gap-8 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"}`}>
@@ -204,11 +204,11 @@ export default function ResourceDirectory() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -15 }}
                         transition={{ duration: 0.3, ease: "easeOut" }}
-                        className={`group bg-white border-4 border-[#2D336B] hover:shadow-[12px_12px_0px_#7886C7] transition-all duration-300 ${viewMode === "list" ? "flex flex-col md:flex-row items-stretch" : "flex flex-col"
+                        className={`group bg-white border-4 border-[#264D52] hover:shadow-[12px_12px_0px_#496A49] transition-all duration-300 ${viewMode === "list" ? "flex flex-col md:flex-row items-stretch" : "flex flex-col"
                           }`}
                       >
                         {/* Visual Section */}
-                        <div className={`relative bg-[#0A0C1A] overflow-hidden ${viewMode === "grid" ? "w-full h-56" : "w-full md:w-64 h-56 md:h-auto shrink-0"
+                        <div className={`relative bg-[#0f1f1f] overflow-hidden ${viewMode === "grid" ? "w-full h-56" : "w-full md:w-64 h-56 md:h-auto shrink-0"
                           }`}>
                           {firstImage ? (
                             <Image
@@ -219,27 +219,27 @@ export default function ResourceDirectory() {
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
-                              <FileText size={48} className="text-[#2D336B]/20" />
+                              <FileText size={48} className="text-[#264D52]/20" />
                             </div>
                           )}
                         </div>
 
                         {/* Content Section */}
                         <div className="flex-1 p-8 flex flex-col">
-                          <span className="text-[#7886C7] mb-3 flex items-center" title={resource.category}>
+                          <span className="text-[#496A49] mb-3 flex items-center" title={resource.category}>
                             {getCategoryIcon(resource.category)}
                           </span>
 
-                          <h3 className="font-black text-[#2D336B] text-2xl uppercase tracking-tighter mb-3 leading-none group-hover:text-[#7886C7] transition-colors">
+                          <h3 className="font-black text-[#264D52] text-2xl uppercase tracking-tighter mb-3 leading-none group-hover:text-[#496A49] transition-colors">
                             {resource.title}
                           </h3>
 
-                          <p className="text-[#2D336B]/70 text-sm leading-relaxed mb-6 font-medium">
+                          <p className="text-[#264D52]/70 text-sm leading-relaxed mb-6 font-medium">
                             {resource.description}
                           </p>
 
                           {resource.address && (
-                            <div className="mt-auto pt-4 border-t-2 border-[#2D336B]/5 text-[10px] font-bold text-[#2D336B]/40 uppercase tracking-widest">
+                            <div className="mt-auto pt-4 border-t-2 border-[#264D52]/5 text-[10px] font-bold text-[#264D52]/40 uppercase tracking-widest">
                               {resource.address}
                             </div>
                           )}

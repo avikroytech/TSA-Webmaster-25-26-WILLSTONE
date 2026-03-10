@@ -60,7 +60,7 @@ export default function Hero() {
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#2D336B]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#264D52]" />
       </div>
 
       {/* --- MAIN CONTENT --- */}
@@ -69,18 +69,18 @@ export default function Hero() {
 
           {/* STACKED TITLE */}
           <div className="w-full mb-8 flex flex-col">
-            <h1 className="text-[#FFF2F2] font-display font-black text-5xl md:text-7xl lg:text-9xl leading-[0.9] uppercase tracking-tighter">
+            <h1 className="text-[#f5f0eb] font-display font-black text-5xl md:text-7xl lg:text-9xl leading-[0.9] uppercase tracking-tighter">
               Building Together
             </h1>
-            <h2 className="text-[#7886C7] font-display font-black text-3xl md:text-5xl lg:text-7xl leading-[0.9] uppercase tracking-tighter mt-2">
-              <span className="text-[#FFF2F2]">the </span> Future of Willstone
+            <h2 className="text-[#496A49] font-display font-black text-3xl md:text-5xl lg:text-7xl leading-[0.9] uppercase tracking-tighter mt-2">
+              <span className="text-[#f5f0eb]">the </span> Future of Willstone
             </h2>
           </div>
 
           {/* SUBTEXT & RESOURCE HUB CTA */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-8 mt-12">
             <Link href="/resource-hub" className="group flex items-center gap-4">
-              <div className="px-10 py-5 bg-[#FFF2F2] text-[#2D336B] font-black uppercase tracking-widest text-sm transform -skew-x-12 group-hover:bg-[#A9B5DF] transition-all shadow-[8px_8px_0px_#7886C7]">
+              <div className="px-10 py-5 bg-[#f5f0eb] text-[#264D52] font-black uppercase tracking-widest text-sm transform -skew-x-12 group-hover:bg-[#C59F82] transition-all shadow-[8px_8px_0px_#496A49]">
                 <div className="transform skew-x-12 flex items-center gap-3">
                   Explore Resource Hub <ArrowRight size={20} />
                 </div>
@@ -91,41 +91,41 @@ export default function Hero() {
       </div>
 
       {/* --- ENLARGED TICKERS WITH ANIMATION --- */}
-      <div className="relative z-10 w-full mt-20 bg-[#2D336B]/90 backdrop-blur-md border-y-4 border-[#7886C7]">
+      <div className="relative z-10 w-full mt-20 bg-[#264D52]/90 backdrop-blur-md border-y-4 border-[#496A49]">
         <div className="flex flex-wrap justify-center md:justify-around py-10 gap-12 px-4">
           <div className="flex items-center gap-6 min-w-[280px]">
-            <div className="p-4 bg-[#7886C7]/20 rounded-xl transform">
-              <Home className="text-[#FFF2F2]" size={44} />
+            <div className="p-4 bg-[#496A49]/20 rounded-xl transform">
+              <Home className="text-[#f5f0eb]" size={44} />
             </div>
             <div>
-              <div className="text-[#FFF2F2] font-black text-5xl leading-none uppercase">
+              <div className="text-[#f5f0eb] font-black text-5xl leading-none uppercase">
                 <Counter end={45} />k
               </div>
-              <div className="text-[#A9B5DF] uppercase text-[10px] tracking-[0.4em] font-bold mt-2">Residents</div>
+              <div className="text-[#C59F82] uppercase text-[10px] tracking-[0.4em] font-bold mt-2">Residents</div>
             </div>
           </div>
 
           <div className="flex items-center gap-6 min-w-[280px]">
-            <div className="p-4 bg-[#7886C7]/20 rounded-xl transform">
-              <Briefcase className="text-[#FFF2F2]" size={44} />
+            <div className="p-4 bg-[#496A49]/20 rounded-xl transform">
+              <Briefcase className="text-[#f5f0eb]" size={44} />
             </div>
             <div>
-              <div className="text-[#FFF2F2] font-black text-5xl leading-none uppercase">
+              <div className="text-[#f5f0eb] font-black text-5xl leading-none uppercase">
                 <Counter end={13} />
               </div>
-              <div className="text-[#A9B5DF] uppercase text-[10px] tracking-[0.4em] font-bold mt-2">Active Projects</div>
+              <div className="text-[#C59F82] uppercase text-[10px] tracking-[0.4em] font-bold mt-2">Active Projects</div>
             </div>
           </div>
 
           <div className="flex items-center gap-6 min-w-[280px]">
-            <div className="p-4 bg-[#7886C7]/20 rounded-xl transform">
-              <HeartHandshake className="text-[#FFF2F2]" size={44} />
+            <div className="p-4 bg-[#496A49]/20 rounded-xl transform">
+              <HeartHandshake className="text-[#f5f0eb]" size={44} />
             </div>
             <div>
-              <div className="text-[#FFF2F2] font-black text-5xl leading-none uppercase">
+              <div className="text-[#f5f0eb] font-black text-5xl leading-none uppercase">
                 <Counter end={35} />
               </div>
-              <div className="text-[#A9B5DF] uppercase text-[10px] tracking-[0.4em] font-bold mt-2">Non-Profits</div>
+              <div className="text-[#C59F82] uppercase text-[10px] tracking-[0.4em] font-bold mt-2">Non-Profits</div>
             </div>
           </div>
 

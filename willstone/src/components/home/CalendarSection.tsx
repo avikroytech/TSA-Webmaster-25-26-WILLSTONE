@@ -55,10 +55,10 @@ const ProgressBar = ({ isPaused, onComplete }: { isPaused: boolean, onComplete: 
   });
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#A9B5DF]/30 pointer-events-none">
+    <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#C59F82]/30 pointer-events-none">
       <motion.div
         style={{ width }}
-        className="h-full bg-[#2D336B]"
+        className="h-full bg-[#264D52]"
       />
     </div>
   );
@@ -73,7 +73,7 @@ export default function CalendarSection() {
   };
 
   return (
-    <section className="w-full py-24 bg-[#FFF2F2] text-[#2D336B] overflow-hidden relative">
+    <section className="w-full py-24 bg-[#f5f0eb] text-[#264D52] overflow-hidden relative">
       {/* Background Texture Overlay (Subtle) */}
       <div
         className="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -87,8 +87,8 @@ export default function CalendarSection() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-12">
           <div className="text-left">
-            <h2 className="text-5xl md:text-7xl font-display font-black text-[#2D336B] leading-none uppercase tracking-tighter">
-              Upcoming <span className="text-[#7886C7]">Events</span>
+            <h2 className="text-5xl md:text-7xl font-display font-black text-[#264D52] leading-none uppercase tracking-tighter">
+              Upcoming <span className="text-[#496A49]">Events</span>
             </h2>
           </div>
         </div>
@@ -96,7 +96,7 @@ export default function CalendarSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 min-h-[600px]">
 
           {/* LEFT: Visual Stage */}
-          <div className="lg:col-span-7 relative rounded-2xl overflow-hidden shadow-2xl bg-[#2D336B] border-4 border-[#2D336B]/5">
+          <div className="lg:col-span-7 relative rounded-2xl overflow-hidden shadow-2xl bg-[#264D52] border-4 border-[#264D52]/5">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
@@ -112,7 +112,7 @@ export default function CalendarSection() {
                   fill
                   className="object-cover brightness-90 contrast-[1.05]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#2D336B]/80 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#264D52]/80 via-transparent to-transparent" />
               </motion.div>
             </AnimatePresence>
 
@@ -125,7 +125,7 @@ export default function CalendarSection() {
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ duration: 0.4 }}
                 >
-                  <span className="px-4 py-1.5 bg-[#2D336B] text-[#FFF2F2] text-[10px] font-black uppercase tracking-[0.25em] mb-6 inline-block transform -skew-x-12">
+                  <span className="px-4 py-1.5 bg-[#264D52] text-[#f5f0eb] text-[10px] font-black uppercase tracking-[0.25em] mb-6 inline-block transform -skew-x-12">
                     <span className="inline-block transform skew-x-12">{events[activeTab].category}</span>
                   </span>
                   <h3 className="text-4xl md:text-6xl font-display font-black mb-8 text-white leading-[0.9] uppercase tracking-tighter drop-shadow-md">
@@ -133,13 +133,13 @@ export default function CalendarSection() {
                   </h3>
                   <div className="flex flex-wrap items-center gap-8 text-white/90">
                     <div className="flex items-center gap-3">
-                      <CalendarIcon className="w-6 h-6 text-[#A9B5DF]" />
+                      <CalendarIcon className="w-6 h-6 text-[#C59F82]" />
                       <span className="text-sm font-black uppercase tracking-widest">
                         {events[activeTab].date.toLocaleDateString("en-US", { month: 'short', day: 'numeric', year: 'numeric' })}
                       </span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <MapPin className="w-6 h-6 text-[#A9B5DF]" />
+                      <MapPin className="w-6 h-6 text-[#C59F82]" />
                       <span className="text-sm font-bold">{events[activeTab].location}</span>
                     </div>
                   </div>
@@ -159,8 +159,8 @@ export default function CalendarSection() {
                   onMouseEnter={() => isActive && setIsPaused(true)}
                   onMouseLeave={() => isActive && setIsPaused(false)}
                   className={`group relative flex items-start w-full p-6 transition-all duration-500 overflow-hidden cursor-pointer transform -skew-x-6 border-l-8 ${isActive
-                    ? "bg-[#2D336B] border-[#7886C7] shadow-[10px_10px_0px_#A9B5DF]"
-                    : "bg-white border-transparent hover:border-[#7886C7]/30 shadow-sm hover:shadow-md"
+                    ? "bg-[#264D52] border-[#496A49] shadow-[10px_10px_0px_#C59F82]"
+                    : "bg-white border-transparent hover:border-[#496A49]/30 shadow-sm hover:shadow-md"
                     }`}
                 >
                   {isActive && (
@@ -170,14 +170,14 @@ export default function CalendarSection() {
                     />
                   )}
 
-                  <div className={`flex-shrink-0 flex flex-col items-center justify-center w-16 h-16 transition-all duration-500 transform skew-x-6 ${isActive ? "bg-[#FFF2F2] text-[#2D336B] scale-110" : "bg-[#A9B5DF]/20 text-[#2D336B]"
+                  <div className={`flex-shrink-0 flex flex-col items-center justify-center w-16 h-16 transition-all duration-500 transform skew-x-6 ${isActive ? "bg-[#f5f0eb] text-[#264D52] scale-110" : "bg-[#C59F82]/20 text-[#264D52]"
                     }`}>
                     <span className="text-[10px] font-black uppercase">{event.date.toLocaleString('default', { month: 'short' })}</span>
                     <span className="text-2xl font-black leading-none">{event.date.getDate()}</span>
                   </div>
 
                   <div className="ml-8 flex-1 transform skew-x-6">
-                    <h4 className={`text-xl font-black uppercase tracking-tight transition-colors ${isActive ? "text-[#FFF2F2]" : "text-[#2D336B]"
+                    <h4 className={`text-xl font-black uppercase tracking-tight transition-colors ${isActive ? "text-[#f5f0eb]" : "text-[#264D52]"
                       }`}>
                       {event.title}
                     </h4>
@@ -191,7 +191,7 @@ export default function CalendarSection() {
                         }}
                         transition={{ duration: 0.4, ease: "circOut" }}
                       >
-                        <p className="text-sm text-[#A9B5DF] mt-3 leading-relaxed font-medium">
+                        <p className="text-sm text-[#C59F82] mt-3 leading-relaxed font-medium">
                           {event.description}
                         </p>
                       </motion.div>
@@ -200,7 +200,7 @@ export default function CalendarSection() {
 
                   <div className={`mt-1 transform skew-x-6 transition-all duration-500 ${isActive ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
                     }`}>
-                    <ArrowRight className="w-6 h-6 text-[#7886C7]" />
+                    <ArrowRight className="w-6 h-6 text-[#496A49]" />
                   </div>
                 </div>
               );

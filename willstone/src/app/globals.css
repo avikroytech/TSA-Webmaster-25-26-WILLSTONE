@@ -2,63 +2,70 @@
 
 :root {
   /* Willstone Color Palette */
-  --background: #FFF2F2; /* Lightest Pink/White */
-  --foreground: #2D336B; /* Deep Navy Asphalt */
-  
+  --background: #f5f0eb;
+  --foreground: #1c2b2b;
+  /* Brand Text */
+
   /* Brand Colors */
-  --brand-light: #FFF2F2;
-  --brand-muted: #A9B5DF;
-  --brand-medium: #7886C7;
-  --brand-dark: #2D336B;
+  --brand-light: #70AC90;
+  --brand-muted: #C59F82;
+  --brand-medium: #264D52;
+  --brand-dark: #496A49;
+  --brand-text: #1c2b2b;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  
+
   /* Custom utility colors based on palette */
   --color-asphalt: var(--brand-dark);
   --color-road-paint: var(--brand-medium);
   --color-marking: var(--brand-muted);
   --color-highlight: var(--brand-light);
 
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-playfair);
+  --font-sans: var(--font-andada);
+  --font-display: var(--font-righteous);
 }
 
-/* Dark Mode Override - Swapping tones for night-time road look */
+/* Dark Mode Override */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #1a1f4d; /* Slightly darker than asphalt for depth */
-    --foreground: #FFF2F2;
+    --background: #1a2a2a;
+    --foreground: #f5f0eb;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-andada), Georgia, serif;
   transition: background-color 0.3s ease;
 }
 
-/* Headings use Playfair Display */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-playfair), serif;
+/* Headings use Righteous */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-righteous), sans-serif;
 }
 
 .font-display {
-  font-family: var(--font-playfair), serif;
+  font-family: var(--font-righteous), sans-serif;
 }
 
 .font-sans {
-  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-andada), Georgia, serif;
 }
 
-/* --- Willstone Road-Themed Scrollbar --- */
+/* --- Willstone Scrollbar --- */
 
 /* Webkit browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
-  width: 20px; /* Slightly narrower for a cleaner look */
+  width: 20px;
   height: 12px;
 }
 
@@ -69,35 +76,34 @@ h1, h2, h3, h4, h5, h6 {
   height: 0;
 }
 
-/* Scrollbar Track (The Road Surface) */
+/* Scrollbar Track */
 ::-webkit-scrollbar-track {
-  background: var(--brand-dark); /* Asphalt Blue */
+  background: var(--brand-medium);
 }
 
-/* Scrollbar Thumb (The Lane Marking) */
+/* Scrollbar Thumb */
 ::-webkit-scrollbar-thumb {
-  background: var(--brand-medium); /* Road Paint Blue */
+  background: var(--brand-dark);
   border-radius: 4px;
-  /* Adds a gap around the thumb to make it look like a floating lane marking */
-  border: 3px solid var(--brand-dark); 
+  border: 3px solid var(--brand-medium);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--brand-muted); /* Highlights when hovered */
+  background: var(--brand-muted);
 }
 
-/* Dark mode scrollbar specific contrast */
+/* Dark mode scrollbar */
 @media (prefers-color-scheme: dark) {
   ::-webkit-scrollbar-track {
-    background: #14183a; /* Darker asphalt */
+    background: #142a2a;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--brand-medium);
-    border: 3px solid #14183a;
+    background: var(--brand-dark);
+    border: 3px solid #142a2a;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--brand-light); /* Illuminates like high beams on hover */
+    background: var(--brand-light);
   }
 }

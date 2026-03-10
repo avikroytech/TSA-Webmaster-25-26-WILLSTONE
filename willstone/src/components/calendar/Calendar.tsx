@@ -101,7 +101,7 @@ export default function Calendar() {
                         <select
                             value={currentMonth}
                             onChange={handleMonthChange}
-                            className="appearance-none bg-transparent font-medium text-gray-800 text-lg cursor-pointer outline-none hover:text-[#2D336B] transition-colors pr-2"
+                            className="appearance-none bg-transparent font-medium text-gray-800 text-lg cursor-pointer outline-none hover:text-[#264D52] transition-colors pr-2"
                         >
                             {MONTHS.map((month, index) => (
                                 <option key={month} value={index}>{month}</option>
@@ -111,7 +111,7 @@ export default function Calendar() {
                         <select
                             value={currentYear}
                             onChange={handleYearChange}
-                            className="appearance-none bg-transparent font-medium text-gray-800 text-lg cursor-pointer outline-none hover:text-[#2D336B] transition-colors"
+                            className="appearance-none bg-transparent font-medium text-gray-800 text-lg cursor-pointer outline-none hover:text-[#264D52] transition-colors"
                         >
                             {yearOptions.map(year => (
                                 <option key={year} value={year}>{year}</option>
@@ -123,7 +123,7 @@ export default function Calendar() {
                 {/* Days Header */}
                 <div className="grid grid-cols-7 border-b border-gray-200 bg-white flex-shrink-0">
                     {DAYS_OF_WEEK.map(day => (
-                        <div key={day} className="py-3 text-center text-sm font-semibold text-[#2D336B]">
+                        <div key={day} className="py-3 text-center text-sm font-semibold text-[#264D52]">
                             {day}
                         </div>
                     ))}
@@ -157,12 +157,12 @@ export default function Calendar() {
                                                 <div key={event.id} className={`relative ${isExpanded ? 'z-50' : 'z-20'}`}>
                                                     <button
                                                         onClick={() => setSelectedEvent(isExpanded ? null : event)}
-                                                        className={`group relative w-full text-left p-1.5 md:p-2 rounded border transition-colors focus:outline-none focus:ring-2 focus:ring-[#7886C7] shrink-0
-                                                    ${isExpanded ? 'bg-[#7886C7] text-white border-transparent' : 'bg-transparent text-[#2D336B] border-transparent hover:bg-[#7886C7]/10 hover:border-[#7886C7]/30'}
+                                                        className={`group relative w-full text-left p-1.5 md:p-2 rounded border transition-colors focus:outline-none focus:ring-2 focus:ring-[#496A49] shrink-0
+                                                    ${isExpanded ? 'bg-[#496A49] text-white border-transparent' : 'bg-transparent text-[#264D52] border-transparent hover:bg-[#496A49]/10 hover:border-[#496A49]/30'}
                                                 `}
                                                     >
                                                         <div className="text-xs">
-                                                            <div className={`font-semibold leading-tight line-clamp-2 ${isExpanded ? 'text-white' : 'text-[#2D336B]'}`}>
+                                                            <div className={`font-semibold leading-tight line-clamp-2 ${isExpanded ? 'text-white' : 'text-[#264D52]'}`}>
                                                                 {event.title}
                                                             </div>
                                                         </div>
@@ -172,20 +172,20 @@ export default function Calendar() {
                                                     {isExpanded && (
                                                         <div className={`absolute w-64 bg-white shadow-[0_10px_40px_rgba(0,0,0,0.15)] rounded-lg border border-[#e5e7eb] z-[60] overflow-hidden ${verticalPosition} ${horizontalPosition}`}>
                                                             <div className="p-4 flex flex-col gap-3 relative bg-white">
-                                                                <h4 className="font-bold text-[#2D336B] text-base leading-tight">
+                                                                <h4 className="font-bold text-[#264D52] text-base leading-tight">
                                                                     {event.title}
                                                                 </h4>
 
                                                                 <div className="flex flex-col gap-1.5 text-xs text-gray-600 font-medium">
                                                                     {event.time && (
                                                                         <div className="flex items-center gap-2">
-                                                                            <Clock size={14} className="text-[#7886C7]" />
+                                                                            <Clock size={14} className="text-[#496A49]" />
                                                                             <span>{event.time}</span>
                                                                         </div>
                                                                     )}
                                                                     {event.address && (
                                                                         <div className="flex items-center gap-2">
-                                                                            <MapPin size={14} className="text-[#7886C7]" />
+                                                                            <MapPin size={14} className="text-[#496A49]" />
                                                                             <span className="line-clamp-2">{event.address}</span>
                                                                         </div>
                                                                     )}
