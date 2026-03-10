@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Sparkles, ArrowDown } from "lucide-react";
 
 export default function Hero() {
@@ -57,17 +58,27 @@ export default function Hero() {
         </h1>
 
         <div
-          className={`mt-10 relative w-full max-w-lg transition-opacity duration-1000 delay-500 ${isLoaded ? 'opacity-100' : 'opacity-0'
+          className={`mt-10 relative w-full max-w-lg transition-opacity duration-1000 delay-500 flex flex-col items-center ${isLoaded ? 'opacity-100' : 'opacity-0'
             }`}
         >
-          <input
-            type="text"
-            placeholder="ex. pay my taxes"
-            className="w-full pl-6 pr-14 py-4 rounded-full bg-[#f5f0eb] border-2 border-[#496A49] text-[#1c2b2b] placeholder-[#1c2b2b]/60 focus:outline-none focus:ring-4 focus:ring-[#70AC90]/50 text-lg transition-all"
-          />
-          <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-[#264D52] hover:bg-[#70AC90] active:bg-[#496A49] text-[#f5f0eb] rounded-full transition-colors shadow-sm cursor-pointer group">
-            <Sparkles size={20} className="group-hover:rotate-12 transition-transform" />
-          </button>
+          <div className="relative w-full">
+            <input
+              type="text"
+              placeholder="ex. pay my taxes"
+              className="w-full pl-6 pr-14 py-4 rounded-full bg-[#f5f0eb] border-2 border-[#496A49] text-[#1c2b2b] placeholder-[#1c2b2b]/60 focus:outline-none focus:ring-4 focus:ring-[#70AC90]/50 text-lg transition-all"
+            />
+            <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-[#264D52] hover:bg-[#70AC90] active:bg-[#496A49] text-[#f5f0eb] rounded-full transition-colors shadow-sm cursor-pointer group">
+              <Sparkles size={20} className="group-hover:rotate-12 transition-transform" />
+            </button>
+          </div>
+
+          <Link
+            href="/resource-hub"
+            className="mt-6 group relative font-display text-sm tracking-widest uppercase text-[#f5f0eb] hover:text-white transition-colors"
+          >
+            Or Find it Manually
+            <span className="absolute -bottom-1.5 left-0 w-0 h-[2px] bg-[#C59F82] transition-all duration-300 ease-out group-hover:w-full" />
+          </Link>
         </div>
       </div>
 

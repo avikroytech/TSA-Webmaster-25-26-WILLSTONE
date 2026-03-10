@@ -147,7 +147,7 @@ export default function Navbar() {
             />
           </div>
           <span className="select-none font-display">
-            {isOpen && isMobile ? "Close" : "Menu"}
+            {isOpen && isMobile ? "Close" : "Willstone"}
           </span>
           {isMobile && (
             <span className="ml-auto">
