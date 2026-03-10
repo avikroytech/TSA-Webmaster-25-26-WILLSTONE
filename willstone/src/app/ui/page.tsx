@@ -5,11 +5,11 @@ import { ArrowRight, CheckCircle2, AlertCircle, Info, ChevronRight, Play } from 
 
 export default function UITestPage() {
     return (
-        <div className="min-h-screen bg-background text-foreground p-8 font-sans selection:bg-[#7886C7] selection:text-white">
+        <div className="min-h-screen bg-[#FBFFF1] text-foreground p-8 font-sans selection:bg-[#7886C7] selection:text-white">
             <div className="max-w-7xl mx-auto space-y-16">
-                <header className="border-b-2 border-[#A9B5DF]/30 pb-8 pt-10">
-                    <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight text-[#2D336B]">Design System</h1>
-                    <p className="font-sans text-xl text-[#7886C7] mt-4 max-w-2xl">
+                <header className="border-b-2 border-[#C59F82]/30 pb-8 pt-10">
+                    <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight text-[#264D52]">Design System</h1>
+                    <p className="font-sans text-xl text-[#496A49] mt-4 max-w-2xl">
                         A comprehensive testing ground for Willstone's typography, color palettes, and core UI components.
                     </p>
                 </header>
@@ -17,17 +17,18 @@ export default function UITestPage() {
                 {/* COLORS */}
                 <section className="space-y-6">
                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-[#2D336B] flex items-center justify-center">
-                            <div className="w-4 h-4 rounded-full bg-[#FFF2F2]" />
+                        <div className="w-8 h-8 rounded-full bg-[#496A49] flex items-center justify-center">
+                            <div className="w-4 h-4 rounded-full bg-[#FBFFF1]" />
                         </div>
-                        <h2 className="text-3xl font-display font-semibold text-[#2D336B]">Color Palette</h2>
+                        <h2 className="text-3xl font-display font-semibold text-[#264D52]">Color Palette</h2>
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        <ColorSwatch name="Brand Light" variable="--brand-light" hex="#FFF2F2" className="bg-[#FFF2F2] text-[#2D336B] border border-[#A9B5DF]/20" />
-                        <ColorSwatch name="Brand Muted" variable="--brand-muted" hex="#A9B5DF" className="bg-[#A9B5DF] text-[#2D336B]" />
-                        <ColorSwatch name="Brand Medium" variable="--brand-medium" hex="#7886C7" className="bg-[#7886C7] text-white" />
-                        <ColorSwatch name="Brand Dark" variable="--brand-dark" hex="#2D336B" className="bg-[#2D336B] text-white" />
+                        <ColorSwatch name="Brand Light" variable="--brand-light" hex="#70AC90" className="bg-[#70AC90] text-[#2D336B] border border-[#A9B5DF]/20" />
+                        <ColorSwatch name="Brand Muted" variable="--brand-muted" hex="#C59F82" className="bg-[#C59F82] text-[#2D336B]" />
+                        <ColorSwatch name="Brand Medium" variable="--brand-medium" hex="#264D52" className="bg-[#264D52] text-white" />
+                        <ColorSwatch name="Brand Dark" variable="--brand-dark" hex="#496A49" className="bg-[#496A49] text-white" />
+                        <ColorSwatch name="Brand Text" variable="--brand-text" hex="#1c2b2b" className="bg-[#1c2b2b] text-white" />
                     </div>
 
                     <div className="grid grid-cols-2 gap-6 mt-8">
