@@ -87,7 +87,10 @@ export default function Hero() {
         className={`absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center text-[#f5f0eb] transition-opacity duration-1000 delay-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'
           }`}
       >
-        <div className="animate-bounce flex flex-col items-center cursor-pointer hover:text-white/80 transition-colors">
+        <div
+          onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+          className="animate-bounce flex flex-col items-center cursor-pointer hover:text-white/80 transition-colors"
+        >
           <span className="text-sm font-semibold tracking-[0.2em] uppercase mb-2">Explore</span>
           <ArrowDown size={24} />
         </div>
