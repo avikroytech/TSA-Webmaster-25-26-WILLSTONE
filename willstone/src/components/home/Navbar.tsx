@@ -133,7 +133,7 @@ export default function Navbar() {
             focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C59F82]
             ${isOpen
               ? "w-[min(480px,90vw)] rounded-t-2xl rounded-b-none shadow-2xl"
-              : "w-[180px] rounded-full hover:shadow-xl hover:scale-105"
+              : "w-[180px] rounded-[26px] hover:shadow-xl hover:scale-105"
             }
           `}
         >
