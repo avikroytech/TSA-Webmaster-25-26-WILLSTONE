@@ -14,7 +14,8 @@ import {
   Leaf, 
   Users,
   Calendar,
-  Tag
+  Tag,
+  ArrowDown
 } from "lucide-react";
 import Navbar from "@/components/home/Navbar";
 import Footer from "@/components/home/Footer";
@@ -116,6 +117,17 @@ export default function NewsPage() {
                   <ArrowRight size={22} className="group-hover/btn:translate-x-1 transition-transform" />
                 </Link>
               </motion.div>
+            </div>
+
+            {/* Scroll Down Label */}
+            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center text-white/80 z-20">
+              <div 
+                onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+                className="animate-bounce flex flex-col items-center cursor-pointer hover:text-white transition-colors"
+              >
+                <span className="text-[10px] font-black tracking-[0.3em] uppercase mb-3">Scroll down for more news</span>
+                <ArrowDown size={20} strokeWidth={3} />
+              </div>
             </div>
           </section>
         )}
