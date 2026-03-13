@@ -1,14 +1,14 @@
 import Navbar from "@/components/home/Navbar";
 import Footer from "@/components/home/Footer";
 
-export default function Request() {
+export default function Reference() {
     return (
         <div className="min-h-screen flex flex-col">
             <Navbar />
-            
+
             {/* Main content area with your soft red/pink background */}
             <main className="flex-1 bg-[#f5f0eb] p-4 md:p-12 flex flex-col items-center">
-                
+
                 <div className="w-full max-w-6xl">
                     {/* Page Header */}
                     <div className="mb-10">
@@ -24,7 +24,7 @@ export default function Request() {
                             for PDFs, but both work well in modern browsers.
                         */}
                         <object
-                            data="/Webmaster_Work.pdf#view=FitH" 
+                            data="/Webmaster_Work.pdf#view=FitH"
                             type="application/pdf"
                             className="w-full h-[700px] md:h-[900px]"
                         >
@@ -33,8 +33,8 @@ export default function Request() {
                                 <p className="text-[#264D52] font-bold text-xl mb-4">
                                     PDF Viewer not supported by your browser.
                                 </p>
-                                <a 
-                                    href="/document.pdf" 
+                                <a
+                                    href="/document.pdf"
                                     className="px-8 py-3 bg-[#264D52] text-white font-black uppercase tracking-widest hover:bg-[#496A49] transition-colors"
                                 >
                                     Download Document
