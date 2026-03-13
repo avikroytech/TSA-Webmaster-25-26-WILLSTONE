@@ -2,7 +2,7 @@ import Navbar from "@/components/home/Navbar";
 import Footer from "@/components/home/Footer";
 import ResourceDirectory from "@/components/resource/ResourceDirectory";
 
-export default function Home() {
+export default function ResourceHub() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
