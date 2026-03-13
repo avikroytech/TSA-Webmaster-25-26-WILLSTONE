@@ -185,7 +185,7 @@ export default function ResourceDirectory() {
                 </p>
               </div>
 
-              <div className="relative w-full aspect-square bg-white rounded-3xl shadow-sm border border-road-paint/10 overflow-hidden p-8 flex items-center justify-center">
+              <div className="relative w-full aspect-square bg-[var(--brand-medium)] rounded-3xl shadow-sm border border-road-paint/10 overflow-hidden p-8 flex items-center justify-center">
                 <IslandImageMap activeIsland={activeIsland} onIslandClick={setActiveIsland} />
               </div>
             </div>
@@ -200,7 +200,7 @@ export default function ResourceDirectory() {
               <div className="relative flex-1">
                 <input
                   type="text"
-                  placeholder="Search for programs, locations, or services..."
+                  placeholder="Search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="w-full bg-white border-2 border-road-paint/10 py-5 pl-8 pr-16 rounded-full text-lg font-bold text-brand-text focus:outline-none focus:ring-4 focus:ring-asphalt/10 focus:border-asphalt/50 transition-all shadow-sm placeholder:text-brand-text/30"
@@ -288,15 +288,30 @@ export default function ResourceDirectory() {
 // ─── Sub-Component: Island Image Map ────────────────────────────────
 
 function IslandImageMap({ activeIsland, onIslandClick }: { activeIsland: string | null, onIslandClick: (id: string | null) => void }) {
+  const [hoveredIsland, setHoveredIsland] = useState<string | null>(null);
+
   const islands = [
-    { id: "north", name: "NORTH WILLSTONE", src: "/right.png", classes: "top-[10%] left-[45%] w-[45%]" },
-    { id: "emerald", name: "EMERALD ISLE", src: "/left.png", classes: "top-[30%] left-[15%] w-[40%]" },
-    { id: "central", name: "CENTRAL HUB", src: "/small.png", classes: "top-[50%] left-[40%] w-[35%]" },
-    { id: "south", name: "SOUTH BEACH", src: "/bottom.png", classes: "bottom-[5%] left-[25%] w-[50%]" }
+    { id: "north", name: "NORTH WILLSTONE", src: "/right.png", classes: "top-[26%] left-[52%] w-[32%]" },
+    { id: "emerald", name: "EMERALD ISLE", src: "/left.png", classes: "top-[20%] left-[16%] w-[24%]" },
+    { id: "central", name: "CENTRAL HUB", src: "/small.png", classes: "top-[45%] left-[28%] w-[17%]" },
+    { id: "south", name: "SOUTH BEACH", src: "/bottom.png", classes: "top-[52%] left-[18%] w-[64%]" }
   ];
 
+  const displayedIslandId = hoveredIsland || activeIsland;
+  const displayedIsland = islands.find(i => i.id === displayedIslandId);
+
   return (
-    <div className="relative w-full h-full min-h-[260px]">
+    <div 
+      className="relative w-full h-full min-h-[260px]"
+      onMouseLeave={() => setHoveredIsland(null)}
+    >
+      {/* Top Banner Label */}
+      <div className="absolute top-0 left-0 right-0 flex justify-center z-40 pointer-events-none">
+        <div className={`px-5 py-2 rounded-full font-black text-xs tracking-[0.15em] uppercase transition-all duration-300 ${displayedIsland ? 'opacity-100 bg-[#f5f0eb] text-[var(--brand-medium)] shadow-xl translate-y-0' : 'opacity-0 -translate-y-2'}`}>
+          {displayedIsland ? displayedIsland.name : "MAP"}
+        </div>
+      </div>
+
       {islands.map((island) => {
         const isActive = activeIsland === island.id;
         const opacityClass = activeIsland ? (isActive ? "opacity-100 scale-105 z-20" : "opacity-40 grayscale-[0.6] z-10") : "opacity-100 hover:scale-[1.03] hover:z-20";
@@ -305,6 +320,7 @@ function IslandImageMap({ activeIsland, onIslandClick }: { activeIsland: string 
           <div
             key={island.id}
             onClick={() => onIslandClick(isActive ? null : island.id)}
+            onMouseEnter={() => setHoveredIsland(island.id)}
             className={`absolute cursor-pointer transition-all duration-300 drop-shadow-lg group flex items-center justify-center ${island.classes} ${opacityClass}`}
           >
             <Image
@@ -314,12 +330,6 @@ function IslandImageMap({ activeIsland, onIslandClick }: { activeIsland: string 
               height={200}
               className="w-full h-auto object-contain drop-shadow"
             />
-            {/* Baked-in label over the island images on hover - matches the screenshot aesthetic to put labels near them */}
-            <div className="absolute inset-0 m-auto flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30">
-              <div className="bg-road-paint text-white text-[10px] font-black px-3 py-1.5 rounded-md shadow-xl whitespace-nowrap tracking-wider">
-                {island.name}
-              </div>
-            </div>
           </div>
         );
       })}
