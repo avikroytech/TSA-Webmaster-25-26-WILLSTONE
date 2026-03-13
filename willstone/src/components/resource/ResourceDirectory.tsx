@@ -1,58 +1,72 @@
 "use client";
 import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Filter, LayoutGrid, List as ListIcon, FileText, Loader2, Stethoscope, Utensils, Home, BookOpen, Briefcase, Scale, Car, Heart, Shield, Activity, Globe, Folder } from "lucide-react";
+import { Search, Loader2, Library, Users, TreePine, Stethoscope, Briefcase, Scale, Car, Activity, Globe, Folder, Target, SlidersHorizontal } from "lucide-react";
 import Image from "next/image";
 import { supabase } from "@/utils/supabase/client";
+import Link from "next/link";
 
 const getCategoryIcon = (category: string) => {
-  if (!category) return <Folder size={20} />;
+  if (!category) return <Folder size={22} />;
   const cat = category.toLowerCase();
 
-  if (cat.includes("health") || cat.includes("medical")) return <Stethoscope size={20} />;
-  if (cat.includes("food") || cat.includes("dining") || cat.includes("meal")) return <Utensils size={20} />;
-  if (cat.includes("housing") || cat.includes("shelter")) return <Home size={20} />;
-  if (cat.includes("education") || cat.includes("school") || cat.includes("learning")) return <BookOpen size={20} />;
-  if (cat.includes("employment") || cat.includes("job") || cat.includes("career") || cat.includes("business")) return <Briefcase size={20} />;
-  if (cat.includes("legal") || cat.includes("law")) return <Scale size={20} />;
-  if (cat.includes("transport") || cat.includes("transit")) return <Car size={20} />;
-  if (cat.includes("community") || cat.includes("family")) return <Heart size={20} />;
-  if (cat.includes("safety") || cat.includes("police") || cat.includes("fire") || cat.includes("emergency")) return <Shield size={20} />;
-  if (cat.includes("recreation") || cat.includes("park") || cat.includes("sport") || cat.includes("art")) return <Activity size={20} />;
-  if (cat === "all") return <Globe size={20} />;
+  if (cat.includes("health") || cat.includes("medical")) return <Stethoscope size={22} />;
+  if (cat.includes("library") || cat.includes("book") || cat.includes("education")) return <Library size={22} />;
+  if (cat.includes("community") || cat.includes("center")) return <Users size={22} />;
+  if (cat.includes("park") || cat.includes("recreation")) return <TreePine size={22} />;
+  if (cat.includes("employment") || cat.includes("job") || cat.includes("career")) return <Briefcase size={22} />;
+  if (cat.includes("legal") || cat.includes("law")) return <Scale size={22} />;
+  if (cat.includes("transport") || cat.includes("transit")) return <Car size={22} />;
+  if (cat.includes("sport") || cat.includes("art")) return <Activity size={22} />;
+  if (cat === "all") return <Globe size={22} />;
 
-  return <Folder size={20} />;
+  return <Folder size={22} />;
+};
+
+const islandMapping: Record<string, string> = {
+  emerald: "Emerald Isle",
+  north: "North Willstone",
+  central: "Central Hub",
+  south: "South Beach",
+};
+
+const extractIsland = (resource: any) => {
+  const text = `${resource.address || ""} ${resource.description || ""} ${resource.title || ""}`.toLowerCase();
+  if (text.includes("emerald")) return "Emerald Isle";
+  if (text.includes("north")) return "North Willstone";
+  if (text.includes("south")) return "South Beach";
+  if (text.includes("central")) return "Central Hub";
+  return "Central Hub"; // Default mapping if none found
 };
 
 export default function ResourceDirectory() {
   const [resources, setResources] = useState<any[]>([]);
-  const [categories, setCategories] = useState<string[]>(["All"]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [sortBy, setSortBy] = useState<"asc" | "desc">("asc");
+  const [activeCategory, setActiveCategory] = useState<string>("All Types");
+  const [activeIsland, setActiveIsland] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<"asc" | "desc" | "recommended">("recommended");
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-
-      // 1. Fetch Resources
       const { data: resourceData, error: resourceError } = await supabase
         .from("community_resources")
-        .select("id, title, category, description, images, address, created_at");
+        .select("*");
 
-      // 2. Extract unique categories from the database records
       if (!resourceError && resourceData) {
         setResources(resourceData);
-
         const uniqueCats = Array.from(
           new Set(resourceData.map((r: any) => r.category))
         ).filter(Boolean) as string[];
 
-        setCategories(["All", ...uniqueCats.sort()]);
-      }
+        const standardCats = ["Public Library", "Community Center", "Parks & Rec", "Health Services"];
+        const others = uniqueCats.filter(c => !standardCats.includes(c));
+        const sortedCats = [...standardCats.filter(c => uniqueCats.includes(c)), ...others];
 
+        setCategories(sortedCats);
+      }
       setLoading(false);
     }
     fetchData();
@@ -62,188 +76,202 @@ export default function ResourceDirectory() {
     let filtered = resources.filter((r) => {
       const matchesSearch =
         r.title?.toLowerCase().includes(search.toLowerCase()) ||
-        r.description?.toLowerCase().includes(search.toLowerCase());
-      const matchesCat = activeCategory === "All" || r.category === activeCategory;
-      return matchesSearch && matchesCat;
+        r.description?.toLowerCase().includes(search.toLowerCase()) ||
+        r.address?.toLowerCase().includes(search.toLowerCase());
+
+      const matchesCat = activeCategory === "All Types" || r.category === activeCategory;
+
+      let matchesIsland = true;
+      if (activeIsland) {
+        const targetIsland = islandMapping[activeIsland];
+        matchesIsland = extractIsland(r) === targetIsland;
+      }
+
+      console.log(matchesSearch, matchesCat, matchesIsland);
+      return matchesSearch && matchesCat && matchesIsland;
     });
 
     return filtered.sort((a, b) => {
-      const titleA = a.title || "";
-      const titleB = b.title || "";
-      if (sortBy === "asc") return titleA.localeCompare(titleB);
-      return titleB.localeCompare(titleA);
+      if (sortBy === "recommended") return 0;
+      const valA = a.title || "";
+      const valB = b.title || "";
+      return sortBy === "asc" ? valA.localeCompare(valB) : valB.localeCompare(valA);
     });
-  }, [search, activeCategory, resources, sortBy]);
+  }, [search, activeCategory, activeIsland, resources, sortBy]);
+
+  const allCategoryOptions = ["All Types", ...categories];
 
   return (
-    <section className="w-full py-24 bg-[#f5f0eb] min-h-screen relative overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.2] bg-[url('https://www.transparenttextures.com/patterns/asphalt-light.png')] pointer-events-none" />
+    <section className="w-full py-16 min-h-screen relative font-sans text-brand-text flex flex-col items-center" style={{ background: "var(--background)" }}>
+      <div className="w-full px-6 md:px-12 xl:px-20 relative z-10 w-full max-w-[1800px]">
 
-      <div className="container mx-auto px-6 relative z-10">
-
-        {/* Header */}
-        <div className="flex flex-col lg:flex-row items-center justify-between mb-16 gap-8 w-full">
-          {/* Spacer for precise centering on large screens */}
-          <div className="hidden lg:flex lg:flex-1"></div>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
+        {/* Header Title */}
+        <div className="flex justify-center mb-16">
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter uppercase text-[#264D52] leading-none whitespace-nowrap text-center lg:flex-none"
+            className="text-6xl md:text-[6rem] leading-none font-display text-road-paint uppercase tracking-tighter text-center max-w-5xl drop-shadow-sm"
           >
-            Resource Directory
-          </motion.h2>
-
-          <div className="flex w-full lg:flex-1 justify-center lg:justify-end">
-            <div className="flex bg-white p-1 border-2 border-[#264D52] shadow-[4px_4px_0px_#264D52]">
-              <button
-                onClick={() => setViewMode("grid")}
-                className={`p-2 transition-all ${viewMode === "grid" ? "bg-[#264D52] text-white" : "text-[#264D52] hover:bg-[#264D52]/10"}`}
-              >
-                <LayoutGrid size={20} />
-              </button>
-              <button
-                onClick={() => setViewMode("list")}
-                className={`p-2 transition-all ${viewMode === "list" ? "bg-[#264D52] text-white" : "text-[#264D52] hover:bg-[#264D52]/10"}`}
-              >
-                <ListIcon size={20} />
-              </button>
-            </div>
-          </div>
+            RESOURCE DIRECTORY
+          </motion.h1>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-12">
+        <div className="flex flex-col lg:flex-row gap-12 xl:gap-20">
 
-          {/* Left Sidebar: Filters */}
-          <div className="w-full lg:w-1/4 flex flex-col gap-8">
-            <div className="sticky top-8 flex flex-col gap-8">
+          {/* Left Sidebar */}
+          <div className="w-full lg:w-[320px] 2xl:w-[380px] shrink-0 flex flex-col gap-12">
 
-              {/* Sort By Filter */}
-              <div className="bg-white p-6 border-4 border-[#264D52] shadow-[8px_8px_0px_#264D52]">
-                <h3 className="font-black text-[#264D52] text-xl uppercase tracking-tighter mb-4">
-                  Sort By
-                </h3>
-                <div className="relative">
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as "asc" | "desc")}
-                    className="w-full appearance-none bg-[#f5f0eb]/50 border-2 border-[#264D52]/20 py-3 pl-4 pr-10 text-sm focus:outline-none focus:border-[#264D52] transition-all text-[#264D52] font-bold uppercase tracking-wider cursor-pointer"
-                  >
-                    <option value="asc">A - Z (Ascending)</option>
-                    <option value="desc">Z - A (Descending)</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#264D52]">
-                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                    </svg>
-                  </div>
+            <div className="flex flex-col gap-4">
+              <h2 className="text-3xl font-black text-road-paint">Filter Resources</h2>
+              <div className="h-px w-full bg-road-paint/20" />
+            </div>
+
+            {/* Sort By */}
+            <div className="flex flex-col gap-3">
+              <h3 className="text-lg font-black font-display text-asphalt uppercase tracking-widest">SORT BY</h3>
+              <div className="relative group">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as any)}
+                  className="w-full appearance-none bg-white border-2 border-road-paint/20 py-4 px-5 rounded-2xl text-base font-bold text-asphalt focus:outline-none focus:border-asphalt focus:ring-2 focus:ring-asphalt/20 transition-all cursor-pointer shadow-sm hover:border-asphalt/50"
+                >
+                  <option value="recommended">Recommended</option>
+                  <option value="asc">Alphabetical (A to Z)</option>
+                  <option value="desc">Alphabetical (Z to A)</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-5 flex items-center text-asphalt">
+                  <svg className="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
                 </div>
               </div>
+            </div>
 
-              {/* Categories Filter */}
-              <div className="bg-white p-6 border-4 border-[#264D52] shadow-[8px_8px_0px_#264D52]">
-                <h3 className="font-black text-[#264D52] text-xl uppercase tracking-tighter mb-4">
-                  Categories
-                </h3>
-                <div className="flex flex-col gap-2">
-                  {categories.map((cat) => (
+            {/* Resource Type */}
+            <div className="flex flex-col gap-4 items-start">
+              <h3 className="text-lg font-black font-display text-asphalt uppercase tracking-widest">RESOURCE TYPE</h3>
+              <div className="flex flex-col gap-2 w-full">
+                {allCategoryOptions.map((cat) => {
+                  const isActive = activeCategory === cat;
+
+                  return (
                     <button
                       key={cat}
                       onClick={() => setActiveCategory(cat)}
-                      className={`text-left px-4 py-3 text-sm font-black uppercase tracking-widest transition-all border-2 flex items-center gap-3 ${activeCategory === cat
-                        ? "bg-[#264D52] text-white border-[#264D52] translate-x-2"
-                        : "bg-transparent text-[#264D52] border-transparent hover:border-[#264D52]/20 hover:bg-[#f5f0eb]/50"
-                        }`}
+                      className={`group flex items-center gap-4 px-5 py-3.5 rounded-2xl border-2 transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#C59F82] w-full text-left
+                        ${isActive
+                          ? "bg-asphalt text-[#f5f0eb] border-asphalt shadow-md"
+                          : "bg-transparent border-transparent text-brand-text hover:bg-highlight/15 hover:border-asphalt hover:scale-[1.02] hover:shadow-sm"
+                        }
+                      `}
                     >
-                      {getCategoryIcon(cat)}
-                      <span>{cat}</span>
+                      <div className={`shrink-0 transition-all duration-200 group-hover:scale-110 ${isActive ? "text-marking" : "text-asphalt group-hover:text-road-paint"}`}>
+                        {getCategoryIcon(cat === "All Types" ? "all" : cat)}
+                      </div>
+                      <span className={`font-semibold tracking-wide transition-all duration-200 ${isActive ? "text-[16px] text-[#f5f0eb]" : "text-[15px] group-hover:text-[16px]"}`}>
+                        {cat}
+                      </span>
                     </button>
-                  ))}
-                </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Island Location */}
+            <div className="flex flex-col gap-5">
+              <h3 className="text-lg font-black font-display text-asphalt uppercase tracking-widest">ISLAND LOCATION</h3>
+
+              <div className="bg-road-paint/5 border-l-4 border-asphalt p-4 rounded-r-xl">
+                <p className="text-sm font-bold text-asphalt leading-relaxed">
+                  Click an island to filter by location.<br />Leave blank to show all resources.
+                </p>
               </div>
 
+              <div className="relative w-full aspect-square bg-white rounded-3xl shadow-sm border border-road-paint/10 overflow-hidden p-8 flex items-center justify-center">
+                <IslandImageMap activeIsland={activeIsland} onIslandClick={setActiveIsland} />
+              </div>
             </div>
+
           </div>
 
-          {/* Right Main Content */}
-          <div className="w-full lg:w-3/4 flex flex-col">
+          {/* Main Content */}
+          <div className="flex-1 flex flex-col min-w-0">
 
-            {/* Search Bar - Now above cards */}
-            <div className="mb-8 p-3 bg-white border-4 border-[#264D52] shadow-[8px_8px_0px_#264D52]">
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#264D52]/40" size={20} />
+            {/* Search Bar */}
+            <div className="mb-12 flex gap-4 items-center">
+              <div className="relative flex-1">
                 <input
                   type="text"
-                  placeholder="SEARCH DATABASE..."
+                  placeholder="Search for programs, locations, or services..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full bg-[#f5f0eb]/50 border-2 border-[#264D52]/10 py-4 pl-12 pr-4 text-base focus:outline-none focus:border-[#264D52] transition-all placeholder-[#264D52]/30 text-[#264D52] font-bold uppercase tracking-wider"
+                  className="w-full bg-white border-2 border-road-paint/10 py-5 pl-8 pr-16 rounded-full text-lg font-bold text-brand-text focus:outline-none focus:ring-4 focus:ring-asphalt/10 focus:border-asphalt/50 transition-all shadow-sm placeholder:text-brand-text/30"
                 />
+                <Search className="absolute right-8 top-1/2 -translate-y-1/2 text-brand-text/40" size={24} />
               </div>
             </div>
 
-            {/* Content Display */}
+            {/* Grid */}
             {loading ? (
-              <div className="flex flex-col items-center justify-center py-32 bg-white border-4 border-[#264D52] shadow-[8px_8px_0px_#264D52]">
-                <Loader2 className="animate-spin text-[#264D52] mb-4" size={48} />
-                <p className="font-black uppercase tracking-widest text-[#264D52]">Accessing Archives...</p>
+              <div className="flex flex-col items-center justify-center py-32">
+                <Loader2 className="animate-spin text-road-paint mb-4" size={56} />
               </div>
             ) : (
-              <motion.div className={`grid gap-8 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"}`}>
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8"
+              >
                 <AnimatePresence>
                   {filteredResources.map((resource) => {
-                    // Logic to get the first image from the list
-                    const firstImage = Array.isArray(resource.images) && resource.images.length > 0
-                      ? resource.images[0]
-                      : null;
+                    const resourceIsland = extractIsland(resource);
 
                     return (
                       <motion.div
                         key={resource.id}
-                        initial={{ opacity: 0, y: 15 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -15 }}
-                        transition={{ duration: 0.3, ease: "easeOut" }}
-                        className={`group bg-white border-4 border-[#264D52] hover:shadow-[12px_12px_0px_#496A49] transition-all duration-300 ${viewMode === "list" ? "flex flex-col md:flex-row items-stretch" : "flex flex-col"
-                          }`}
+                        initial="hidden"
+                        animate="visible"
+                        variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}
+                        exit={{ opacity: 0, y: 20, transition: { duration: 0.2 } }}
+                        className="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 border border-road-paint/10 flex flex-col group h-full"
                       >
-                        {/* Visual Section */}
-                        <div className={`relative bg-[#0f1f1f] overflow-hidden ${viewMode === "grid" ? "w-full h-56" : "w-full md:w-64 h-56 md:h-auto shrink-0"
-                          }`}>
-                          {firstImage ? (
-                            <Image
-                              src={firstImage}
-                              alt={resource.title}
-                              fill
-                              className="object-cover opacity-80 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <FileText size={48} className="text-[#264D52]/20" />
+                        <Link href={`/resource-hub/${resource.id}`} className="flex flex-col h-full focus:outline-none focus-visible:ring-4 focus-visible:ring-asphalt/30 rounded-[2rem]">
+                          {/* Img Section */}
+                          <div className="relative w-full h-56 bg-gray-100 overflow-hidden shrink-0">
+                            {resource.images?.[0] ? (
+                              <Image src={resource.images[0]} alt={resource.title} fill className="object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out" />
+                            ) : (
+                              <div className="w-full h-full bg-road-paint/5 flex items-center justify-center text-road-paint/20">
+                                <Target size={48} />
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Text Section */}
+                          <div className="p-8 flex flex-col flex-1">
+                            <h3 className="text-2xl leading-tight font-display text-road-paint mb-6">
+                              {resource.title}
+                            </h3>
+
+                            <div className="flex flex-col gap-4 mt-auto">
+                              <div className="flex items-center gap-3">
+                                <span className="text-asphalt flex-shrink-0 bg-asphalt/5 p-2 rounded-lg">{getCategoryIcon(resource.category)}</span>
+                                <span className="text-sm font-bold text-asphalt tracking-wide truncate">{resource.category}</span>
+                              </div>
+
+                              <div className="flex items-center gap-3">
+                                <span className="text-marking flex-shrink-0 bg-marking/10 p-2 rounded-lg"><Target size={22} /></span>
+                                <span className="text-sm font-bold text-marking tracking-wide truncate">{resourceIsland}</span>
+                              </div>
                             </div>
-                          )}
-                        </div>
 
-                        {/* Content Section */}
-                        <div className="flex-1 p-8 flex flex-col">
-                          <span className="text-[#496A49] mb-3 flex items-center" title={resource.category}>
-                            {getCategoryIcon(resource.category)}
-                          </span>
-
-                          <h3 className="font-black text-[#264D52] text-2xl uppercase tracking-tighter mb-3 leading-none group-hover:text-[#496A49] transition-colors">
-                            {resource.title}
-                          </h3>
-
-                          <p className="text-[#264D52]/70 text-sm leading-relaxed mb-6 font-medium">
-                            {resource.description}
-                          </p>
-
-                          {resource.address && (
-                            <div className="mt-auto pt-4 border-t-2 border-[#264D52]/5 text-[10px] font-bold text-[#264D52]/40 uppercase tracking-widest">
-                              {resource.address}
+                            <div className="mt-8 pt-6 border-t border-road-paint/10">
+                              <div className="inline-block group-hover:text-road-paint relative font-display text-sm tracking-widest uppercase text-asphalt transition-colors">
+                                Learn More
+                                <span className="absolute -bottom-1.5 left-0 w-0 h-[3px] bg-marking transition-all duration-300 ease-out group-hover:w-full" />
+                              </div>
                             </div>
-                          )}
-                        </div>
+                          </div>
+                        </Link>
                       </motion.div>
                     );
                   })}
@@ -254,5 +282,47 @@ export default function ResourceDirectory() {
         </div>
       </div>
     </section>
+  );
+}
+
+// ─── Sub-Component: Island Image Map ────────────────────────────────
+
+function IslandImageMap({ activeIsland, onIslandClick }: { activeIsland: string | null, onIslandClick: (id: string | null) => void }) {
+  const islands = [
+    { id: "north", name: "NORTH WILLSTONE", src: "/right.png", classes: "top-[10%] left-[45%] w-[45%]" },
+    { id: "emerald", name: "EMERALD ISLE", src: "/left.png", classes: "top-[30%] left-[15%] w-[40%]" },
+    { id: "central", name: "CENTRAL HUB", src: "/small.png", classes: "top-[50%] left-[40%] w-[35%]" },
+    { id: "south", name: "SOUTH BEACH", src: "/bottom.png", classes: "bottom-[5%] left-[25%] w-[50%]" }
+  ];
+
+  return (
+    <div className="relative w-full h-full min-h-[260px]">
+      {islands.map((island) => {
+        const isActive = activeIsland === island.id;
+        const opacityClass = activeIsland ? (isActive ? "opacity-100 scale-105 z-20" : "opacity-40 grayscale-[0.6] z-10") : "opacity-100 hover:scale-[1.03] hover:z-20";
+
+        return (
+          <div
+            key={island.id}
+            onClick={() => onIslandClick(isActive ? null : island.id)}
+            className={`absolute cursor-pointer transition-all duration-300 drop-shadow-lg group flex items-center justify-center ${island.classes} ${opacityClass}`}
+          >
+            <Image
+              src={island.src}
+              alt={island.name}
+              width={200}
+              height={200}
+              className="w-full h-auto object-contain drop-shadow"
+            />
+            {/* Baked-in label over the island images on hover - matches the screenshot aesthetic to put labels near them */}
+            <div className="absolute inset-0 m-auto flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30">
+              <div className="bg-road-paint text-white text-[10px] font-black px-3 py-1.5 rounded-md shadow-xl whitespace-nowrap tracking-wider">
+                {island.name}
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }

@@ -97,7 +97,7 @@ export default function RequestForm() {
     // Shared tailwind classes for inputs
     const inputClasses = "w-full px-4 py-3 bg-white border-2 border-[#264D52]/20 rounded-xl text-[#264D52] focus:outline-none focus:border-[#496A49] focus:ring-1 focus:ring-[#496A49] transition-all placeholder:text-[#264D52]/40";
     const darkInputClasses = "w-full px-4 py-3 bg-[#264D52] border-2 border-[#264D52] rounded-xl text-white focus:outline-none focus:border-[#496A49] focus:ring-1 focus:ring-[#496A49] transition-all placeholder:text-white/50";
-    const labelClasses = "flex items-center gap-2 text-[#264D52] font-black uppercase tracking-widest text-xs mb-2";
+    const labelClasses = "flex items-center gap-2 text-[#264D52] font-black tracking-widest text-s mb-2";
     const RequiredMarker = () => <span className="text-red-500 ml-1">*</span>;
 
     if (status === "success" && submittedData) {
@@ -156,7 +156,7 @@ export default function RequestForm() {
                 <h2 className="text-3xl font-display font-black text-[#264D52] uppercase tracking-tighter">
                     Submit a <span className="text-[#496A49]">Resource</span>
                 </h2>
-                <p className="text-[#496A49] text-sm font-medium mt-1 uppercase tracking-widest">Suggest a program/service to add to the community</p>
+                <p className="text-[#496A49] text-sm font-medium mt-1 tracking-widest">Suggest a program/service to add to the community</p>
                 <div className="mt-4 flex items-center gap-1.5 bg-[#264D52]/5 px-4 py-2 rounded-xl text-xs font-bold text-[#264D52] border border-[#264D52]/10 w-fit">
                     <span className="text-red-500 text-lg leading-none">*</span>
                     <span className="uppercase tracking-widest">Indicates a mandatory field</span>

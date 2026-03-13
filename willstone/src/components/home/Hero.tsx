@@ -76,7 +76,7 @@ export default function Hero() {
             href="/resource-hub"
             className="mt-6 group relative font-display text-sm tracking-widest uppercase text-[#f5f0eb] hover:text-white transition-colors"
           >
-            Or Find it Manually
+            Explore Resources
             <span className="absolute -bottom-1.5 left-0 w-0 h-[2px] bg-[#C59F82] transition-all duration-300 ease-out group-hover:w-full" />
           </Link>
         </div>
@@ -91,7 +91,7 @@ export default function Hero() {
           onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
           className="animate-bounce flex flex-col items-center cursor-pointer hover:text-white/80 transition-colors"
         >
-          <span className="text-sm font-semibold tracking-[0.2em] uppercase mb-2">Explore</span>
+          <span className="text-sm font-semibold tracking-[0.2em] uppercase mb-2">Spotlight</span>
           <ArrowDown size={24} />
         </div>
       </div>

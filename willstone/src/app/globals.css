@@ -28,14 +28,6 @@
   --font-display: var(--font-righteous);
 }
 
-/* Dark Mode Override */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #1a2a2a;
-    --foreground: #f5f0eb;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
