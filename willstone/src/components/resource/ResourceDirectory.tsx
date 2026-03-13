@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Loader2, Library, Users, TreePine, Stethoscope, Briefcase, Scale, Car, Activity, Globe, Folder, Target, SlidersHorizontal } from "lucide-react";
+import { Search, Loader2, Library, Users, TreePine, Stethoscope, Briefcase, Scale, Car, Activity, Globe, Folder, Target, SlidersHorizontal, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { supabase } from "@/utils/supabase/client";
 import Link from "next/link";
@@ -112,7 +112,7 @@ export default function ResourceDirectory() {
             animate={{ opacity: 1, y: 0 }}
             className="text-6xl md:text-[6rem] leading-none font-display text-road-paint uppercase tracking-tighter text-center max-w-5xl drop-shadow-sm"
           >
-            RESOURCE DIRECTORY
+            RESOURCE HUB
           </motion.h1>
         </div>
 
@@ -196,8 +196,8 @@ export default function ResourceDirectory() {
           <div className="flex-1 flex flex-col min-w-0">
 
             {/* Search Bar */}
-            <div className="mb-12 flex gap-4 items-center">
-              <div className="relative flex-1">
+            <div className="mb-12 flex flex-col md:flex-row gap-4 items-center">
+              <div className="relative flex-1 w-full">
                 <input
                   type="text"
                   placeholder="Search"
@@ -207,6 +207,10 @@ export default function ResourceDirectory() {
                 />
                 <Search className="absolute right-8 top-1/2 -translate-y-1/2 text-brand-text/40" size={24} />
               </div>
+              <button className="w-full md:w-auto flex items-center justify-center gap-3 px-8 py-5 bg-[var(--brand-medium)] hover:bg-[var(--brand-light)] active:bg-[var(--brand-dark)] text-[var(--background)] rounded-full transition-all duration-300 shadow-sm cursor-pointer group hover:scale-[1.03] hover:shadow-md shrink-0 border border-transparent">
+                <Sparkles size={22} className="group-hover:rotate-12 transition-transform duration-300" />
+                <span className="font-bold tracking-wide">Search with AI</span>
+              </button>
             </div>
 
             {/* Grid */}
@@ -234,7 +238,7 @@ export default function ResourceDirectory() {
                         exit={{ opacity: 0, y: 20, transition: { duration: 0.2 } }}
                         className="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 border border-road-paint/10 flex flex-col group h-full"
                       >
-                        <Link href={`/resource-hub/${resource.id}`} className="flex flex-col h-full focus:outline-none focus-visible:ring-4 focus-visible:ring-asphalt/30 rounded-[2rem]">
+                        <Link href={`/resource-hub/${resource.page_num}`} className="flex flex-col h-full focus:outline-none focus-visible:ring-4 focus-visible:ring-asphalt/30 rounded-[2rem]">
                           {/* Img Section */}
                           <div className="relative w-full h-56 bg-gray-100 overflow-hidden shrink-0">
                             {resource.images?.[0] ? (
@@ -252,7 +256,7 @@ export default function ResourceDirectory() {
                               {resource.title}
                             </h3>
 
-                            <div className="flex flex-col gap-4 mt-auto">
+                            <div className="flex flex-row gap-4 mt-auto">
                               <div className="flex items-center gap-3">
                                 <span className="text-asphalt flex-shrink-0 bg-asphalt/5 p-2 rounded-lg">{getCategoryIcon(resource.category)}</span>
                                 <span className="text-sm font-bold text-asphalt tracking-wide truncate">{resource.category}</span>
@@ -301,7 +305,7 @@ function IslandImageMap({ activeIsland, onIslandClick }: { activeIsland: string 
   const displayedIsland = islands.find(i => i.id === displayedIslandId);
 
   return (
-    <div 
+    <div
       className="relative w-full h-full min-h-[260px]"
       onMouseLeave={() => setHoveredIsland(null)}
     >
