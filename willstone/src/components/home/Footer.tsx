@@ -2,7 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, Phone } from "lucide-react";
+import { Mail, Phone, Facebook, Instagram, Linkedin } from "lucide-react";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -19,45 +19,65 @@ export default function Footer() {
     { name: "Reference", href: "/reference" },
   ];
 
+  const socials = [
+    { name: "Facebook", icon: Facebook, href: "https://facebook.com" },
+    { name: "Instagram", icon: Instagram, href: "https://instagram.com" },
+    { name: "LinkedIn", icon: Linkedin, href: "https://linkedin.com" },
+  ];
+
   return (
-    <footer className="w-full bg-[#C59F82] border-t border-[#1c2b2b]/10 text-[#1c2b2b] font-sans relative overflow-hidden py-10">
+    <footer className="w-full bg-[#264D52] border-t border-white/5 text-[#f5f0eb]/80 font-sans relative overflow-hidden py-8">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 mb-8">
-          {/* Brand Column */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-y-8 md:gap-x-4 mb-6">
+          {/* Brand & Social Column */}
           <div className="md:col-span-4 flex flex-col items-start">
-            <Link href="/" className="flex items-center space-x-3 mb-4 group">
-              <div className="relative w-10 h-10 transition-transform duration-500 group-hover:scale-110">
+            <Link href="/" className="flex items-center space-x-3 mb-3 group">
+              <div className="relative w-9 h-9 transition-transform duration-500 group-hover:scale-110">
                 <Image
                   src="/logo2.png"
                   alt="Willstone Logo"
                   fill
-                  className="object-contain brightness-0"
+                  className="object-contain brightness-0 invert"
                 />
               </div>
-              <div className="flex flex-col">
-                <span className="text-2xl font-righteous text-[#0a1212] tracking-tight leading-none">
-                  Willstone
-                </span>
-              </div>
+              <span className="text-2xl font-righteous text-[#f5f0eb] tracking-tight leading-none">
+                Willstone
+              </span>
             </Link>
-            <p className="text-sm text-[#264D52] max-w-xs leading-relaxed font-medium">
-              Empowering our community with accessible resources, real-time updates, and essential services for a better tomorrow.
+            <p className="text-xs text-[#f5f0eb]/60 max-w-xs leading-relaxed font-medium mb-4">
+              Empowering our community with accessible resources and essential services.
             </p>
+            <div className="flex space-x-3">
+              {socials.map((social) => {
+                const Icon = social.icon;
+                return (
+                  <a
+                    key={social.name}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-[#C59F82] transition-colors"
+                    aria-label={social.name}
+                  >
+                    <Icon size={18} />
+                  </a>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Links Column */}
-          <div className="md:col-span-5">
-            <h4 className="text-[#496A49] font-bold uppercase tracking-widest text-xs mb-6">Navigation</h4>
-            <nav className="grid grid-cols-2 gap-x-6 gap-y-3">
+          {/* Compact Nav Column */}
+          <div className="md:col-span-5 flex flex-col">
+            <h4 className="text-[#C59F82] font-bold uppercase tracking-widest text-[10px] mb-4">Navigation</h4>
+            <nav className="grid grid-cols-2 gap-x-2 gap-y-2 max-w-[280px]">
               {links.map((link) => (
                 <Link
                   key={link.name}
                   href={link.href}
-                  className="group relative w-fit text-sm text-[#1c2b2b] hover:text-[#496A49] transition-colors duration-300 font-bold"
+                  className="group relative w-fit text-xs text-[#f5f0eb]/70 hover:text-white transition-colors duration-300 font-medium"
                 >
                   {link.name}
-                  <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-[#264D52] transition-all duration-300 ease-out group-hover:w-full" />
+                  <span className="absolute -bottom-0.5 left-0 w-0 h-[1.5px] bg-[#C59F82] transition-all duration-300 ease-out group-hover:w-full" />
                 </Link>
               ))}
             </nav>
@@ -65,27 +85,27 @@ export default function Footer() {
 
           {/* Contact Column */}
           <div className="md:col-span-3">
-            <h4 className="text-[#496A49] font-bold uppercase tracking-widest text-xs mb-6">Contact Us</h4>
-            <div className="space-y-4">
-              <a href="tel:+1234567890" className="flex items-center gap-3 text-[#1c2b2b] hover:text-[#264D52] transition-colors group">
-                <div className="w-9 h-9 rounded-lg bg-[#264D52]/10 flex items-center justify-center group-hover:bg-[#264D52]/20 transition-colors border border-[#264D52]/20">
-                  <Phone size={16} className="text-[#264D52]" />
+            <h4 className="text-[#C59F82] font-bold uppercase tracking-widest text-[10px] mb-4">Contact</h4>
+            <div className="space-y-3">
+              <a href="tel:+1234567890" className="flex items-center gap-2 text-xs text-[#f5f0eb]/70 hover:text-white transition-colors group">
+                <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
+                  <Phone size={14} className="text-[#C59F82]" />
                 </div>
-                <span className="text-sm font-bold tracking-wide">(123) 456-7890</span>
+                <span className="font-bold tracking-wide">(123) 456-7890</span>
               </a>
-              <a href="mailto:willstone.city@gmail.com" className="flex items-center gap-3 text-[#1c2b2b] hover:text-[#264D52] transition-colors group">
-                <div className="w-9 h-9 rounded-lg bg-[#264D52]/10 flex items-center justify-center group-hover:bg-[#264D52]/20 transition-colors border border-[#264D52]/20">
-                  <Mail size={16} className="text-[#264D52]" />
+              <a href="mailto:willstone.city@gmail.com" className="flex items-center gap-2 text-xs text-[#f5f0eb]/70 hover:text-white transition-colors group">
+                <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
+                  <Mail size={14} className="text-[#C59F82]" />
                 </div>
-                <span className="text-sm font-bold tracking-wide">willstone.city@gmail.com</span>
+                <span className="font-bold tracking-wide">willstone.city@gmail.com</span>
               </a>
             </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-6 border-t border-[#1c2b2b]/10 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs font-bold text-[#496A49]">
+        <div className="pt-4 border-t border-white/5 flex justify-between items-center">
+          <p className="text-[10px] font-bold text-[#f5f0eb]/30">
             © {currentYear} City of Willstone. All rights reserved.
           </p>
         </div>
