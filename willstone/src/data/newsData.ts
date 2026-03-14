@@ -27,7 +27,7 @@ export const newsCategories: NewsCategory[] = [
 
 export const newsArticles: NewsArticle[] = [
   {
-    id: "art-1",
+    id: "1",
     title: "Modernizing Urban Infrastructure: The 2024 Vision",
     slug: "modernizing-urban-infrastructure-2024",
     category: "infrastructure",
@@ -38,7 +38,7 @@ export const newsArticles: NewsArticle[] = [
     isFeatured: true,
   },
   {
-    id: "art-2",
+    id: "2",
     title: "New Recycling Initiative Launches Next Month",
     slug: "new-recycling-initiative",
     category: "environment",
@@ -48,7 +48,7 @@ export const newsArticles: NewsArticle[] = [
     date: "2024-03-05",
   },
   {
-    id: "art-3",
+    id: "3",
     title: "Public Budget Meeting: Have Your Say",
     slug: "public-budget-meeting",
     category: "government",
@@ -58,7 +58,7 @@ export const newsArticles: NewsArticle[] = [
     date: "2024-03-02",
   },
   {
-    id: "art-4",
+    id: "4",
     title: "Free Community Health Screenings Announced",
     slug: "community-health-screenings",
     category: "health",
@@ -68,7 +68,7 @@ export const newsArticles: NewsArticle[] = [
     date: "2024-02-28",
   },
   {
-    id: "art-5",
+    id: "5",
     title: "Valley Trail Extension Completed Ahead of Schedule",
     slug: "valley-trail-extension",
     category: "infrastructure",
@@ -78,7 +78,7 @@ export const newsArticles: NewsArticle[] = [
     date: "2024-02-20",
   },
   {
-    id: "art-6",
+    id: "6",
     title: "Harvest Festival Schedule Released",
     slug: "harvest-festival-schedule",
     category: "community",
@@ -88,7 +88,7 @@ export const newsArticles: NewsArticle[] = [
     date: "2024-02-15",
   },
   {
-    id: "art-7",
+    id: "7",
     title: "Downtown Revitalization Project Wins Design Award",
     slug: "downtown-revitalization-award",
     category: "infrastructure",

@@ -121,7 +121,7 @@ export const mockEvents: CalendarEvent[] = [
         type: 'SOCIAL',
         interestedCount: 50
     },
-    
+
     // MARCH 2026
     {
         id: "evt-11",
@@ -256,5 +256,16 @@ export const mockEvents: CalendarEvent[] = [
         type: 'SOCIAL',
         isVirtual: true,
         interestedCount: 60
-    }
+    },
+    {
+        id: "evt-24",
+        title: "Public Budget Meeting",
+        date: "2026-04-21",
+        time: "5:00 PM - 7:00 PM",
+        address: "City Hall (Central Island)",
+        description: "Learn to cook fresh, seasonal spring recipes from the comfort of your home with Chef Mario.",
+        type: 'CIVIC',
+        isVirtual: false,
+        interestedCount: 67
+    },
 ];
