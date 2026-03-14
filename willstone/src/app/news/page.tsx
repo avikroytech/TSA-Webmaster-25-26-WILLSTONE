@@ -4,39 +4,22 @@ import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Search, 
-  ArrowRight, 
-  LayoutGrid, 
-  Landmark, 
-  Construction, 
-  Stethoscope, 
-  Leaf, 
-  Users,
+import {
+  Search,
+  ArrowRight,
   Calendar,
-  Tag,
   ArrowDown
 } from "lucide-react";
 import Navbar from "@/components/home/Navbar";
 import Footer from "@/components/home/Footer";
-import { newsArticles, newsCategories, NewsArticle } from "@/data/newsData";
-
-const iconMap: Record<string, any> = {
-  LayoutGrid,
-  Landmark,
-  Construction,
-  Stethoscope,
-  Leaf,
-  Users,
-};
+import { newsArticles, NewsArticle } from "@/data/newsData";
 
 export default function NewsPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("all");
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   const featuredArticle = useMemo(() => newsArticles.find(a => a.isFeatured), []);
-  
+
   const formatDate = (dateString: string) => {
     const [year, month, day] = dateString.split("-");
     return `${month}/${day}/${year}`;
@@ -52,37 +35,36 @@ export default function NewsPage() {
 
   const filteredArticles = useMemo(() => {
     return newsArticles.filter(article => {
-      const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                           article.description.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = activeCategory === "all" || article.category === activeCategory;
-      return matchesSearch && matchesCategory && !article.isFeatured;
+      const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        article.description.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesSearch && !article.isFeatured;
     });
-  }, [searchQuery, activeCategory]);
+  }, [searchQuery]);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f5f0eb] text-[#1c2b2b]">
       <Navbar />
-      
+
       <main className="flex-1">
         {/* Full-Viewport Hero Section with Mouse Tracking */}
         {featuredArticle && (
-          <section 
+          <section
             className="w-full relative h-screen overflow-hidden group"
             onMouseMove={handleMouseMove}
           >
-            <div 
+            <div
               className="absolute inset-[-5%] transition-transform duration-200 ease-out"
               style={{
                 transform: `translate(${mousePos.x * -2}%, ${mousePos.y * -2}%)`
               }}
             >
-              <motion.div 
+              <motion.div
                 initial={{ scale: 1.1, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
                 className="absolute inset-0"
               >
-                <Image 
+                <Image
                   src={featuredArticle.imageUrl}
                   alt={featuredArticle.title}
                   fill
@@ -92,7 +74,7 @@ export default function NewsPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1c2b2b]/95 via-[#1c2b2b]/40 to-[#1c2b2b]/20" />
               </motion.div>
             </div>
-            
+
             <div className="relative h-full container mx-auto px-6 flex flex-col justify-end pb-24 md:pb-32">
               <motion.div
                 initial={{ y: 30, opacity: 0 }}
@@ -109,8 +91,8 @@ export default function NewsPage() {
                 <p className="text-xl md:text-2xl text-white/90 mb-10 font-sans leading-relaxed line-clamp-2 md:line-clamp-none">
                   {featuredArticle.description}
                 </p>
-                <Link 
-                  href={`/news/${featuredArticle.slug}`}
+                <Link
+                  href={`/news/${featuredArticle.id}`}
                   className="inline-flex items-center gap-2 px-10 py-4 bg-[#70AC90] hover:bg-[#496A49] text-white font-bold rounded-full transition-all group/btn shadow-xl hover:shadow-2xl hover:scale-105"
                 >
                   Read Full Story
@@ -121,7 +103,7 @@ export default function NewsPage() {
 
             {/* Scroll Down Label */}
             <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center text-white/80 z-20">
-              <div 
+              <div
                 onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
                 className="animate-bounce flex flex-col items-center cursor-pointer hover:text-white transition-colors"
               >
@@ -134,14 +116,14 @@ export default function NewsPage() {
 
         {/* Content Section */}
         <div className="w-full flex flex-col items-center">
-          
+
           {/* Curved Full-Width Search Bar */}
           <div className="w-full px-6 py-8">
             <div className="relative w-full group">
               <div className="absolute left-6 top-1/2 -translate-y-1/2 text-[#264D52]/60 z-10">
                 <Search size={24} strokeWidth={2} />
               </div>
-              <input 
+              <input
                 type="text"
                 placeholder="Search news, updates, and announcements..."
                 value={searchQuery}
@@ -152,31 +134,6 @@ export default function NewsPage() {
           </div>
 
           <div className="container mx-auto px-6">
-            {/* Category Filter - Shortened Padding */}
-            <div className="flex flex-wrap items-center justify-center gap-3 mb-12">
-              {newsCategories.map((category) => {
-                const Icon = iconMap[category.icon];
-                const isActive = activeCategory === category.id;
-                
-                return (
-                  <button
-                    key={category.id}
-                    onClick={() => setActiveCategory(category.id)}
-                    className={`
-                      flex items-center gap-2 px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.15em] transition-all
-                      ${isActive 
-                        ? "bg-[#1c2b2b] text-white shadow-lg scale-105" 
-                        : "bg-white text-[#264D52] hover:bg-[#70AC90]/10 hover:border-[#70AC90]/30 border-2 border-[#1c2b2b]/5 shadow-sm"
-                      }
-                    `}
-                  >
-                    {Icon && <Icon size={14} />}
-                    {category.name}
-                  </button>
-                );
-              })}
-            </div>
-
             {/* News Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
               <AnimatePresence mode="popLayout">
@@ -190,30 +147,23 @@ export default function NewsPage() {
                     className="bg-white rounded-3xl overflow-hidden shadow-[0_10px_40px_-15px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.15)] transition-all duration-500 border border-[#264D52]/5 flex flex-col h-full group"
                   >
                     <div className="relative h-60 overflow-hidden">
-                      <Image 
+                      <Image
                         src={article.imageUrl}
                         alt={article.title}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-700"
                       />
                     </div>
-                    
+
                     <div className="p-10 flex flex-col flex-1">
-                      <div className="flex items-center gap-2 mb-4 text-[#496A49]">
-                        <Tag size={12} />
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#264D52]/40">
-                          {newsCategories.find(c => c.id === article.category)?.name}
-                        </span>
-                      </div>
-                      
                       <h3 className="text-2xl font-display font-black text-[#1c2b2b] mb-4 leading-tight group-hover:text-[#70AC90] transition-colors">
                         {article.title}
                       </h3>
-                      
+
                       <p className="text-base text-[#1c2b2b]/70 font-sans leading-relaxed mb-8 line-clamp-3">
                         {article.description}
                       </p>
-                      
+
                       <div className="mt-auto pt-8 border-t border-[#264D52]/10 flex items-center justify-between">
                         <div className="flex items-center gap-2 text-[#264D52]/60">
                           <Calendar size={16} />
@@ -221,9 +171,9 @@ export default function NewsPage() {
                             {formatDate(article.date)}
                           </span>
                         </div>
-                        
-                        <Link 
-                          href={`/news/${article.slug}`}
+
+                        <Link
+                          href={`/news/${article.id}`}
                           className="inline-flex items-center gap-1.5 text-[#70AC90] hover:text-[#496A49] text-xs font-black uppercase tracking-widest group/link transition-colors"
                         >
                           Read More
@@ -244,7 +194,7 @@ export default function NewsPage() {
                 </div>
                 <h3 className="text-2xl font-display font-black text-[#1c2b2b] mb-2">No Articles Found</h3>
                 <p className="text-[#1c2b2b]/60 max-w-md mx-auto">
-                  We couldn't find any news articles matching your current search or filter. Try a different term or category.
+                  We couldn't find any news articles matching your current search. Try a different term.
                 </p>
               </div>
             )}
