@@ -1,201 +1,54 @@
-'use client';
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
+"use client";
 
-interface Resource {
-  id: number;
-  name: string;
-  description: string;
-  image: string;
-  color: string;
-}
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { SpotlightCarouselGallery, CarouselItem } from "@/components/ui/spotlight-carousel";
 
-const resources: Resource[] = [
+const resources: CarouselItem[] = [
   {
     id: 1,
-    name: "Community Center",
-    description: "A modern facility offering recreational programs, meeting spaces, and community events for residents of all ages.",
-    image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800&h=600&fit=crop&q=80",
-    color: "#FFD700", 
+    title: "Your New Public Library",
+    description: "A modern hub for learning and connection in the heart of Willstone, featuring over 50,000 titles and creative maker spaces.",
+    image: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&h=600&fit=crop&q=80",
+    linkUrl: "#",
+    linkText: "Explore the Space",
   },
   {
     id: 2,
-    name: "Public Library",
-    description: "Access to thousands of books, digital resources, study spaces, and educational programs for lifelong learning.",
-    image: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&h=600&fit=crop&q=80",
-    color: "#C59F82", 
+    title: "Central Willstone Park",
+    description: "Beautiful parks, walking trails, sports facilities, and outdoor recreation programs for the whole family.",
+    image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop&q=80",
+    linkUrl: "#",
+    linkText: "Explore the Park",
   },
   {
     id: 3,
-    name: "Parks & Recreation",
-    description: "Beautiful parks, walking trails, sports facilities, and outdoor recreation programs for the whole family.",
-    image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop&q=80",
-    color: "#78c78c", 
+    title: "Summer Heritage Fest",
+    description: "A modern facility offering recreational programs, meeting spaces, and community events for residents of all ages.",
+    image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800&h=600&fit=crop&q=80",
+    linkUrl: "#",
+    linkText: "See the Events",
   },
 ];
 
 export default function SpotlightCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isFlickering, setIsFlickering] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-
-  const triggerTransition = (nextIndex: number) => {
-    setIsFlickering(true);
-    setTimeout(() => {
-      setCurrentIndex(nextIndex);
-      setIsFlickering(false);
-    }, 450);
-  };
-
-  const navigate = (direction: number) => {
-    const next = (currentIndex + direction + resources.length) % resources.length;
-    triggerTransition(next);
-  };
-
-  useEffect(() => {
-    if (isPaused || isFlickering) return;
-    const interval = setInterval(() => navigate(1), 6000);
-    return () => clearInterval(interval);
-  }, [isPaused, currentIndex, isFlickering]);
-
-  const currentResource = resources[currentIndex];
-
-  const lightVariants = {
-    on: { opacity: 1, filter: "brightness(1) contrast(1)" },
-    off: { 
-      opacity: [1, 0, 0.4, 0, 0.2, 0],
-      filter: "brightness(0.5) contrast(1.2)",
-      transition: { duration: 0.4 }
-    }
-  };
-
   return (
-    <section className="w-full min-h-screen py-24 bg-[#0f1f1f] overflow-hidden relative flex flex-col justify-center">
-      {/* Background Texture */}
-      <div className="absolute inset-0 opacity-[0.15] bg-[url('https://www.transparenttextures.com/patterns/asphalt-dark.png')] pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-6 relative w-full">
-        
-        {/* Streetlight Fixture */}
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center">
-            <div className="w-2 h-32 bg-gradient-to-b from-[#1a1c2e] to-[#264D52]" />
-            <div className="w-24 h-6 bg-[#264D52] rounded-t-3xl border-b border-white/10" />
-            <div className="w-32 h-10 bg-[#264D52] rounded-b-3xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] relative flex items-center justify-center">
-                <motion.div 
-                    animate={{ 
-                        backgroundColor: isFlickering ? "#111" : currentResource.color,
-                        boxShadow: isFlickering ? "none" : `0px 0px 50px 15px ${currentResource.color}`
-                    }}
-                    className="w-20 h-4 rounded-full blur-[4px] transition-all duration-500"
-                />
-            </div>
-        </div>
-
-        <div className="relative w-full flex flex-col items-center pt-20">
-          
-          {/* Volumetric Light Cone */}
-          <AnimatePresence mode="wait">
-            {!isFlickering && (
-              <motion.div
-                key={`volumetric-beam-${currentIndex}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0, transition: { duration: 0.1 } }}
-                className="absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none z-0"
-                style={{ width: '2000px', height: '1200px' }}
-              >
-                <div 
-                  className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full"
-                  style={{
-                    background: `conic-gradient(from 135deg at 50% 0%, transparent 0deg, ${currentResource.color}20 30deg, ${currentResource.color}30 45deg, ${currentResource.color}20 60deg, transparent 90deg)`,
-                    filter: 'blur(100px)',
-                  }}
-                />
-                <div 
-                  className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-full"
-                  style={{
-                    background: `conic-gradient(from 155deg at 50% 0%, transparent 0deg, ${currentResource.color}35 20deg, ${currentResource.color}35 25deg, transparent 45deg)`,
-                    filter: 'blur(50px)',
-                  }}
-                />
-                <div className="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay" />
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Main Content Grid */}
-          <div className="relative z-10 w-full mt-16 min-h-[500px] flex items-center">
-            <motion.div
-              variants={lightVariants}
-              animate={isFlickering ? "off" : "on"}
-              className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center w-full"
-            >
-              {/* Image Side */}
-              <div className="relative order-2 lg:order-1">
-                <div 
-                  className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-[110%] h-32 blur-[80px] opacity-20"
-                  style={{ background: `radial-gradient(circle, ${currentResource.color} 0%, transparent 70%)` }}
-                />
-                
-                <div className="absolute inset-0 bg-[#264D52] transform translate-x-4 translate-y-4 -z-10" />
-                <div className="relative aspect-[4/3] border-[3px] border-[#264D52] overflow-hidden bg-slate-900 shadow-2xl">
-                  <Image
-                    src={currentResource.image}
-                    alt={currentResource.name}
-                    fill
-                    className="object-cover opacity-90 transition-opacity duration-700"
-                  />
-                  <div className="absolute inset-0 shadow-[inset_0_0_80px_rgba(0,0,0,0.6)]" />
-                </div>
-              </div>
-
-              {/* Text Side */}
-              <div className="flex flex-col justify-center space-y-6 order-1 lg:order-2">
-                <div className="space-y-2">
-                    <h2 className="text-6xl md:text-8xl font-black text-white uppercase tracking-tighter leading-none">
-                        {currentResource.name}
-                    </h2>
-                </div>
-                
-                <p className="text-[#C59F82] text-lg md:text-xl font-medium max-w-lg">
-                  {currentResource.description}
-                </p>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Navigation Bar */}
-          <div className="w-full flex flex-col md:flex-row justify-between items-center gap-8 mt-24 z-20">
-             {/* Progress Markers */}
-             <div className="flex gap-3">
-                {resources.map((_, i) => (
-                    <button
-                        key={i}
-                        onClick={() => triggerTransition(i)}
-                        className={`h-1.5 transition-all duration-500 rounded-full ${i === currentIndex ? 'w-20 bg-white shadow-[0_0_15px_#fff]' : 'w-8 bg-[#264D52]'}`}
-                    />
-                ))}
-             </div>
-             
-             {/* Nav Buttons */}
-             <div className="flex gap-4">
-                <button 
-                    onClick={() => navigate(-1)}
-                    className="px-6 py-3 border-2 border-[#264D52] text-white flex items-center justify-center hover:bg-white hover:text-[#264D52] transition-all font-bold tracking-widest text-sm"
-                >
-                    PREV
-                </button>
-                <button 
-                    onClick={() => navigate(1)}
-                    className="px-6 py-3 bg-[#264D52] border-2 border-[#264D52] text-white flex items-center justify-center hover:bg-[#496A49] transition-all font-bold tracking-widest text-sm"
-                >
-                    NEXT
-                </button>
-             </div>
-          </div>
+    <section className="w-full bg-[var(--background)] text-[var(--background)] overflow-hidden relative py-5">
+      <div className="max-w-7xl mx-auto px-6 py-3">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
+          <h2 className="text-5xl md:text-7xl font-display font-black text-[var(--brand-medium)] leading-none tracking-tighter capitalize py-1">
+            City Spotlight
+          </h2>
+          <Link href="/resource-hub" className="group flex items-center gap-2 text-[var(--foreground)] font-bold mt-4 md:mt-0 relative pb-1 overflow-hidden transition-colors hover:text-white">
+            <span className="relative z-10">Explore other Resources</span>
+            <ArrowRight className="w-5 h-5 relative z-10 transition-transform group-hover:translate-x-1" />
+            <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[var(--background)] transform -translate-x-full transition-transform duration-300 group-hover:translate-x-0 group-hover:bg-white" />
+          </Link>
         </div>
       </div>
+
+      <SpotlightCarouselGallery items={resources} />
     </section>
   );
 }

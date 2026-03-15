@@ -9,37 +9,50 @@ import { ArrowRight, Calendar as CalendarIcon, MapPin } from "lucide-react";
 const events = [
   {
     id: 1,
-    title: "Town Hall Meeting",
-    location: "City Council Chambers",
-    description: "Join us for the monthly town hall meeting where we discuss community matters and upcoming projects.",
-    date: new Date(2026, 0, 15),
+    title: "Annual Willstone City Gala",
+    location: "Town Square",
+    description: "Celebrate our heritage and future at the historic Town Square. Live music, local dining, and community awards.",
+    date: new Date(2026, 0, 15), // June 15
     image: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&h=600&fit=crop&q=80",
-    category: "Government"
+    category: "Featured Event",
+    color: "bg-[#264D52]" // Dark Teal
   },
   {
     id: 2,
-    title: "Community Festival",
-    location: "Willstone Central Park",
-    description: "Annual community festival featuring local vendors, live music, and family-friendly activities.",
-    date: new Date(2026, 1, 20),
+    title: "Winter Farmers Market",
+    location: "Community Pavilion",
+    description: "Local produce, handmade crafts, and hot beverages inside the Community Pavilion.",
+    date: new Date(2026, 1, 15), // Jan 15
     image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&h=600&fit=crop&q=80",
-    category: "Social"
+    category: "Market",
+    color: "bg-[#264D52]" // Dark Teal
   },
   {
     id: 3,
-    title: "Public Safety Workshop",
-    location: "Fire Station #4",
-    description: "Learn about emergency preparedness and public safety measures for your home and neighborhood.",
-    date: new Date(2026, 2, 10),
+    title: "Town Hall: Green Energy",
+    location: "City Council Chambers",
+    description: "Join the Mayor to discuss the new solar initiatives for public buildings and residential...",
+    date: new Date(2026, 1, 20), // Feb 20
     image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&h=600&fit=crop&q=80",
-    category: "Education"
+    category: "Town Hall",
+    color: "bg-[#496A49]" // Green
+  },
+  {
+    id: 4,
+    title: "Spring Youth Art Fair",
+    location: "Central Library Annex",
+    description: "Showcasing the creative talents of Willstone's K-12 students at the Central Library Annex.",
+    date: new Date(2026, 2, 10), // Mar 10
+    image: "https://images.unsplash.com/photo-1544531586-fde5298cdd40?w=800&h=600&fit=crop&q=80",
+    category: "Art Fair",
+    color: "bg-[#C59F82]" // Brown
   },
 ];
 
-const DURATION_MS = 5000;
+const DURATION_MS = 10000;
 
-// --- ProgressBar Component (Darker for Light Mode) ---
-const ProgressBar = ({ isPaused, onComplete }: { isPaused: boolean, onComplete: () => void }) => {
+// --- ProgressBar Component ---
+const ProgressBar = ({ isPaused, onComplete, color }: { isPaused: boolean, onComplete: () => void, color: string }) => {
   const progress = useMotionValue(0);
   const width = useTransform(progress, [0, DURATION_MS], ["0%", "100%"]);
 
@@ -55,10 +68,10 @@ const ProgressBar = ({ isPaused, onComplete }: { isPaused: boolean, onComplete: 
   });
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#C59F82]/30 pointer-events-none">
+    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-100/50 pointer-events-none rounded-b-3xl overflow-hidden">
       <motion.div
         style={{ width }}
-        className="h-full bg-[#264D52]"
+        className={`h-full ${color}`}
       />
     </div>
   );
@@ -73,35 +86,32 @@ export default function CalendarSection() {
   };
 
   return (
-    <section className="w-full py-24 bg-[#f5f0eb] text-[#264D52] overflow-hidden relative">
-      {/* Background Texture Overlay (Subtle) */}
-      <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-        }}
-      />
-
+    <section className="w-full py-12 bg-[#f5f0eb] text-[#264D52] overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
 
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-4">
           <div className="text-left">
-            <h2 className="text-5xl md:text-7xl font-display font-black text-[#264D52] leading-none uppercase tracking-tighter">
-              Upcoming <span className="text-[#496A49]">Events</span>
+            <h2 className="text-5xl md:text-7xl font-display font-black text-[#264D52] leading-none tracking-tighter capitalize py-1">
+              Upcoming Events
             </h2>
           </div>
+          <Link href="/calendar" className="group flex items-center gap-2 text-[#264D52] font-bold mt-4 md:mt-0 relative pb-1 overflow-hidden">
+            <span className="relative z-10">View Full Calendar</span>
+            <ArrowRight className="w-5 h-5 relative z-10 transition-transform group-hover:translate-x-1" />
+            <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#264D52] transform -translate-x-full transition-transform duration-300 group-hover:translate-x-0" />
+          </Link>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 min-h-[600px]">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 min-h-[600px]">
 
-          {/* LEFT: Visual Stage */}
-          <div className="lg:col-span-7 relative rounded-2xl overflow-hidden shadow-2xl bg-[#264D52] border-4 border-[#264D52]/5">
+          {/* LEFT: Visual Stage (Active Item) */}
+          <div className="lg:col-span-7 relative rounded-[2rem] overflow-hidden shadow-sm bg-[#f5f0eb] min-h-[480px]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
-                initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.8 }}
                 className="absolute inset-0"
@@ -110,9 +120,10 @@ export default function CalendarSection() {
                   src={events[activeTab].image}
                   alt={events[activeTab].title}
                   fill
-                  className="object-cover brightness-90 contrast-[1.05]"
+                  className="object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#264D52]/80 via-transparent to-transparent" />
+                {/* Subtle Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#264D52]/90 via-[#264D52]/40 to-transparent" />
               </motion.div>
             </AnimatePresence>
 
@@ -120,27 +131,29 @@ export default function CalendarSection() {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeTab}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.4 }}
                 >
-                  <span className="px-4 py-1.5 bg-[#264D52] text-[#f5f0eb] text-[10px] font-black uppercase tracking-[0.25em] mb-6 inline-block transform -skew-x-12">
-                    <span className="inline-block transform skew-x-12">{events[activeTab].category}</span>
-                  </span>
-                  <h3 className="text-4xl md:text-6xl font-display font-black mb-8 text-white leading-[0.9] uppercase tracking-tighter drop-shadow-md">
+                  <h3 className="text-4xl md:text-5xl font-display font-bold mb-4 text-white leading-[1.1] capitalize tracking-tight drop-shadow-sm">
                     {events[activeTab].title}
                   </h3>
-                  <div className="flex flex-wrap items-center gap-8 text-white/90">
-                    <div className="flex items-center gap-3">
-                      <CalendarIcon className="w-6 h-6 text-[#C59F82]" />
-                      <span className="text-sm font-black uppercase tracking-widest">
+
+                  <p className="text-white/90 text-[15px] md:text-base mb-6 max-w-xl font-medium leading-relaxed drop-shadow-sm opacity-90 pr-4">
+                    {events[activeTab].description}
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-6 text-white text-sm font-bold tracking-wide drop-shadow-sm uppercase opacity-90">
+                    <div className="flex items-center gap-2">
+                      <CalendarIcon className="w-[18px] h-[18px] flex-shrink-0" />
+                      <span>
                         {events[activeTab].date.toLocaleDateString("en-US", { month: 'short', day: 'numeric', year: 'numeric' })}
                       </span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <MapPin className="w-6 h-6 text-[#C59F82]" />
-                      <span className="text-sm font-bold">{events[activeTab].location}</span>
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-[18px] h-[18px] flex-shrink-0" />
+                      <span className="capitalize normal-case">{events[activeTab].location}</span>
                     </div>
                   </div>
                 </motion.div>
@@ -149,7 +162,7 @@ export default function CalendarSection() {
           </div>
 
           {/* RIGHT: List Controls */}
-          <div className="lg:col-span-5 flex flex-col justify-center gap-5">
+          <div className="lg:col-span-5 flex flex-col justify-between gap-4 h-full pr-1">
             {events.map((event, index) => {
               const isActive = activeTab === index;
               return (
@@ -158,49 +171,32 @@ export default function CalendarSection() {
                   onClick={() => setActiveTab(index)}
                   onMouseEnter={() => isActive && setIsPaused(true)}
                   onMouseLeave={() => isActive && setIsPaused(false)}
-                  className={`group relative flex items-start w-full p-6 transition-all duration-500 overflow-hidden cursor-pointer transform -skew-x-6 border-l-8 ${isActive
-                    ? "bg-[#264D52] border-[#496A49] shadow-[10px_10px_0px_#C59F82]"
-                    : "bg-white border-transparent hover:border-[#496A49]/30 shadow-sm hover:shadow-md"
+                  className={`relative flex items-center w-full p-[22px] transition-all duration-300 cursor-pointer rounded-3xl overflow-hidden border ${isActive
+                    ? "bg-white border-[#264D52]/20 shadow-md transform scale-[1.01]"
+                    : "bg-white border-transparent shadow-sm hover:shadow-md hover:-translate-y-0.5"
                     }`}
                 >
                   {isActive && (
                     <ProgressBar
                       isPaused={isPaused}
                       onComplete={handleNext}
+                      color={event.color}
                     />
                   )}
 
-                  <div className={`flex-shrink-0 flex flex-col items-center justify-center w-16 h-16 transition-all duration-500 transform skew-x-6 ${isActive ? "bg-[#f5f0eb] text-[#264D52] scale-110" : "bg-[#C59F82]/20 text-[#264D52]"
-                    }`}>
-                    <span className="text-[10px] font-black uppercase">{event.date.toLocaleString('default', { month: 'short' })}</span>
-                    <span className="text-2xl font-black leading-none">{event.date.getDate()}</span>
+                  <div className={`flex-shrink-0 flex flex-col items-center justify-center w-[76px] h-[84px] rounded-xl text-white shadow-sm ${event.color}`}>
+                    <span className="text-[11px] font-black uppercase tracking-widest mt-1 opacity-90">{event.date.toLocaleString('default', { month: 'short' })}</span>
+                    <span className="text-[32px] font-display font-black leading-none mt-0.5 tracking-tighter">{event.date.getDate()}</span>
                   </div>
 
-                  <div className="ml-8 flex-1 transform skew-x-6">
-                    <h4 className={`text-xl font-black uppercase tracking-tight transition-colors ${isActive ? "text-[#f5f0eb]" : "text-[#264D52]"
-                      }`}>
+                  <div className="ml-6 flex-1 pr-2">
+                    <h4 className="text-[20px] font-display font-bold text-[#264D52] mb-1.5 leading-tight">
                       {event.title}
                     </h4>
 
-                    <div className="relative overflow-hidden">
-                      <motion.div
-                        initial={false}
-                        animate={{
-                          height: isActive ? "auto" : 0,
-                          opacity: isActive ? 1 : 0
-                        }}
-                        transition={{ duration: 0.4, ease: "circOut" }}
-                      >
-                        <p className="text-sm text-[#C59F82] mt-3 leading-relaxed font-medium">
-                          {event.description}
-                        </p>
-                      </motion.div>
-                    </div>
-                  </div>
-
-                  <div className={`mt-1 transform skew-x-6 transition-all duration-500 ${isActive ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
-                    }`}>
-                    <ArrowRight className="w-6 h-6 text-[#496A49]" />
+                    <p className="text-[13px] text-[#496A49]/80 leading-[1.6] font-medium line-clamp-2">
+                      {event.description}
+                    </p>
                   </div>
                 </div>
               );
