@@ -139,8 +139,8 @@ export default function Calendar() {
     return (
         <div className="w-full flex-1 min-h-0 flex flex-col font-sans mb-12">
             {/* Header row: "City Calendar" + Navigation */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                <h1 className="text-4xl md:text-5xl font-black text-[#264D52] font-display origin-left">
+            <div className="flex flex-col md:flex-row justify-center items-start md:items-center mb-6 gap-4">
+                <h1 className="text-4xl md:text-5xl font-black text-center text-[#264D52] font-display">
                     Calendar
                 </h1>
 
