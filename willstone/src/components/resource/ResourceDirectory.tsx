@@ -119,7 +119,7 @@ export default function ResourceDirectory() {
         <div className="flex flex-col lg:flex-row gap-12 xl:gap-20">
 
           {/* Left Sidebar */}
-          <div className="w-full lg:w-[320px] 2xl:w-[380px] shrink-0 flex flex-col gap-12">
+          <div className="w-full lg:w-[320px] 2xl:w-[380px] shrink-0 flex flex-col gap-10">
 
             <div className="flex flex-col gap-4">
               <h2 className="text-3xl font-black text-road-paint">Filter Resources</h2>
@@ -127,8 +127,8 @@ export default function ResourceDirectory() {
             </div>
 
             {/* Sort By */}
-            <div className="flex flex-col gap-3">
-              <h3 className="text-lg font-black font-display text-asphalt uppercase tracking-widest">SORT BY</h3>
+            <div className="flex flex-col gap-2">
+              <h3 className="text-xl font-black font-display text-asphalt tracking-widest">Sort By</h3>
               <div className="relative group">
                 <select
                   value={sortBy}
@@ -147,7 +147,7 @@ export default function ResourceDirectory() {
 
             {/* Resource Type */}
             <div className="flex flex-col gap-4 items-start">
-              <h3 className="text-lg font-black font-display text-asphalt uppercase tracking-widest">RESOURCE TYPE</h3>
+              <h3 className="text-xl font-black font-display text-asphalt tracking-widest">Resource Type</h3>
               <div className="flex flex-col gap-2 w-full">
                 {allCategoryOptions.map((cat) => {
                   const isActive = activeCategory === cat;
@@ -177,7 +177,7 @@ export default function ResourceDirectory() {
 
             {/* Island Location */}
             <div className="flex flex-col gap-5">
-              <h3 className="text-lg font-black font-display text-asphalt uppercase tracking-widest">ISLAND LOCATION</h3>
+              <h3 className="text-xl font-black font-display text-asphalt tracking-widest">Island Location</h3>
 
               <div className="bg-road-paint/5 border-l-4 border-asphalt p-4 rounded-r-xl">
                 <p className="text-sm font-bold text-asphalt leading-relaxed">

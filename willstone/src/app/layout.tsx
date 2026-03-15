@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Andada_Pro, Righteous } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
+import Navbar from "@/components/home/Navbar";
 
 const andadaPro = Andada_Pro({
   variable: "--font-andada",

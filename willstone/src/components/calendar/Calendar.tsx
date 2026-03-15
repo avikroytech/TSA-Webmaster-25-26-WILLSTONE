@@ -140,8 +140,8 @@ export default function Calendar() {
         <div className="w-full flex-1 min-h-0 flex flex-col font-sans mb-12">
             {/* Header row: "City Calendar" + Navigation */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                <h1 className="text-4xl md:text-5xl font-black text-[#264D52] tracking-tighter font-display transform transition-transform duration-500 hover:scale-[1.02] origin-left">
-                    City Calendar
+                <h1 className="text-4xl md:text-5xl font-black text-[#264D52] font-display origin-left">
+                    Calendar
                 </h1>
 
                 <div className="flex items-center gap-2 md:gap-4 w-full md:w-auto shrink-0 relative z-50">
@@ -240,15 +240,14 @@ export default function Calendar() {
                                 return (
                                     <div
                                         key={idx}
-                                        className={`p-2 flex flex-col transition-all duration-300 origin-center ${
-                                            !cell.date 
-                                                ? 'bg-gray-50/50' 
-                                                : hasSelectedEvent 
-                                                    ? 'bg-amber-50/60 scale-[1.02] shadow-xl -translate-y-1 relative z-50 cursor-pointer ring-1 ring-amber-200' 
-                                                    : selectedEvent 
-                                                        ? `bg-white relative z-10 cursor-pointer opacity-60 ${isToday ? 'ring-2 ring-inset ring-[#70AC90] bg-[#eef6f2]' : ''}`
-                                                        : `bg-white relative z-10 cursor-pointer hover:bg-amber-50/40 hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1 hover:z-30 ${isToday ? 'ring-2 ring-inset ring-[#70AC90] bg-[#eef6f2]' : ''}`
-                                        }`}
+                                        className={`p-2 flex flex-col transition-all duration-300 origin-center ${!cell.date
+                                            ? 'bg-gray-50/50'
+                                            : hasSelectedEvent
+                                                ? 'bg-amber-50/60 scale-[1.02] shadow-xl -translate-y-1 relative z-50 cursor-pointer ring-1 ring-amber-200'
+                                                : selectedEvent
+                                                    ? `bg-white relative z-10 cursor-pointer opacity-60 ${isToday ? 'ring-2 ring-inset ring-[#70AC90] bg-[#eef6f2]' : ''}`
+                                                    : `bg-white relative z-10 cursor-pointer hover:bg-amber-50/40 hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1 hover:z-30 ${isToday ? 'ring-2 ring-inset ring-[#70AC90] bg-[#eef6f2]' : ''}`
+                                            }`}
                                     >
                                         {cell.date && (
                                             <span className={`text-sm font-semibold mb-2 ml-1 ${isToday ? 'text-[#70AC90]' : 'text-[#8699A6]'}`}>

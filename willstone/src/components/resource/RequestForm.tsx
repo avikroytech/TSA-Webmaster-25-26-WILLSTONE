@@ -150,13 +150,13 @@ export default function RequestForm() {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-8 bg-white/90 backdrop-blur-sm p-8 md:p-12 border border-[#264D52]/10 rounded-3xl shadow-2xl">
+        <form onSubmit={handleSubmit} className="space-y-8 bg-white/90 backdrop-blur-sm p-8 md:p-12 rounded-3xl shadow-2xl">
 
             <div className="border-b-2 border-[#264D52]/10 pb-6 mb-8">
-                <h2 className="text-3xl font-display font-black text-[#264D52] uppercase tracking-tighter">
-                    Submit a <span className="text-[#496A49]">Resource</span>
-                </h2>
-                <p className="text-[#496A49] text-sm font-medium mt-1 tracking-widest">Suggest a program/service to add to the community</p>
+                <h1 className="text-4xl text-center font-display font-black text-[#264D52] tracking-tighter">
+                    Submit A Resource
+                </h1>
+                <p className="text-[var(--brand-dark)] text-sm font-medium mt-1 tracking-widest">Suggest a program/service to add to the community</p>
                 <div className="mt-4 flex items-center gap-1.5 bg-[#264D52]/5 px-4 py-2 rounded-xl text-xs font-bold text-[#264D52] border border-[#264D52]/10 w-fit">
                     <span className="text-red-500 text-lg leading-none">*</span>
                     <span className="uppercase tracking-widest">Indicates a mandatory field</span>
