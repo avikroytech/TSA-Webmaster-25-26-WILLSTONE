@@ -86,20 +86,20 @@ export default function CalendarSection() {
   };
 
   return (
-    <section className="w-full py-12 bg-[#f5f0eb] text-[#264D52] overflow-hidden relative">
+    <section className="w-full py-12 bg-[var(--foreground)] text-[var(--background)] overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
 
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-4">
           <div className="text-left">
-            <h2 className="text-5xl md:text-7xl font-display font-black text-[#264D52] leading-none tracking-tighter capitalize py-1">
+            <h2 className="text-5xl md:text-7xl font-display font-black text-[var(--background)] leading-none tracking-tighter capitalize py-1">
               Upcoming Events
             </h2>
           </div>
-          <Link href="/calendar" className="group flex items-center gap-2 text-[#264D52] font-bold mt-4 md:mt-0 relative pb-1 overflow-hidden">
+          <Link href="/calendar" className="group flex items-center gap-2 text-[var(--background)] font-bold mt-4 md:mt-0 relative pb-1 overflow-hidden">
             <span className="relative z-10">View Full Calendar</span>
             <ArrowRight className="w-5 h-5 relative z-10 transition-transform group-hover:translate-x-1" />
-            <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#264D52] transform -translate-x-full transition-transform duration-300 group-hover:translate-x-0" />
+            <div className="absolute bottom-[-1] left-[-1] w-full h-[2px] bg-[var(--background)] transform -translate-x-full transition-transform duration-300 group-hover:translate-x-0" />
           </Link>
         </div>
 
@@ -171,9 +171,9 @@ export default function CalendarSection() {
                   onClick={() => setActiveTab(index)}
                   onMouseEnter={() => isActive && setIsPaused(true)}
                   onMouseLeave={() => isActive && setIsPaused(false)}
-                  className={`relative flex items-center w-full p-[22px] transition-all duration-300 cursor-pointer rounded-3xl overflow-hidden border ${isActive
-                    ? "bg-white border-[#264D52]/20 shadow-md transform scale-[1.01]"
-                    : "bg-white border-transparent shadow-sm hover:shadow-md hover:-translate-y-0.5"
+                  className={`relative flex items-center w-full p-[22px] transition-all duration-300 cursor-pointer rounded-3xl overflow-hidden  ${isActive
+                    ? "bg-white shadow-md transform scale-[1.01]"
+                    : "bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5"
                     }`}
                 >
                   {isActive && (
