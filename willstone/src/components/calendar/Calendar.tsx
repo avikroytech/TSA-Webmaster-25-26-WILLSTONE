@@ -2,7 +2,8 @@
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Clock, MapPin, Check, Calendar as CalendarIcon, Heart, ScanHeart, Gavel, Utensils, Palette, ChevronDown } from 'lucide-react';
-import { mockEvents, CalendarEvent, EventType } from '@/data/mockEvents';
+import { CalendarEvent, EventType } from '@/data/mockEvents';
+import { supabase } from '@/utils/supabase/client';
 
 const DAYS_OF_WEEK = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 const MONTHS = [
@@ -29,6 +30,7 @@ export default function Calendar() {
     const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
     const [selectedCategories, setSelectedCategories] = useState<EventType[]>(['CULTURAL', 'CIVIC', 'SOCIAL', 'HEALTH']);
     const [virtualOnly, setVirtualOnly] = useState(false);
+    const [events, setEvents] = useState<CalendarEvent[]>([]);
 
     // Track interested counts locally to mock interaction
     const [interestedCounts, setInterestedCounts] = useState<Record<string, number>>({});
@@ -36,6 +38,31 @@ export default function Calendar() {
 
     const [isMonthSelectOpen, setIsMonthSelectOpen] = useState(false);
     const monthSelectRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        async function fetchEvents() {
+            const { data, error } = await supabase
+                .from("events")
+                .select("*");
+
+            if (!error && data) {
+                const mappedEvents: CalendarEvent[] = data.map((item: any) => ({
+                    id: item.id.toString(),
+                    title: item.title,
+                    date: item.date,
+                    time: item.time,
+                    address: item.address,
+                    type: item.type as EventType,
+                    isVirtual: item.virtual,
+                    description: item.description,
+                    imageUrl: item.image,
+                    interestedCount: item.interested
+                }));
+                setEvents(mappedEvents);
+            }
+        }
+        fetchEvents();
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -111,7 +138,7 @@ export default function Calendar() {
         // Day cells
         for (let i = 1; i <= daysInMonth; i++) {
             const fullDateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-            const dayEvents = mockEvents.filter(e => {
+            const dayEvents = events.filter(e => {
                 if (e.date !== fullDateStr) return false;
                 if (!selectedCategories.includes(e.type)) return false;
                 if (virtualOnly && !e.isVirtual) return false;
@@ -134,7 +161,7 @@ export default function Calendar() {
         }
 
         return cells;
-    }, [currentYear, currentMonth, daysInMonth, firstDayOfMonth, selectedCategories, virtualOnly]);
+    }, [currentYear, currentMonth, daysInMonth, firstDayOfMonth, selectedCategories, virtualOnly, events]);
 
     return (
         <div className="w-full flex-1 min-h-0 flex flex-col font-sans mb-12">
