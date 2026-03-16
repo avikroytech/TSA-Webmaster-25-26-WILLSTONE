@@ -24,19 +24,19 @@ const getCategoryIcon = (category: string) => {
 };
 
 const islandMapping: Record<string, string> = {
-  emerald: "Emerald Isle",
-  north: "North Willstone",
-  central: "Central Hub",
-  south: "South Beach",
+  emerald: "Emerald",
+  north: "Coral",
+  central: "Central",
+  south: "Talon",
 };
 
 const extractIsland = (resource: any) => {
   const text = `${resource.address || ""} ${resource.description || ""} ${resource.title || ""}`.toLowerCase();
-  if (text.includes("emerald")) return "Emerald Isle";
-  if (text.includes("north")) return "North Willstone";
-  if (text.includes("south")) return "South Beach";
-  if (text.includes("central")) return "Central Hub";
-  return "Central Hub"; // Default mapping if none found
+  if (text.includes("emerald")) return "Emerald";
+  if (text.includes("north")) return "Coral";
+  if (text.includes("south")) return "Talon";
+  if (text.includes("central")) return "Central";
+  return "Central"; // Default mapping if none found
 };
 
 export default function ResourceDirectory() {
@@ -295,10 +295,10 @@ function IslandImageMap({ activeIsland, onIslandClick }: { activeIsland: string 
   const [hoveredIsland, setHoveredIsland] = useState<string | null>(null);
 
   const islands = [
-    { id: "north", name: "NORTH WILLSTONE", src: "/right.png", classes: "top-[26%] left-[52%] w-[32%]" },
-    { id: "emerald", name: "EMERALD ISLE", src: "/left.png", classes: "top-[20%] left-[16%] w-[24%]" },
-    { id: "central", name: "CENTRAL HUB", src: "/small.png", classes: "top-[45%] left-[28%] w-[17%]" },
-    { id: "south", name: "SOUTH BEACH", src: "/bottom.png", classes: "top-[52%] left-[18%] w-[64%]" }
+    { id: "north", name: "CORAL", src: "/right.png", classes: "top-[26%] left-[52%] w-[32%]" },
+    { id: "emerald", name: "EMERALD", src: "/left.png", classes: "top-[20%] left-[16%] w-[24%]" },
+    { id: "central", name: "CENTRAL", src: "/small.png", classes: "top-[45%] left-[28%] w-[17%]" },
+    { id: "south", name: "TALON", src: "/bottom.png", classes: "top-[52%] left-[18%] w-[64%]" }
   ];
 
   const displayedIslandId = hoveredIsland || activeIsland;
