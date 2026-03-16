@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { SpotlightCarouselGallery, CarouselItem } from "@/components/ui/spotlight-carousel";
+import { useEffect, useState } from "react";
+import { supabase } from "@/utils/supabase/client";
 
-const resources: CarouselItem[] = [
+const defaultResources: CarouselItem[] = [
   {
     id: 1,
     title: "Your New Public Library",
@@ -32,6 +34,32 @@ const resources: CarouselItem[] = [
 ];
 
 export default function SpotlightCarousel() {
+  const [resources, setResources] = useState<CarouselItem[]>(defaultResources);
+
+  useEffect(() => {
+    async function fetchSpotlightResources() {
+      const { data, error } = await supabase
+        .from("community_resources")
+        .select("*")
+        .limit(3);
+
+      if (!error && data && data.length > 0) {
+        setResources(
+          data.map((item, index) => ({
+            id: item.id || index + 1,
+            title: item.title,
+            description: item.description,
+            image: item.images?.[0] || defaultResources[index]?.image || defaultResources[0].image,
+            linkUrl: `/resource-hub/${item.page_num || item.id}`,
+            linkText: "Explore the Space",
+          }))
+        );
+      }
+    }
+
+    fetchSpotlightResources();
+  }, []);
+
   return (
     <section className="w-full bg-[var(--background)] text-[var(--background)] overflow-hidden relative py-5">
       <div className="max-w-7xl mx-auto px-6 py-3">
@@ -40,10 +68,10 @@ export default function SpotlightCarousel() {
           <h2 className="text-5xl md:text-7xl font-display font-black text-[var(--brand-medium)] leading-none tracking-tighter capitalize py-1">
             City Spotlight
           </h2>
-          <Link href="/resource-hub" className="group flex items-center gap-2 text-[var(--foreground)] font-bold mt-4 md:mt-0 relative pb-1 overflow-hidden transition-colors hover:text-white">
-            <span className="relative z-10">Explore other Resources</span>
+          <Link href="/resource-hub" className="group flex items-center gap-2 text-[var(--foreground)] font-bold mt-4 md:mt-0 relative pb-1 overflow-hidden transition-colors">
+            <span className="relative z-10">Explore More Resources</span>
             <ArrowRight className="w-5 h-5 relative z-10 transition-transform group-hover:translate-x-1" />
-            <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[var(--background)] transform -translate-x-full transition-transform duration-300 group-hover:translate-x-0 group-hover:bg-white" />
+            <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[var(--foreground)] transform -translate-x-full transition-transform duration-300 group-hover:translate-x-0" />
           </Link>
         </div>
       </div>
