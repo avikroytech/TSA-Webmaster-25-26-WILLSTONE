@@ -66,7 +66,7 @@ export default function SpotlightCarousel() {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
           <h2 className="text-5xl md:text-7xl font-display font-black text-[var(--brand-medium)] leading-none tracking-tighter capitalize py-1">
-            City Spotlight
+            Spotlight
           </h2>
           <Link href="/resource-hub" className="group flex items-center gap-2 text-[var(--foreground)] font-bold mt-4 md:mt-0 relative pb-1 overflow-hidden transition-colors">
             <span className="relative z-10">Explore More Resources</span>
