@@ -1,12 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, useMotionValue, useAnimationFrame, useTransform } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Calendar as CalendarIcon, MapPin } from "lucide-react";
+import { supabase } from "@/utils/supabase/client";
 
 // --- Data ---
-const events = [
+const defaultEvents = [
   {
     id: 1,
     title: "Annual Willstone City Gala",
@@ -80,6 +81,41 @@ const ProgressBar = ({ isPaused, onComplete, color }: { isPaused: boolean, onCom
 export default function CalendarSection() {
   const [activeTab, setActiveTab] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [events, setEvents] = useState(defaultEvents);
+
+  useEffect(() => {
+    async function fetchEvents() {
+      const { data, error } = await supabase
+        .from("events")
+        .select("*")
+        .gte("date", "2026-03-01")
+        .lte("date", "2026-03-31")
+        .order("date", { ascending: true })
+        .limit(4);
+
+      if (!error && data && data.length > 0) {
+        const mappedEvents = data.map((item: any, index: number) => {
+          let eventDate = new Date();
+          if (item.date) {
+             const [year, month, day] = item.date.split("-").map(Number);
+             eventDate = new Date(year, month - 1, day);
+          }
+          return {
+            id: item.id,
+            title: item.title,
+            location: item.address || defaultEvents[index % defaultEvents.length].location,
+            description: item.description,
+            date: eventDate,
+            image: item.image || defaultEvents[index % defaultEvents.length].image,
+            category: item.type,
+            color: defaultEvents[index % defaultEvents.length].color
+          };
+        });
+        setEvents(mappedEvents);
+      }
+    }
+    fetchEvents();
+  }, []);
 
   const handleNext = () => {
     setActiveTab((prev) => (prev + 1) % events.length);
