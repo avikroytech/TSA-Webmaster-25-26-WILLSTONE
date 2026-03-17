@@ -12,6 +12,16 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "pixabay.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "media.istockphoto.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "unsplash.com",
         pathname: "/**",
       },
