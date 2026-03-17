@@ -145,23 +145,6 @@ export default async function ResourcePage({ params }: { params: { slug: string 
                   </div>
                 </div>
 
-                {/* Info Item 4 */}
-                <div className="flex items-start gap-4 group">
-                  <div className="mt-1 text-[#70AC90] group-hover:text-white transition-colors duration-300"><Globe size={22} className="group-hover:scale-110 transition-transform duration-300 transform-origin-center" /></div>
-                  <div className="flex flex-col">
-                    <span className="text-xs font-display uppercase tracking-widest text-[#70AC90] mb-1.5 opacity-90">Website</span>
-                    {resource.website ? (
-                      <a href={resource.website.startsWith('http') ? resource.website : `https://${resource.website}`} target="_blank" rel="noopener noreferrer" className="font-bold text-lg tracking-wide hover:text-white transition-colors underline decoration-[#70AC90]/40 underline-offset-4 group-hover:decoration-white/60">
-                        {resource.website.replace(new RegExp('^https?://'), '')}
-                      </a>
-                    ) : (
-                      <a href="https://library.willstone.gov" target="_blank" rel="noopener noreferrer" className="font-bold text-lg tracking-wide hover:text-white transition-colors underline decoration-[#70AC90]/40 underline-offset-4 group-hover:decoration-white/60">
-                        library.willstone.gov
-                      </a>
-                    )}
-                  </div>
-                </div>
-
                 {/* Info Item 5 */}
                 <div className="flex items-start gap-4 group">
                   <div className="mt-1 text-[#70AC90] group-hover:text-white transition-colors duration-300"><Phone size={22} className="group-hover:scale-110 transition-transform duration-300 transform-origin-center" /></div>

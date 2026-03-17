@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Loader2, Library, Users, TreePine, Stethoscope, Briefcase, Scale, Car, Activity, Globe, Folder, Target, SlidersHorizontal, Sparkles } from "lucide-react";
+import { Search, Loader2, Library, Users, TreePine, Stethoscope, Briefcase, Scale, Car, Activity, Globe, Folder, Target, Utensils, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { supabase } from "@/utils/supabase/client";
 import Link from "next/link";
@@ -18,6 +18,7 @@ const getCategoryIcon = (category: string) => {
   if (cat.includes("legal") || cat.includes("law")) return <Scale size={22} />;
   if (cat.includes("transport") || cat.includes("transit")) return <Car size={22} />;
   if (cat.includes("sport") || cat.includes("art")) return <Activity size={22} />;
+  if (cat.includes("food") || cat.includes("restaurant")) return <Utensils size={22} />;
   if (cat === "all") return <Globe size={22} />;
 
   return <Folder size={22} />;
@@ -31,10 +32,10 @@ const islandMapping: Record<string, string> = {
 };
 
 const extractIsland = (resource: any) => {
-  const text = `${resource.address || ""} ${resource.description || ""} ${resource.title || ""}`.toLowerCase();
+  const text = `${resource.island || ""}`.toLowerCase();
   if (text.includes("emerald")) return "Emerald";
-  if (text.includes("north")) return "Coral";
-  if (text.includes("south")) return "Talon";
+  if (text.includes("coral")) return "Coral";
+  if (text.includes("talon")) return "Talon";
   if (text.includes("central")) return "Central";
   return "Central"; // Default mapping if none found
 };
