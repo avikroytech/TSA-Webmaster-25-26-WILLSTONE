@@ -88,7 +88,7 @@ export default function IndividualGuidePage() {
         <div className="min-h-screen flex flex-col bg-[#f5f0eb] text-[#1c2b2b]">
             <Navbar />
 
-            <main className="flex-1 w-full max-w-5xl mx-auto px-6 pt-32 pb-32">
+            <main className="flex-1 w-full max-w-5xl mx-auto px-1 pt-15 pb-32">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

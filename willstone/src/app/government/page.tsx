@@ -84,8 +84,8 @@ export default function GovernmentPage() {
                         animate={{ opacity: 1, y: 0 }}
                         className="text-center mb-8 md:mb-12"
                     >
-                        <h1 className="text-4xl md:text-7xl lg:text-8xl font-display text-[#264D52] mb-2 uppercase tracking-tighter leading-none">
-                            City Government
+                        <h1 className="text-4xl md:text-7xl lg:text-8xl font-display text-[#264D52] mb-2 tracking-tighter leading-none">
+                            Government
                         </h1>
                         <div className="w-24 h-1.5 bg-brand-muted mx-auto rounded-full opacity-50" />
                     </motion.div>
@@ -123,7 +123,7 @@ export default function GovernmentPage() {
                         transition={{ delay: 0.3 }}
                         className="text-center mt-12 md:mt-16 mb-2"
                     >
-                        <h2 className="text-2xl md:text-3xl font-display text-foreground uppercase tracking-widest">
+                        <h2 className="text-2xl md:text-3xl font-display text-foreground tracking-widest">
                             Other Representatives
                         </h2>
                     </motion.div>
