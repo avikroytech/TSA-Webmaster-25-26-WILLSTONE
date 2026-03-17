@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export interface CarouselItem {
   id: string | number;
-  title: string;
+  title?: string;
   description?: string;
   image: string;
   linkUrl?: string;
@@ -55,7 +55,7 @@ export function SpotlightCarouselGallery({
           onMouseLeave={() => setIsPaused(false)}
         >
           {/* Main Slot */}
-          <div className="w-full lg:w-[65%] h-[400px] lg:h-full relative">
+          <div className={`w-full ${items.length > 1 ? 'lg:w-[65%]' : 'lg:w-full'} h-[400px] lg:h-full relative`}>
             <AnimatePresence mode="popLayout">
               <motion.div
                 key={`main-${mainItem.id}`}
@@ -69,39 +69,46 @@ export function SpotlightCarouselGallery({
               >
                 <Image
                   src={mainItem.image}
-                  alt={mainItem.title}
+                  alt={mainItem.title || "Carousel Image"}
                   fill
                   className="object-cover"
                 />
-                {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                
+                {(mainItem.title || mainItem.description || mainItem.linkUrl) && (
+                  <>
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-                {/* Content */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.5 }}
-                  className="absolute bottom-0 left-0 p-8 md:p-12 w-full text-white"
-                >
-                  <h3 className="font-display text-4xl md:text-5xl lg:text-5xl tracking-tight mb-4 drop-shadow-md">
-                    {mainItem.title}
-                  </h3>
-                  {mainItem.description && (
-                    <p className="font-sans text-lg md:text-xl text-brand-muted max-w-2xl mb-6">
-                      {mainItem.description}
-                    </p>
-                  )}
-                  {mainItem.linkUrl && (
-                    <Link
-                      href={mainItem.linkUrl}
-                      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#264D52] hover:bg-[#1a383c] text-white font-bold transition-transform hover:-translate-y-1"
-                      onClick={(e) => e.stopPropagation()}
+                    {/* Content */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3, duration: 0.5 }}
+                      className="absolute bottom-0 left-0 p-8 md:p-12 w-full text-white"
                     >
-                      Learn More
-                      <ArrowRight className="w-4 h-4" />
-                    </Link>
-                  )}
-                </motion.div>
+                      {mainItem.title && (
+                        <h3 className="font-display text-4xl md:text-5xl lg:text-5xl tracking-tight mb-4 drop-shadow-md">
+                          {mainItem.title}
+                        </h3>
+                      )}
+                      {mainItem.description && (
+                        <p className="font-sans text-lg md:text-xl text-brand-muted max-w-2xl mb-6">
+                          {mainItem.description}
+                        </p>
+                      )}
+                      {mainItem.linkUrl && (
+                        <Link
+                          href={mainItem.linkUrl}
+                          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#264D52] hover:bg-[#1a383c] text-white font-bold transition-transform hover:-translate-y-1"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {mainItem.linkText || "Learn More"}
+                          <ArrowRight className="w-4 h-4" />
+                        </Link>
+                      )}
+                    </motion.div>
+                  </>
+                )}
               </motion.div>
             </AnimatePresence>
           </div>
@@ -124,21 +131,25 @@ export function SpotlightCarouselGallery({
                     >
                       <Image
                         src={topItem.image}
-                        alt={topItem.title}
+                        alt={topItem.title || "Carousel Image"}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.3 }}
-                        className="absolute bottom-0 left-0 p-6 pointer-events-none"
-                      >
-                        <h3 className="font-display text-2xl text-white tracking-wide drop-shadow-md group-hover:text-brand-light transition-colors">
-                          {topItem.title}
-                        </h3>
-                      </motion.div>
+                      {topItem.title && (
+                        <>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.3 }}
+                            className="absolute bottom-0 left-0 p-6 pointer-events-none"
+                          >
+                            <h3 className="font-display text-2xl text-white tracking-wide drop-shadow-md group-hover:text-brand-light transition-colors">
+                              {topItem.title}
+                            </h3>
+                          </motion.div>
+                        </>
+                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -159,21 +170,25 @@ export function SpotlightCarouselGallery({
                     >
                       <Image
                         src={bottomItem.image}
-                        alt={bottomItem.title}
+                        alt={bottomItem.title || "Carousel Image"}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.3 }}
-                        className="absolute bottom-0 left-0 p-6 pointer-events-none"
-                      >
-                        <h3 className="font-display text-2xl text-white tracking-wide drop-shadow-md group-hover:text-brand-light transition-colors">
-                          {bottomItem.title}
-                        </h3>
-                      </motion.div>
+                      {bottomItem.title && (
+                        <>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.3 }}
+                            className="absolute bottom-0 left-0 p-6 pointer-events-none"
+                          >
+                            <h3 className="font-display text-2xl text-white tracking-wide drop-shadow-md group-hover:text-brand-light transition-colors">
+                              {bottomItem.title}
+                            </h3>
+                          </motion.div>
+                        </>
+                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>

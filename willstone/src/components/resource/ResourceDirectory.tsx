@@ -238,7 +238,7 @@ export default function ResourceDirectory() {
                         exit={{ opacity: 0, y: 20, transition: { duration: 0.2 } }}
                         className="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 border border-road-paint/10 flex flex-col group h-full"
                       >
-                        <Link href={`/resource-hub/${resource.page_num}`} className="flex flex-col h-full focus:outline-none focus-visible:ring-4 focus-visible:ring-asphalt/30 rounded-[2rem]">
+                        <Link href={`/resource-hub/${resource.slug}`} className="flex flex-col h-full focus:outline-none focus-visible:ring-4 focus-visible:ring-asphalt/30 rounded-[2rem]">
                           {/* Img Section */}
                           <div className="relative w-full h-56 bg-gray-100 overflow-hidden shrink-0">
                             {resource.images?.[0] ? (
