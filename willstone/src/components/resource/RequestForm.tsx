@@ -105,7 +105,7 @@ export default function RequestForm() {
             <div className="bg-white/90 backdrop-blur-sm p-8 md:p-12 border border-[#264D52]/10 rounded-3xl shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="border-b-2 border-[#264D52]/10 pb-6 mb-8 text-center flex flex-col items-center">
                     <CheckCircle size={48} className="text-[#496A49] mb-4" />
-                    <h2 className="text-3xl font-display font-black text-[#264D52] uppercase tracking-tighter">
+                    <h2 className="text-3xl font-display font-black text-[#264D52]">
                         Resource <span className="text-[#496A49]">Submitted</span>
                     </h2>
                     <p className="text-[#264D52] text-sm font-medium mt-2 uppercase tracking-widest">Thank you for contributing to Willstone</p>
@@ -153,7 +153,7 @@ export default function RequestForm() {
         <form onSubmit={handleSubmit} className="space-y-8 bg-white/90 backdrop-blur-sm p-8 md:p-12 rounded-3xl shadow-2xl">
 
             <div className="border-b-2 border-[#264D52]/10 pb-6 mb-8">
-                <h1 className="text-4xl text-center font-display font-black text-[#264D52] tracking-tighter">
+                <h1 className="text-4xl text-center font-display font-black text-[#264D52]">
                     Submit A Resource
                 </h1>
                 <p className="text-[var(--brand-dark)] text-sm font-medium mt-1 tracking-widest">Suggest a program/service to add to the community</p>

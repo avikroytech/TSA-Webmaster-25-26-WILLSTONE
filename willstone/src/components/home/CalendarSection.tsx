@@ -97,8 +97,8 @@ export default function CalendarSection() {
         const mappedEvents = data.map((item: any, index: number) => {
           let eventDate = new Date();
           if (item.date) {
-             const [year, month, day] = item.date.split("-").map(Number);
-             eventDate = new Date(year, month - 1, day);
+            const [year, month, day] = item.date.split("-").map(Number);
+            eventDate = new Date(year, month - 1, day);
           }
           return {
             id: item.id,
@@ -128,7 +128,7 @@ export default function CalendarSection() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-4">
           <div className="text-left">
-            <h2 className="text-5xl md:text-7xl font-display font-black text-[var(--background)] leading-none tracking-tighter capitalize py-1">
+            <h2 className="text-5xl md:text-7xl font-display font-black text-[var(--background)] leading-none capitalize py-1">
               Upcoming Events
             </h2>
           </div>
@@ -222,7 +222,7 @@ export default function CalendarSection() {
 
                   <div className={`flex-shrink-0 flex flex-col items-center justify-center w-[76px] h-[84px] rounded-xl text-white shadow-sm ${event.color}`}>
                     <span className="text-[11px] font-black uppercase tracking-widest mt-1 opacity-90">{event.date.toLocaleString('default', { month: 'short' })}</span>
-                    <span className="text-[32px] font-display font-black leading-none mt-0.5 tracking-tighter">{event.date.getDate()}</span>
+                    <span className="text-[32px] font-display font-black leading-none mt-0.5">{event.date.getDate()}</span>
                   </div>
 
                   <div className="ml-6 flex-1 pr-2">

@@ -145,7 +145,7 @@ export default function ResourceDirectory() {
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-6xl md:text-[6rem] leading-none font-display text-road-paint tracking-tighter text-center max-w-5xl drop-shadow-sm"
+            className="text-6xl md:text-[6rem] leading-none font-display text-road-paint text-center max-w-5xl drop-shadow-sm"
           >
             Resource Hub
           </motion.h1>

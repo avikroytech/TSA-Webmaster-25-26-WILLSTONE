@@ -84,7 +84,7 @@ export default function GovernmentPage() {
                         animate={{ opacity: 1, y: 0 }}
                         className="text-center mb-8 md:mb-12"
                     >
-                        <h1 className="text-4xl md:text-7xl lg:text-8xl font-display text-[#264D52] mb-2 tracking-tighter leading-none">
+                        <h1 className="text-4xl md:text-7xl lg:text-8xl font-display text-[#264D52] mb-2 leading-none">
                             Government
                         </h1>
                         <div className="w-24 h-1.5 bg-brand-muted mx-auto rounded-full opacity-50" />
@@ -234,7 +234,7 @@ export default function GovernmentPage() {
                                         <span className="text-brand-muted font-display uppercase tracking-[0.3em] text-[10px] md:text-xs mb-3 block font-bold bg-brand-medium/5 py-1 px-3 rounded-full w-fit">
                                             {selectedRep.role}
                                         </span>
-                                        <h2 className="text-3xl md:text-5xl lg:text-7xl font-display text-foreground mb-6 md:mb-10 leading-[0.85] tracking-tighter">
+                                        <h2 className="text-3xl md:text-5xl lg:text-7xl font-display text-foreground mb-6 md:mb-10 leading-[0.85]">
                                             {selectedRep.name}
                                         </h2>
                                     </motion.div>
@@ -326,7 +326,7 @@ function LeaderCircle({
                 </div>
             </div>
             <div className="text-center">
-                <h3 className="font-display text-2xl md:text-3xl text-foreground tracking-tighter leading-none mb-1">
+                <h3 className="font-display text-2xl md:text-3xl text-foreground leading-none mb-1">
                     {rep.role}
                 </h3>
                 <p className="text-xs text-brand-muted uppercase tracking-[0.2em] font-bold">
