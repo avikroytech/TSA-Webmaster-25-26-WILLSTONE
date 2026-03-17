@@ -64,7 +64,7 @@ export default function Hero() {
           <div className="relative w-full">
             <input
               type="text"
-              placeholder="ex. pay my taxes"
+              placeholder="how do I prepare for a disaster?"
               className="w-full pl-6 pr-14 py-4 rounded-full bg-[#f5f0eb] border-2 border-[#496A49] text-[#1c2b2b] placeholder-[#1c2b2b]/60 focus:outline-none focus:ring-4 focus:ring-[#70AC90]/50 text-lg transition-all"
             />
             <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-[#264D52] hover:bg-[#70AC90] active:bg-[#496A49] text-[#f5f0eb] rounded-full transition-colors shadow-sm cursor-pointer group">

@@ -3,9 +3,10 @@ import Footer from "@/components/home/Footer";
 import { supabase } from "@/utils/supabase/server";
 import Link from "next/link";
 import Image from "next/image";
-import { 
-  ArrowLeft, ArrowRight, Map, MapPin, Globe, Phone, Target, Boxes, 
-  Folder, Stethoscope, Library, Users, TreePine, Briefcase, Scale, Car, Activity 
+import { SpotlightCarouselGallery } from "@/components/ui/spotlight-carousel";
+import {
+  ArrowLeft, ArrowRight, Map, MapPin, Globe, Phone, Target, Boxes,
+  Folder, Stethoscope, Library, Users, TreePine, Briefcase, Scale, Car, Activity
 } from "lucide-react";
 
 const getCategoryIcon = (category: string) => {
@@ -40,8 +41,10 @@ export default async function ResourcePage({ params }: { params: { slug: string 
   const { data: resource, error } = await supabase
     .from('community_resources')
     .select('*')
-    .eq('page_num', slug)
+    .eq('slug', slug)
     .single();
+
+  if (error) console.warn(error);
 
   if (error || !resource) {
     return (
@@ -68,12 +71,12 @@ export default async function ResourcePage({ params }: { params: { slug: string 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--background)] font-sans">
       <Navbar />
-      
+
       <main className="flex-1 w-full max-w-[1400px] mx-auto px-6 md:px-12 xl:px-20 py-12 flex flex-col gap-10">
-        
+
         {/* Back Link */}
-        <Link 
-          href="/resource-hub" 
+        <Link
+          href="/resource-hub"
           className="inline-flex items-center gap-2 text-asphalt hover:text-road-paint transition-colors font-bold text-sm tracking-wide group w-fit"
         >
           <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
@@ -81,47 +84,22 @@ export default async function ResourcePage({ params }: { params: { slug: string 
         </Link>
 
         {/* Image Gallery */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[auto] md:h-[500px]">
-          {/* Main Large Image */}
-          <div className="md:col-span-2 relative h-[300px] md:h-full rounded-[2rem] overflow-hidden group shadow-sm bg-road-paint/5">
-            {resource.images?.[0] ? (
-              <Image 
-                src={resource.images[0]} 
-                alt={resource.title || "Resource Image"} 
-                fill 
-                className="object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out" 
-                priority 
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-road-paint/20"><Target size={64} /></div>
-            )}
+        {resource.images && resource.images.length > 0 ? (
+          <SpotlightCarouselGallery
+            items={resource.images.map((img: string, idx: number) => ({
+              id: idx,
+              image: img,
+            }))}
+          />
+        ) : (
+          <div className="w-full h-[300px] md:h-[500px] rounded-[2rem] flex items-center justify-center bg-road-paint/5 text-road-paint/20">
+            <Target size={64} />
           </div>
-          {/* Side Images */}
-          <div className="flex flex-col gap-6 h-[300px] md:h-full">
-            <div className="relative flex-1 rounded-[2rem] overflow-hidden group shadow-sm bg-road-paint/5">
-               {resource.images?.[1] ? (
-                 <Image src={resource.images[1]} alt="Gallery image 2" fill className="object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out" />
-               ) : resource.images?.[0] ? (
-                 <Image src={resource.images[0]} alt="Gallery image 2 fallback" fill className="object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out" />
-               ) : (
-                 <div className="w-full h-full flex items-center justify-center text-road-paint/20"><Target size={48} /></div>
-               )}
-            </div>
-            <div className="relative flex-1 rounded-[2rem] overflow-hidden group shadow-sm bg-road-paint/5">
-               {resource.images?.[2] ? (
-                 <Image src={resource.images[2]} alt="Gallery image 3" fill className="object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out" />
-               ) : resource.images?.[0] ? (
-                 <Image src={resource.images[0]} alt="Gallery image 3 fallback" fill className="object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out" />
-               ) : (
-                 <div className="w-full h-full flex items-center justify-center text-road-paint/20"><Target size={48} /></div>
-               )}
-            </div>
-          </div>
-        </div>
+        )}
 
         {/* Main Content & Quick Info */}
         <div className="flex flex-col lg:flex-row gap-12 mt-4">
-          
+
           {/* Left: Content */}
           <div className="flex-1 max-w-4xl">
             <h1 className="text-4xl md:text-[3.5rem] leading-tight font-display text-road-paint mb-8">{resource.title}</h1>
@@ -138,7 +116,7 @@ export default async function ResourcePage({ params }: { params: { slug: string 
           <div className="w-full lg:w-[420px] shrink-0">
             <div className="bg-[#264D52] rounded-[2rem] p-8 text-[#f5f0eb] shadow-lg hover:shadow-xl transition-shadow duration-300">
               <h2 className="text-2xl font-display mb-8">Quick Info</h2>
-              
+
               <div className="flex flex-col gap-8">
                 {/* Info Item 1 */}
                 <div className="flex items-start gap-4 group cursor-default">
@@ -264,7 +242,7 @@ export default async function ResourcePage({ params }: { params: { slug: string 
           </div>
         )}
       </main>
-      
+
       <Footer />
     </div>
   );
