@@ -8,7 +8,7 @@ export async function sendConfirmationEmail(userEmail: string, userName: string,
             service: 'gmail',
             auth: {
                 user: "willstone.city@gmail.com",
-                pass: "gfxg bxlz kmft mvkw",
+                pass: process.env.GMAIL_APP_PASSWORD,
             },
         });
 
