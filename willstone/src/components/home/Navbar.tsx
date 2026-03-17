@@ -27,7 +27,7 @@ const navLinks = [
   { name: "News", href: "/news", icon: Newspaper },
   { name: "Guides", href: "/guides", icon: BookOpen },
   { name: "Government", href: "/government", icon: Landmark },
-  { name: "Reference", href: "/reference", icon: FileText },
+  { name: "References", href: "/reference", icon: FileText },
 ];
 
 export default function Navbar() {

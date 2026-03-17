@@ -1,46 +1,291 @@
+"use client";
+
 import Navbar from "@/components/home/Navbar";
 import Footer from "@/components/home/Footer";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, ExternalLink, FileText, Code, Link as LinkIcon, Info } from "lucide-react";
+import { imageLinks } from "@/data/referenceLinks";
+
+
+interface AccordionItemProps {
+    title: string;
+    icon: React.ReactNode;
+    children: React.ReactNode;
+    isOpen: boolean;
+    onToggle: () => void;
+}
+
+const AccordionItem = ({ title, icon, children, isOpen, onToggle }: AccordionItemProps) => {
+    return (
+        <div className="border-b border-[#264D52]/20 last:border-0 mb-4 bg-white/50 backdrop-blur-sm rounded-xl overflow-hidden shadow-sm border border-[#264D52]/10">
+            <button
+                onClick={onToggle}
+                className="w-full py-5 px-6 flex items-center justify-between text-left hover:bg-[#264D52]/5 transition-colors group"
+            >
+                <div className="flex items-center gap-4">
+                    <div className={`p-2.5 rounded-lg transition-colors ${isOpen ? 'bg-[#264D52] text-white' : 'bg-[#264D52]/10 text-[#264D52] group-hover:bg-[#264D52]/20'}`}>
+                        {icon}
+                    </div>
+                    <span className="font-display text-xl font-bold text-[#264D52] tracking-wide uppercase">
+                        {title}
+                    </span>
+                </div>
+                <motion.div
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                    className="text-[#264D52]"
+                >
+                    <ChevronDown size={24} />
+                </motion.div>
+            </button>
+
+            <AnimatePresence initial={false}>
+                {isOpen && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                    >
+                        <div className="p-6 pt-0 border-t border-[#264D52]/10">
+                            <div className="mt-4">
+                                {children}
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+};
+
+const PDFViewer = ({ src }: { src: string }) => {
+    return (
+        <div className="bg-white border-4 border-[#264D52] shadow-xl relative overflow-hidden rounded-lg">
+            <object
+                data={`${src}#view=FitH`}
+                type="application/pdf"
+                className="w-full h-[600px] md:h-[800px]"
+            >
+                <div className="flex flex-col items-center justify-center h-full p-10 text-center bg-[#f5f0eb]">
+                    <FileText size={48} className="text-[#264D52] mb-4 opacity-50" />
+                    <p className="text-[#264D52] font-bold text-xl mb-4">
+                        PDF Viewer not supported by your browser.
+                    </p>
+                    <a
+                        href={src}
+                        className="px-8 py-3 bg-[#264D52] text-white font-black uppercase tracking-widest hover:bg-[#496A49] transition-all transform hover:scale-105"
+                        download
+                    >
+                        Download Document
+                    </a>
+                </div>
+            </object>
+        </div>
+    );
+};
+
+const LinkList = ({ items }: { items: { label: string; url: string }[] }) => {
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {items.map((item, index) => (
+                <a
+                    key={index}
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between p-4 bg-white border border-[#264D52]/20 rounded-xl hover:border-[#264D52] hover:shadow-lg transition-all group"
+                >
+                    <div className="flex items-center gap-3">
+                        <LinkIcon size={18} className="text-[#264D52] opacity-50 group-hover:opacity-100" />
+                        <span className="font-sans font-semibold text-[#264D52] group-hover:text-[#496A49]">
+                            {item.label}
+                        </span>
+                    </div>
+                    <ExternalLink size={16} className="text-[#264D52] opacity-0 group-hover:opacity-100 transition-opacity" />
+                </a>
+            ))}
+        </div>
+    );
+};
+
+const CodeStackItem = ({ tech, items }: { tech: string; items: string[] }) => (
+    <div className="mb-6 last:mb-0">
+        <h3 className="font-display text-lg text-[#264D52] mb-3 flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-[#496A49]" />
+            {tech}
+        </h3>
+        <div className="flex flex-wrap gap-2">
+            {items.map((item, i) => (
+                <span key={i} className="px-3 py-1 bg-[#264D52]/10 text-[#264D52] rounded-full text-sm font-semibold border border-[#264D52]/20">
+                    {item}
+                </span>
+            ))}
+        </div>
+    </div>
+);
 
 export default function Reference() {
+    const [openSection, setOpenSection] = useState<string | null>("Worklog");
+
+    const toggleSection = (section: string) => {
+        setOpenSection(openSection === section ? null : section);
+    };
+
+    const researchLinks = [
+        {
+            "label": "UK Government Design System - Get Started",
+            "url": "https://design-system.service.gov.uk/get-started/"
+        },
+        {
+            "label": "Gouvernement du Québec",
+            "url": "https://www.quebec.ca/en"
+        },
+        {
+            "label": "Government of the Netherlands",
+            "url": "https://www.government.nl/"
+        },
+        {
+            "label": "City of Amsterdam",
+            "url": "https://www.amsterdam.nl/en/"
+        },
+        {
+            "label": "City and County of San Francisco",
+            "url": "https://www.sf.gov/"
+        },
+        {
+            "label": "City of Oakland",
+            "url": "https://www.oaklandca.gov/Home"
+        },
+        {
+            "label": "City of Seattle",
+            "url": "https://www.seattle.gov/"
+        },
+        {
+            "label": "City of Miami",
+            "url": "https://www.miami.gov/Home"
+        },
+        {
+            "label": "East Bay Regional Park District",
+            "url": "https://www.ebparks.org/"
+        },
+        {
+            "label": "Commonwealth of Massachusetts",
+            "url": "https://www.mass.gov/"
+        },
+        {
+            "label": "City of Minneapolis",
+            "url": "https://www.minneapolismn.gov/"
+        },
+        {
+            "label": "Colts Neck Township",
+            "url": "https://coltsneck.org/"
+        },
+        {
+            "label": "City of Riga",
+            "url": "https://www.riga.lv/lv"
+        },
+        {
+            "label": "10 Must-Have Features of Government Websites - MunicipalOne",
+            "url": "https://www.municipalone.com/news/11/10-must-have-features-of-government-websites"
+        },
+        {
+            "label": "5 Tips for Creating the Best City Websites - SDL",
+            "url": "https://getsdl.com/resources/blog/5-tips-for-creating-the-best-city-websites/"
+        },
+        {
+            "label": "Municipal Website Best Practices - Town Web",
+            "url": "https://townweb.com/blog/municipal-website-best-practice/"
+        },
+        {
+            "label": "Small Town, Big Website?: Cities and their Representation on the Internet",
+            "url": "https://www.sciencedirect.com/science/article/abs/pii/S0264275101000452"
+        },
+        {
+            "label": "Metropolitan Websites as Urban Communication",
+            "url": "https://academic.oup.com/jcmc/article/11/4/957/4617710"
+        },
+        {
+            "label": "Are small cities online? Content, ranking, and variation of U.S. municipal websites",
+            "url": "https://www.sciencedirect.com/science/article/abs/pii/S0740624X16302313"
+        }
+    ];
+
+    const codeStack = [
+        { tech: "Frontend", items: ["Next.js 15", "React 19", "TypeScript", "Tailwind CSS 4"] },
+        { tech: "Animations", items: ["Framer Motion", "Lucide React"] },
+        { tech: "Backend & Auth", items: ["Supabase", "PostgreSQL", "Next Auth"] },
+        { tech: "Deployment", items: ["Vercel", "Edge Runtime"] },
+    ];
+
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen flex flex-col bg-[#f5f0eb]">
             <Navbar />
 
-            {/* Main content area with your soft red/pink background */}
-            <main className="flex-1 bg-[#f5f0eb] p-4 md:p-12 flex flex-col items-center">
-
-                <div className="w-full max-w-6xl">
+            <main className="flex-1 p-6 md:p-16 lg:p-24 flex flex-col items-center">
+                <div className="w-full max-w-5xl">
                     {/* Page Header */}
-                    <div className="mb-10">
-                        <h1 className="text-[#264D52] font-black uppercase tracking-[0.3em] text-3xl md:text-4xl text-center">
-                            Reference Page
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mb-16 text-center"
+                    >
+                        <h1 className="text-[#264D52] font-display font-black text-4xl md:text-6xl mb-6">
+                            References
                         </h1>
-                        <div className="h-1.5 w-24 bg-[#496A49] mx-auto mt-4" />
-                    </div>
+                    </motion.div>
 
-                    {/* PDF Embed Wrapper */}
-                    <div className="bg-white border-[8px] border-[#264D52] shadow-[20px_20px_0px_rgba(45,51,107,0.1)] relative">
-                        {/* Using an object tag as it's often more robust than iframe 
-                            for PDFs, but both work well in modern browsers.
-                        */}
-                        <object
-                            data="/Webmaster_Work.pdf#view=FitH"
-                            type="application/pdf"
-                            className="w-full h-[700px] md:h-[900px]"
+                    {/* Accordion List */}
+                    <div className="space-y-2">
+                        <AccordionItem
+                            title="Worklog"
+                            icon={<FileText size={22} />}
+                            isOpen={openSection === "Worklog"}
+                            onToggle={() => toggleSection("Worklog")}
                         >
-                            {/* Detailed Fallback for browsers that don't support embeds */}
-                            <div className="flex flex-col items-center justify-center h-full p-10 text-center">
-                                <p className="text-[#264D52] font-bold text-xl mb-4">
-                                    PDF Viewer not supported by your browser.
-                                </p>
-                                <a
-                                    href="/document.pdf"
-                                    className="px-8 py-3 bg-[#264D52] text-white font-black uppercase tracking-widest hover:bg-[#496A49] transition-colors"
-                                >
-                                    Download Document
-                                </a>
+                            <PDFViewer src="/pdf/Copyright-Checklist-Signed.pdf" />
+                        </AccordionItem>
+
+                        <AccordionItem
+                            title="Copyright Checklist"
+                            icon={<Info size={22} />}
+                            isOpen={openSection === "Copyright Checklist"}
+                            onToggle={() => toggleSection("Copyright Checklist")}
+                        >
+                            <PDFViewer src="/pdf/Copyright-Checklist-Signed.pdf" />
+                        </AccordionItem>
+
+                        <AccordionItem
+                            title="Code Stack"
+                            icon={<Code size={22} />}
+                            isOpen={openSection === "Code Stack"}
+                            onToggle={() => toggleSection("Code Stack")}
+                        >
+                            <div className="p-4 bg-white/40 rounded-xl">
+                                {codeStack.map((stack, i) => (
+                                    <CodeStackItem key={i} tech={stack.tech} items={stack.items} />
+                                ))}
                             </div>
-                        </object>
+                        </AccordionItem>
+
+                        <AccordionItem
+                            title="Image Links"
+                            icon={<LinkIcon size={22} />}
+                            isOpen={openSection === "Image Links"}
+                            onToggle={() => toggleSection("Image Links")}
+                        >
+                            <LinkList items={imageLinks} />
+                        </AccordionItem>
+
+                        <AccordionItem
+                            title="Research Links"
+                            icon={<LinkIcon size={22} />}
+                            isOpen={openSection === "Research Links"}
+                            onToggle={() => toggleSection("Research Links")}
+                        >
+                            <LinkList items={researchLinks} />
+                        </AccordionItem>
                     </div>
                 </div>
             </main>
