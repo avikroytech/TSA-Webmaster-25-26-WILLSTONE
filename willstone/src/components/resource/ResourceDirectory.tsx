@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Loader2, Library, Users, TreePine, Stethoscope, Briefcase, Scale, Car, Activity, Globe, Folder, Target, Utensils, Sparkles } from "lucide-react";
+import { Search, Loader2, Library, Users, TreePine, Stethoscope, Briefcase, Scale, Car, Activity, Globe, Folder, Target, Utensils, Sparkles, ChevronDown, Tag } from "lucide-react";
 import Image from "next/image";
 import { supabase } from "@/utils/supabase/client";
 import Link from "next/link";
@@ -26,7 +26,7 @@ const getCategoryIcon = (category: string) => {
 
 const islandMapping: Record<string, string> = {
   emerald: "Emerald",
-  north: "Coral",
+  north: "Coastal",
   central: "Central",
   south: "Talon",
 };
@@ -34,7 +34,7 @@ const islandMapping: Record<string, string> = {
 const extractIsland = (resource: any) => {
   const text = `${resource.island || ""}`.toLowerCase();
   if (text.includes("emerald")) return "Emerald";
-  if (text.includes("coral")) return "Coral";
+  if (text.includes("coastal")) return "Coastal";
   if (text.includes("talon")) return "Talon";
   if (text.includes("central")) return "Central";
   return "Central"; // Default mapping if none found
@@ -43,11 +43,21 @@ const extractIsland = (resource: any) => {
 export default function ResourceDirectory() {
   const [resources, setResources] = useState<any[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
+  const [types, setTypes] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("All Types");
+  const [activeType, setActiveType] = useState<string>("All Categories");
   const [activeIsland, setActiveIsland] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"asc" | "desc" | "recommended">("recommended");
+
+  const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
+
+  const typeDropdownRef = React.useRef<HTMLDivElement>(null);
+  const categoryDropdownRef = React.useRef<HTMLDivElement>(null);
+  const sortDropdownRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -58,6 +68,8 @@ export default function ResourceDirectory() {
 
       if (!resourceError && resourceData) {
         setResources(resourceData);
+
+        // Extract unique categories (displayed as Resource Type)
         const uniqueCats = Array.from(
           new Set(resourceData.map((r: any) => r.category))
         ).filter(Boolean) as string[];
@@ -67,10 +79,32 @@ export default function ResourceDirectory() {
         const sortedCats = [...standardCats.filter(c => uniqueCats.includes(c)), ...others];
 
         setCategories(sortedCats);
+
+        // Extract unique types (displayed as Category)
+        const uniqueTypes = Array.from(
+          new Set(resourceData.map((r: any) => r.type))
+        ).filter(Boolean) as string[];
+        setTypes(uniqueTypes.sort());
       }
       setLoading(false);
     }
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (typeDropdownRef.current && !typeDropdownRef.current.contains(event.target as Node)) {
+        setIsTypeDropdownOpen(false);
+      }
+      if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target as Node)) {
+        setIsCategoryDropdownOpen(false);
+      }
+      if (sortDropdownRef.current && !sortDropdownRef.current.contains(event.target as Node)) {
+        setIsSortDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const filteredResources = useMemo(() => {
@@ -81,6 +115,7 @@ export default function ResourceDirectory() {
         r.address?.toLowerCase().includes(search.toLowerCase());
 
       const matchesCat = activeCategory === "All Types" || r.category === activeCategory;
+      const matchesType = activeType === "All Categories" || r.type === activeType;
 
       let matchesIsland = true;
       if (activeIsland) {
@@ -88,8 +123,7 @@ export default function ResourceDirectory() {
         matchesIsland = extractIsland(r) === targetIsland;
       }
 
-      console.log(matchesSearch, matchesCat, matchesIsland);
-      return matchesSearch && matchesCat && matchesIsland;
+      return matchesSearch && matchesCat && matchesType && matchesIsland;
     });
 
     return filtered.sort((a, b) => {
@@ -98,7 +132,7 @@ export default function ResourceDirectory() {
       const valB = b.title || "";
       return sortBy === "asc" ? valA.localeCompare(valB) : valB.localeCompare(valA);
     });
-  }, [search, activeCategory, activeIsland, resources, sortBy]);
+  }, [search, activeCategory, activeType, activeIsland, resources, sortBy]);
 
   const allCategoryOptions = ["All Types", ...categories];
 
@@ -128,51 +162,127 @@ export default function ResourceDirectory() {
             </div>
 
             {/* Sort By */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2" ref={sortDropdownRef}>
               <h3 className="text-xl font-black font-display text-asphalt tracking-widest">Sort By</h3>
-              <div className="relative group">
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as any)}
-                  className="w-full appearance-none bg-white border-2 border-road-paint/20 py-4 px-5 rounded-2xl text-base font-bold text-asphalt focus:outline-none focus:border-asphalt focus:ring-2 focus:ring-asphalt/20 transition-all cursor-pointer shadow-sm hover:border-asphalt/50"
+              <div className="relative">
+                <button
+                  onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
+                  className="w-full flex justify-between items-center bg-white border-2 border-road-paint/20 py-4 px-5 rounded-2xl text-base font-bold text-asphalt focus:outline-none focus:border-asphalt focus:ring-2 focus:ring-asphalt/20 transition-all cursor-pointer shadow-sm hover:border-asphalt/50"
                 >
-                  <option value="recommended">Recommended</option>
-                  <option value="asc">Alphabetical (A to Z)</option>
-                  <option value="desc">Alphabetical (Z to A)</option>
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-5 flex items-center text-asphalt">
-                  <svg className="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
-                </div>
+                  <span className="truncate">
+                    {sortBy === "recommended" ? "Recommended" :
+                      sortBy === "asc" ? "Alphabetical (A to Z)" : "Alphabetical (Z to A)"}
+                  </span>
+                  <ChevronDown size={20} className={`text-asphalt shrink-0 transition-transform duration-300 ${isSortDropdownOpen ? "rotate-180" : ""}`} />
+                </button>
+                <AnimatePresence>
+                  {isSortDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-road-paint/10 rounded-2xl overflow-hidden shadow-xl z-[60]"
+                    >
+                      {[
+                        { value: "recommended", label: "Recommended" },
+                        { value: "asc", label: "Alphabetical (A to Z)" },
+                        { value: "desc", label: "Alphabetical (Z to A)" }
+                      ].map((option) => (
+                        <div
+                          key={option.value}
+                          onClick={() => { setSortBy(option.value as any); setIsSortDropdownOpen(false); }}
+                          className={`px-5 py-4 text-asphalt font-bold transition-colors cursor-pointer border-b border-road-paint/5 last:border-0 ${sortBy === option.value ? "bg-asphalt text-white" : "hover:bg-asphalt/5"}`}
+                        >
+                          {option.label}
+                        </div>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
 
             {/* Resource Type */}
-            <div className="flex flex-col gap-4 items-start">
+            <div className="flex flex-col gap-4 items-start w-full" ref={categoryDropdownRef}>
               <h3 className="text-xl font-black font-display text-asphalt tracking-widest">Resource Type</h3>
-              <div className="flex flex-col gap-2 w-full">
-                {allCategoryOptions.map((cat) => {
-                  const isActive = activeCategory === cat;
-
-                  return (
-                    <button
-                      key={cat}
-                      onClick={() => setActiveCategory(cat)}
-                      className={`group flex items-center gap-4 px-5 py-3.5 rounded-2xl border-2 transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#C59F82] w-full text-left
-                        ${isActive
-                          ? "bg-asphalt text-[#f5f0eb] border-asphalt shadow-md"
-                          : "bg-transparent border-transparent text-brand-text hover:bg-highlight/15 hover:border-asphalt hover:scale-[1.02] hover:shadow-sm"
-                        }
-                      `}
+              <div className="relative w-full">
+                <button
+                  onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+                  className="w-full flex justify-between items-center bg-white border-2 border-road-paint/20 py-4 px-5 rounded-2xl text-base font-bold text-asphalt focus:outline-none focus:border-asphalt focus:ring-2 focus:ring-asphalt/20 transition-all cursor-pointer shadow-sm hover:border-asphalt/50"
+                >
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    <motion.div
+                      key={activeCategory}
+                      initial={{ scale: 0.8, opacity: 0, rotate: -10 }}
+                      animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                      className="text-marking shrink-0"
                     >
-                      <div className={`shrink-0 transition-all duration-200 group-hover:scale-110 ${isActive ? "text-marking" : "text-asphalt group-hover:text-road-paint"}`}>
-                        {getCategoryIcon(cat === "All Types" ? "all" : cat)}
-                      </div>
-                      <span className={`font-semibold tracking-wide transition-all duration-200 ${isActive ? "text-[16px] text-[#f5f0eb]" : "text-[15px] group-hover:text-[16px]"}`}>
-                        {cat}
-                      </span>
-                    </button>
-                  );
-                })}
+                      {getCategoryIcon(activeCategory === "All Types" ? "all" : activeCategory)}
+                    </motion.div>
+                    <span className="truncate">{activeCategory}</span>
+                  </div>
+                  <ChevronDown size={20} className={`text-asphalt shrink-0 transition-transform duration-300 ${isCategoryDropdownOpen ? "rotate-180" : ""}`} />
+                </button>
+                <AnimatePresence>
+                  {isCategoryDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-road-paint/10 rounded-2xl overflow-hidden shadow-xl z-50 max-h-80 overflow-y-auto custom-scrollbar"
+                    >
+                      {allCategoryOptions.map((cat) => (
+                        <div
+                          key={cat}
+                          onClick={() => { setActiveCategory(cat); setIsCategoryDropdownOpen(false); }}
+                          className={`px-5 py-4 text-asphalt font-bold transition-colors cursor-pointer border-b border-road-paint/5 last:border-0 flex items-center gap-3 ${activeCategory === cat ? "bg-asphalt text-white" : "hover:bg-asphalt/5"}`}
+                        >
+                          <div className={`shrink-0 ${activeCategory === cat ? "text-marking" : "text-asphalt/40"}`}>
+                            {getCategoryIcon(cat === "All Types" ? "all" : cat)}
+                          </div>
+                          {cat}
+                        </div>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* Category (type filter) */}
+            <div className="flex flex-col gap-4 items-start w-full" ref={typeDropdownRef}>
+              <h3 className="text-xl font-black font-display text-[var(--brand-medium)] tracking-widest">Category</h3>
+              <div className="relative w-full">
+                <button
+                  onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}
+                  className="w-full flex justify-between items-center bg-white border-2 border-[var(--brand-medium)]/20 py-4 px-5 rounded-2xl text-base font-bold text-[var(--brand-medium)] focus:outline-none focus:border-[var(--brand-medium)] focus:ring-2 focus:ring-[var(--brand-medium)]/20 transition-all cursor-pointer shadow-sm hover:border-[var(--brand-medium)]/50"
+                >
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    <Tag size={20} className="text-[var(--brand-medium)] shrink-0" />
+                    <span className="truncate">{activeType}</span>
+                  </div>
+                  <ChevronDown size={20} className={`text-[var(--brand-medium)] shrink-0 transition-transform duration-300 ${isTypeDropdownOpen ? "rotate-180" : ""}`} />
+                </button>
+                <AnimatePresence>
+                  {isTypeDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-[var(--brand-medium)]/10 rounded-2xl overflow-hidden shadow-xl z-40 max-h-80 overflow-y-auto custom-scrollbar"
+                    >
+                      {["All Categories", ...types].map((type) => (
+                        <div
+                          key={type}
+                          onClick={() => { setActiveType(type); setIsTypeDropdownOpen(false); }}
+                          className={`px-5 py-4 text-[var(--brand-medium)] font-bold transition-colors cursor-pointer border-b border-[var(--brand-medium)]/5 last:border-0 flex items-center gap-3 ${activeType === type ? "bg-[var(--brand-medium)] text-white" : "hover:bg-[var(--brand-medium)]/5"}`}
+                        >
+                          {type}
+                        </div>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
 
@@ -296,7 +406,7 @@ function IslandImageMap({ activeIsland, onIslandClick }: { activeIsland: string 
   const [hoveredIsland, setHoveredIsland] = useState<string | null>(null);
 
   const islands = [
-    { id: "north", name: "CORAL", src: "/right.png", classes: "top-[26%] left-[52%] w-[32%]" },
+    { id: "north", name: "COASTAL", src: "/right.png", classes: "top-[26%] left-[52%] w-[32%]" },
     { id: "emerald", name: "EMERALD", src: "/left.png", classes: "top-[20%] left-[16%] w-[24%]" },
     { id: "central", name: "CENTRAL", src: "/small.png", classes: "top-[45%] left-[28%] w-[17%]" },
     { id: "south", name: "TALON", src: "/bottom.png", classes: "top-[52%] left-[18%] w-[64%]" }
