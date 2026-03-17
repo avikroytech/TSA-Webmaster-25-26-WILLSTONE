@@ -43,14 +43,15 @@ export default function SpotlightCarousel() {
         .select("*")
         .limit(3);
 
+
       if (!error && data && data.length > 0) {
         setResources(
           data.map((item, index) => ({
             id: item.id || index + 1,
             title: item.title,
-            description: item.description,
+            description: item.description.split(".")[0] + ".",
             image: item.images?.[0] || defaultResources[index]?.image || defaultResources[0].image,
-            linkUrl: `/resource-hub/${item.page_num || item.id}`,
+            linkUrl: `/resource-hub/${item.slug}`,
             linkText: "Explore the Space",
           }))
         );
