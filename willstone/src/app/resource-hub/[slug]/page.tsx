@@ -64,6 +64,7 @@ export default async function ResourcePage({ params }: { params: { slug: string 
     .from('community_resources')
     .select('*')
     .neq('id', resource.id)
+    .eq('category', resource.category)
     .limit(3);
 
   const resourceIsland = extractIsland(resource);
