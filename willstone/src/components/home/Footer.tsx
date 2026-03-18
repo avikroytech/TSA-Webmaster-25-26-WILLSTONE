@@ -21,8 +21,8 @@ export default function Footer() {
 
   const socials = [
     { name: "Facebook", icon: Facebook, href: "https://facebook.com" },
-    { name: "Instagram", icon: Instagram, href: "https://instagram.com" },
-    { name: "LinkedIn", icon: Linkedin, href: "https://linkedin.com" },
+    { name: "Instagram", icon: Instagram, href: "https://www.instagram.com/willstonegov/" },
+    { name: "LinkedIn", icon: Linkedin, href: "https://www.linkedin.com/company/willstone" },
   ];
 
   return (
