@@ -13,7 +13,7 @@ const defaultResources: CarouselItem[] = [
     description: "A modern hub for learning and connection in the heart of Willstone, featuring over 50,000 titles and creative maker spaces.",
     image: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&h=600&fit=crop&q=80",
     linkUrl: "#",
-    linkText: "Explore the Space",
+    linkText: "Learn More",
   },
   {
     id: 2,
@@ -21,7 +21,7 @@ const defaultResources: CarouselItem[] = [
     description: "Beautiful parks, walking trails, sports facilities, and outdoor recreation programs for the whole family.",
     image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop&q=80",
     linkUrl: "#",
-    linkText: "Explore the Park",
+    linkText: "Learn More",
   },
   {
     id: 3,
@@ -29,7 +29,7 @@ const defaultResources: CarouselItem[] = [
     description: "A modern facility offering recreational programs, meeting spaces, and community events for residents of all ages.",
     image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800&h=600&fit=crop&q=80",
     linkUrl: "#",
-    linkText: "See the Events",
+    linkText: "Learn More",
   },
 ];
 
@@ -52,7 +52,7 @@ export default function SpotlightCarousel() {
             description: item.description.split(".")[0] + ".",
             image: item.images?.[0] || defaultResources[index]?.image || defaultResources[0].image,
             linkUrl: `/resource-hub/${item.slug}`,
-            linkText: "Explore the Space",
+            linkText: "Learn More",
           }))
         );
       }

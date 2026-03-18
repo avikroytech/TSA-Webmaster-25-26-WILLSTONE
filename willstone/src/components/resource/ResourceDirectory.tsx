@@ -49,7 +49,7 @@ export default function ResourceDirectory() {
   const [activeCategory, setActiveCategory] = useState<string>("All Types");
   const [activeType, setActiveType] = useState<string>("All Categories");
   const [activeIsland, setActiveIsland] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<"asc" | "desc" | "recommended">("recommended");
+  const [sortBy, setSortBy] = useState<"asc" | "desc" | "default">("default");
 
   const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
@@ -127,7 +127,7 @@ export default function ResourceDirectory() {
     });
 
     return filtered.sort((a, b) => {
-      if (sortBy === "recommended") return 0;
+      if (sortBy === "default") return 0;
       const valA = a.title || "";
       const valB = b.title || "";
       return sortBy === "asc" ? valA.localeCompare(valB) : valB.localeCompare(valA);
@@ -170,7 +170,7 @@ export default function ResourceDirectory() {
                   className="w-full flex justify-between items-center bg-white border-2 border-road-paint/20 py-4 px-5 rounded-2xl text-base font-bold text-asphalt focus:outline-none focus:border-asphalt focus:ring-2 focus:ring-asphalt/20 transition-all cursor-pointer shadow-sm hover:border-asphalt/50"
                 >
                   <span className="truncate">
-                    {sortBy === "recommended" ? "Recommended" :
+                    {sortBy === "default" ? "Default" :
                       sortBy === "asc" ? "Alphabetical (A to Z)" : "Alphabetical (Z to A)"}
                   </span>
                   <ChevronDown size={20} className={`text-asphalt shrink-0 transition-transform duration-300 ${isSortDropdownOpen ? "rotate-180" : ""}`} />
@@ -184,7 +184,7 @@ export default function ResourceDirectory() {
                       className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-road-paint/10 rounded-2xl overflow-hidden shadow-xl z-[60]"
                     >
                       {[
-                        { value: "recommended", label: "Recommended" },
+                        { value: "default", label: "Default" },
                         { value: "asc", label: "Alphabetical (A to Z)" },
                         { value: "desc", label: "Alphabetical (Z to A)" }
                       ].map((option) => (

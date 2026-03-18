@@ -182,7 +182,7 @@ export default async function ResourcePage({ params }: { params: { slug: string 
               {related.map((rel: any) => {
                 const relIsland = extractIsland(rel);
                 return (
-                  <Link href={`/resource-hub/${rel.page_num}`} key={rel.id} className="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 border border-road-paint/10 flex flex-col group h-full focus:outline-none focus-visible:ring-4 focus-visible:ring-asphalt/30">
+                  <Link href={`/resource-hub/${rel.slug}`} key={rel.id} className="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 border border-road-paint/10 flex flex-col group h-full focus:outline-none focus-visible:ring-4 focus-visible:ring-asphalt/30">
                     {/* Img Section */}
                     <div className="relative w-full h-56 bg-gray-100 overflow-hidden shrink-0">
                       {rel.images?.[0] ? (

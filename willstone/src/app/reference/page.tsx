@@ -262,6 +262,7 @@ export default function Reference() {
                             isOpen={openSection === "Code Stack"}
                             onToggle={() => toggleSection("Code Stack")}
                         >
+                            <p className="text-foreground text-lg mb-4">The following technologies were used to create this website:</p>
                             <div className="p-4 bg-white/40 rounded-xl">
                                 {codeStack.map((stack, i) => (
                                     <CodeStackItem key={i} tech={stack.tech} items={stack.items} />
@@ -275,6 +276,7 @@ export default function Reference() {
                             isOpen={openSection === "Image Links"}
                             onToggle={() => toggleSection("Image Links")}
                         >
+                            <p className="text-foreground text-lg mb-4">All images used are licensed under Unsplash, Pixabay, or Creative Commons license, or were part of public domain.</p>
                             <LinkList items={imageLinks} />
                         </AccordionItem>
 
