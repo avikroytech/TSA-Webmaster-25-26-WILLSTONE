@@ -238,7 +238,7 @@ export default function ChatAgent() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             onClick={() => setIsOpen(true)}
-            className="fixed top-4 right-4 z-[250] flex items-center gap-3 px-5 py-3 bg-[#496A49] text-[#f5f0eb] rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-transform duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C59F82] group"
+            className="fixed top-4 right-4 z-[90] flex items-center gap-3 px-5 py-3 bg-[#496A49] text-[#f5f0eb] rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-transform duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C59F82] group"
           >
             <Sparkles size={20} className="shrink-0" />
             <span className="font-bold uppercase tracking-[0.15em] text-sm">Beacon</span>
@@ -254,7 +254,7 @@ export default function ChatAgent() {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: PANEL_WIDTH, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 z-[200] h-full shadow-[-20px_0_60px_rgba(0,0,0,0.1)] flex flex-col pointer-events-auto"
+            className="fixed top-0 right-0 z-[90] h-full shadow-[-20px_0_60px_rgba(0,0,0,0.1)] flex flex-col pointer-events-auto"
             style={{ width: PANEL_WIDTH }}
           >
             {/* Main Panel Background with Rounded Corner */}
@@ -310,9 +310,9 @@ export default function ChatAgent() {
                   <div className="space-y-8 mt-4">
                     <div className="flex flex-wrap justify-center gap-2 px-10">
                       {[
-                        "What events are coming up?",
+                        "What are important events in April?",
                         "Where is the city library?",
-                        "Find health nonprofits.",
+                        "Find nonprofits focused on Health & Safety.",
                       ].map((q) => (
                         <button
                           key={q}
