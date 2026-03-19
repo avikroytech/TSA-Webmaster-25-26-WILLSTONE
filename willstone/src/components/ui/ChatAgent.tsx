@@ -321,8 +321,15 @@ export default function ChatAgent() {
               </div>
 
               {/* Chat Scroll Area */}
-              <div className="flex-1 overflow-y-auto px-8 py-4 space-y-6 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[var(--brand-medium)]/10 [&::-webkit-scrollbar-thumb]:rounded-full">
-
+              <div
+                className="flex-1 overflow-y-auto px-8 py-4 space-y-6 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[var(--brand-medium)]/10 [&::-webkit-scrollbar-thumb]:rounded-full"
+                onClick={(e) => {
+                  const target = e.target as HTMLElement;
+                  if (target.closest("a") && window.innerWidth < 768) {
+                    setIsOpen(false);
+                  }
+                }}
+              >
                 {/* Initial Suggestion State */}
                 {messages.length === 0 && !isLoading && (
                   <div className="space-y-8 mt-4">
