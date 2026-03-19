@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
     const context =
       contextBlocks.length > 0
         ? contextBlocks.join("\n\n---\n\n")
-        : "No specific records found for this query in the Willstone archive.";
+        : "No relevant documents found in the knowledge base.";
 
     // 4. Call Gemini LLM
     const response = await ai.models.generateContent({
