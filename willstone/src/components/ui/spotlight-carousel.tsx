@@ -47,7 +47,7 @@ export function SpotlightCarouselGallery({
 
   return (
     <section className="w-full bg-background mt-4 mb-4">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto px-6">
         {/* Carousel Grid */}
         <div
           className="flex flex-col lg:flex-row gap-6 w-full lg:h-[600px]"
