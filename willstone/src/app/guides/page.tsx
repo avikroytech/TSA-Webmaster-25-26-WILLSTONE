@@ -80,7 +80,7 @@ export default function GuidesPage() {
         <div className="min-h-screen flex flex-col bg-[#f5f0eb] text-[#1c2b2b]">
             <Navbar />
 
-            <main className="flex-1 w-full pb-24 px-6">
+            <main className="flex-1 w-full pt-32 pb-24 px-6">
                 {/* Header Section */}
                 <div className="flex flex-col items-center text-center mb-16 mt-8">
                     <motion.h1
