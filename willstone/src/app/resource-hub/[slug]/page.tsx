@@ -172,10 +172,6 @@ export default async function ResourcePage({ params }: { params: { slug: string 
           <div className="mt-12 pt-16 border-t-2 border-road-paint/10">
             <div className="flex items-center justify-between mb-10 border-b border-transparent">
               <h2 className="text-3xl font-display text-road-paint">Related Resources</h2>
-              <Link href="/resource-hub" className="group flex items-center gap-2 text-asphalt font-bold text-sm tracking-widest uppercase hover:text-road-paint transition-colors">
-                View all resources
-                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-              </Link>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-16">
