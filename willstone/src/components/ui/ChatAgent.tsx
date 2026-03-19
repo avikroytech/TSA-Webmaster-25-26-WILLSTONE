@@ -70,13 +70,22 @@ export default function ChatAgent() {
     if (typeof window === 'undefined') return;
     const wrapper = document.getElementById('main-content-wrapper');
     if (wrapper) {
-      if (open) {
+      if (open && window.innerWidth >= 768) {
         wrapper.style.marginRight = `${PANEL_WIDTH}px`;
       } else {
         wrapper.style.marginRight = '0px';
       }
     }
   }
+
+  // Handle window resizing to keep layout in sync
+  useEffect(() => {
+    const handleResize = () => {
+      if (isInitialized) updateLayout(isOpen);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isOpen, isInitialized]);
 
   // Save to sessionStorage whenever state changes
   useEffect(() => {
@@ -250,26 +259,26 @@ export default function ChatAgent() {
       <AnimatePresence mode="wait">
         {isOpen && (
           <motion.div
-            initial={{ x: PANEL_WIDTH, opacity: 0.5 }}
+            initial={{ x: "100%", opacity: 0.5 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: PANEL_WIDTH, opacity: 0 }}
+            exit={{ x: "100%", opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 z-[90] h-full shadow-[-20px_0_60px_rgba(0,0,0,0.1)] flex flex-col pointer-events-auto"
-            style={{ width: PANEL_WIDTH }}
+            className="fixed top-0 right-0 z-[300] h-full shadow-[-20px_0_60px_rgba(0,0,0,0.1)] flex flex-col pointer-events-auto w-full md:w-[400px]"
           >
             {/* Main Panel Background with Rounded Corner */}
-            <div className="absolute inset-0 bg-[#F9F7F2] rounded-tl-[40px] border-l border-[var(--brand-medium)]/5 shadow-inner" />
+            <div className="absolute inset-0 bg-[#F9F7F2] md:rounded-tl-[40px] md:border-l border-[var(--brand-medium)]/5 shadow-inner" />
 
             {/* Panel Content Wrapper */}
             <div className="relative flex flex-col h-full">
 
               {/* Header */}
-              <div className="flex items-center justify-between px-8 pt-10 pb-6">
+              <div className="flex items-center justify-between px-8 pt-10 pb-6 relative z-10">
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="w-10 h-10 flex items-center justify-center rounded-xl bg-[var(--brand-medium)]/5 text-[var(--brand-medium)] hover:bg-[var(--brand-medium)]/10 transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[var(--brand-medium)]/5 text-[var(--brand-medium)] hover:bg-[var(--brand-medium)]/10 transition-all group"
                 >
-                  <ChevronRight size={20} />
+                  <ChevronRight size={18} className="group-hover:translate-x-0.5 transition-transform" />
+                  <span className="text-[10px] md:text-[11px] font-black uppercase tracking-widest">Close Chat</span>
                 </button>
                 <div className="flex items-center gap-3">
                   <h2 className="font-display text-2xl text-[var(--brand-dark)] tracking-tight">Beacon</h2>
