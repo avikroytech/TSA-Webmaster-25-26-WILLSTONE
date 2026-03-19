@@ -37,7 +37,7 @@ export default function ChatAgent() {
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const pendingQueryRef = useRef<string | null>(null);
 
   // Constants
@@ -99,6 +99,15 @@ export default function ChatAgent() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
+
+  // Auto-expand input height
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.style.height = "auto";
+      const newHeight = Math.min(inputRef.current.scrollHeight, window.innerHeight * 0.15);
+      inputRef.current.style.height = `${newHeight}px`;
+    }
+  }, [input]);
 
   // Focus input when chat opens
   useEffect(() => {
@@ -386,23 +395,23 @@ export default function ChatAgent() {
 
               {/* Input Area */}
               <div className="px-8 pb-10 pt-4">
-                <div className="relative flex items-center">
-                  <div className="absolute left-4 w-10 h-10 rounded-xl bg-[var(--brand-dark)] flex items-center justify-center text-white">
+                <div className="relative flex items-end">
+                  <div className="absolute left-4 bottom-3 w-10 h-10 rounded-xl bg-[var(--brand-dark)] flex items-center justify-center text-white z-10">
                     <Sparkles size={18} />
                   </div>
-                  <input
+                  <textarea
                     ref={inputRef}
-                    type="text"
+                    rows={1}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Ask Beacon..."
-                    className="w-full bg-[#EFECE6] border-none rounded-2xl py-5 pl-16 pr-14 text-sm font-medium text-[var(--brand-dark)] placeholder:text-[var(--brand-dark)]/40 focus:ring-2 focus:ring-[var(--brand-medium)]/20 transition-all shadow-inner"
+                    className="w-full bg-[#EFECE6] border-none rounded-2xl py-5 pl-16 pr-14 text-sm font-medium text-[var(--brand-dark)] placeholder:text-[var(--brand-dark)]/40 focus:ring-2 focus:ring-[var(--brand-medium)]/20 transition-all shadow-inner resize-none min-h-[60px] overflow-y-auto custom-scrollbar"
                   />
                   <button
                     onClick={() => handleSend()}
                     disabled={isLoading || !input.trim()}
-                    className="absolute right-4 w-10 h-10 flex items-center justify-center rounded-xl bg-transparent text-[var(--brand-dark)] hover:bg-[var(--brand-medium)]/5 transition-colors disabled:opacity-20"
+                    className="absolute right-4 bottom-3 w-10 h-10 flex items-center justify-center rounded-xl bg-transparent text-[var(--brand-dark)] hover:bg-[var(--brand-medium)]/5 transition-colors disabled:opacity-20 z-10"
                   >
                     <ArrowUp size={20} />
                   </button>
