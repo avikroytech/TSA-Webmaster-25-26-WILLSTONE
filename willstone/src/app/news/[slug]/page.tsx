@@ -32,13 +32,13 @@ export default async function ArticlePage({ params }: { params: { slug: string }
     return (
         <div className="min-h-screen flex flex-col bg-[#f5f0eb] text-[#1c2b2b]">
             <Navbar />
-            <main className="flex-1 w-full max-w-4xl mx-auto px-6 py-16 md:py-24">
+            <main className="flex-1 w-full max-w-4xl mx-auto px-6 pt-32 pb-16 md:pt-40 md:pb-24">
                 {article && (
                     <article>
                         {/* Back Link */}
                         <Link
                             href="/news"
-                            className="inline-flex items-center gap-2 text-[#264D52] hover:text-[#70AC90] font-bold text-sm uppercase tracking-wide mb-12 transition-colors"
+                            className="inline-flex mb-6 items-center gap-2 text-asphalt hover:text-road-paint transition-colors font-bold text-md tracking-wide group w-fit"
                         >
                             <ArrowLeft size={16} />
                             Back to News

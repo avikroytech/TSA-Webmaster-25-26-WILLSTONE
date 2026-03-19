@@ -73,7 +73,7 @@ export default async function ResourcePage({ params }: { params: { slug: string 
     <div className="min-h-screen flex flex-col bg-[var(--background)] font-sans">
       <Navbar />
 
-      <main className="flex-1 w-full max-w-[1400px] mx-auto px-6 md:px-12 xl:px-20 py-12 flex flex-col gap-10">
+      <main className="flex-1 w-full max-w-[1400px] mx-auto px-6 md:px-12 xl:px-20 pt-32 pb-12 flex flex-col gap-10">
 
         {/* Back Link */}
         <Link
