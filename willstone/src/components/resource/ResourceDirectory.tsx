@@ -54,6 +54,7 @@ export default function ResourceDirectory() {
   const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
   const typeDropdownRef = React.useRef<HTMLDivElement>(null);
   const categoryDropdownRef = React.useRef<HTMLDivElement>(null);
@@ -136,8 +137,213 @@ export default function ResourceDirectory() {
 
   const allCategoryOptions = ["All Types", ...categories];
 
+
+  const renderFilters = (isMobile = false) => (
+    <div className={`${isMobile ? "p-8 space-y-10" : "flex flex-col gap-10"}`}>
+      <div className="flex flex-col gap-4">
+        <h2 className={`text-3xl font-black ${isMobile ? "text-asphalt" : "text-road-paint"}`}>
+          {isMobile ? "Filter Resources" : "Filter Resources"}
+        </h2>
+        <div className="h-px w-full bg-road-paint/20" />
+      </div>
+
+      {/* Sort By */}
+      <div className="flex flex-col gap-2" ref={isMobile ? null : sortDropdownRef}>
+        <h3 className="text-xl font-black font-display text-asphalt tracking-widest uppercase text-xs">Sort By</h3>
+        <div className="relative">
+          <button
+            onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
+            className="w-full flex justify-between items-center bg-white border-2 border-road-paint/20 py-4 px-5 rounded-2xl text-base font-bold text-asphalt focus:outline-none transition-all cursor-pointer shadow-sm hover:border-asphalt/50"
+          >
+            <span className="truncate">
+              {sortBy === "default" ? "Default" :
+                sortBy === "asc" ? "Alphabetical (A to Z)" : "Alphabetical (Z to A)"}
+            </span>
+            <ChevronDown size={20} className={`text-asphalt shrink-0 transition-transform duration-300 ${isSortDropdownOpen ? "rotate-180" : ""}`} />
+          </button>
+          <AnimatePresence>
+            {isSortDropdownOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-road-paint/10 rounded-2xl overflow-hidden shadow-xl z-[60]"
+              >
+                {[
+                  { value: "default", label: "Default" },
+                  { value: "asc", label: "Alphabetical (A to Z)" },
+                  { value: "desc", label: "Alphabetical (Z to A)" }
+                ].map((option) => (
+                  <div
+                    key={option.value}
+                    onClick={() => { setSortBy(option.value as any); setIsSortDropdownOpen(false); }}
+                    className={`px-5 py-4 text-asphalt font-bold transition-colors cursor-pointer border-b border-road-paint/5 last:border-0 ${sortBy === option.value ? "bg-asphalt text-white" : "hover:bg-asphalt/5"}`}
+                  >
+                    {option.label}
+                  </div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* Resource Type */}
+      <div className="flex flex-col gap-2 items-start w-full" ref={isMobile ? null : categoryDropdownRef}>
+        <h3 className="text-xl font-black font-display text-asphalt tracking-widest uppercase text-xs">Resource Type</h3>
+        <div className="relative w-full">
+          <button
+            onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+            className="w-full flex justify-between items-center bg-white border-2 border-road-paint/20 py-4 px-5 rounded-2xl text-base font-bold text-asphalt focus:outline-none transition-all cursor-pointer shadow-sm hover:border-asphalt/50"
+          >
+            <div className="flex items-center gap-3 overflow-hidden">
+              <motion.div
+                key={activeCategory}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="text-marking shrink-0"
+              >
+                {getCategoryIcon(activeCategory === "All Types" ? "all" : activeCategory)}
+              </motion.div>
+              <span className="truncate">{activeCategory}</span>
+            </div>
+            <ChevronDown size={20} className={`text-asphalt shrink-0 transition-transform duration-300 ${isCategoryDropdownOpen ? "rotate-180" : ""}`} />
+          </button>
+          <AnimatePresence>
+            {isCategoryDropdownOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-road-paint/10 rounded-2xl overflow-hidden shadow-xl z-50 max-h-80 overflow-y-auto custom-scrollbar"
+              >
+                {allCategoryOptions.map((cat) => (
+                  <div
+                    key={cat}
+                    onClick={() => { setActiveCategory(cat); setIsCategoryDropdownOpen(false); }}
+                    className={`px-5 py-4 text-asphalt font-bold transition-colors cursor-pointer border-b border-road-paint/5 last:border-0 flex items-center gap-3 ${activeCategory === cat ? "bg-asphalt text-white" : "hover:bg-asphalt/5"}`}
+                  >
+                    <div className={`shrink-0 ${activeCategory === cat ? "text-marking" : "text-asphalt/40"}`}>
+                      {getCategoryIcon(cat === "All Types" ? "all" : cat)}
+                    </div>
+                    {cat}
+                  </div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* Category Filter */}
+      <div className="flex flex-col gap-2 items-start w-full" ref={isMobile ? null : typeDropdownRef}>
+        <h3 className="text-xl font-black font-display text-[var(--brand-medium)] tracking-widest uppercase text-xs">Category</h3>
+        <div className="relative w-full">
+          <button
+            onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}
+            className="w-full flex justify-between items-center bg-white border-2 border-[var(--brand-medium)]/20 py-4 px-5 rounded-2xl text-base font-bold text-[var(--brand-medium)] focus:outline-none transition-all cursor-pointer shadow-sm hover:border-[var(--brand-medium)]/50"
+          >
+            <div className="flex items-center gap-3 overflow-hidden">
+              <Tag size={20} className="text-[var(--brand-medium)] shrink-0" />
+              <span className="truncate">{activeType}</span>
+            </div>
+            <ChevronDown size={20} className={`text-[var(--brand-medium)] shrink-0 transition-transform duration-300 ${isTypeDropdownOpen ? "rotate-180" : ""}`} />
+          </button>
+          <AnimatePresence>
+            {isTypeDropdownOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-[var(--brand-medium)]/10 rounded-2xl overflow-hidden shadow-xl z-40 max-h-80 overflow-y-auto custom-scrollbar"
+              >
+                {["All Categories", ...types].map((type) => (
+                  <div
+                    key={type}
+                    onClick={() => { setActiveType(type); setIsTypeDropdownOpen(false); }}
+                    className={`px-5 py-4 text-[var(--brand-medium)] font-bold transition-colors cursor-pointer border-b border-[var(--brand-medium)]/5 last:border-0 flex items-center gap-3 ${activeType === type ? "bg-[var(--brand-medium)] text-white" : "hover:bg-[var(--brand-medium)]/5"}`}
+                  >
+                    {type}
+                  </div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* Island Location */}
+      <div className="flex flex-col gap-5">
+        <h3 className="text-xl font-black font-display text-asphalt tracking-widest uppercase text-xs">Island Location</h3>
+        <div className="bg-road-paint/5 border-l-4 border-asphalt p-4 rounded-r-xl">
+          <p className="text-[11px] font-bold text-asphalt uppercase leading-relaxed tracking-wider">
+            Click an island to filter by location.
+          </p>
+        </div>
+        <div className="relative w-full aspect-square bg-[var(--brand-medium)] rounded-3xl shadow-sm border border-road-paint/10 overflow-hidden p-6 flex items-center justify-center">
+          <IslandImageMap activeIsland={activeIsland} onIslandClick={setActiveIsland} />
+        </div>
+        {activeIsland && (
+          <button
+            onClick={() => setActiveIsland(null)}
+            className="w-full py-3 bg-marking/10 text-marking rounded-xl text-xs font-black uppercase tracking-widest hover:bg-marking/20 transition-colors"
+          >
+            Clear Location Filter
+          </button>
+        )}
+      </div>
+    </div>
+  );
+
   return (
     <section className="w-full py-16 min-h-screen relative font-sans text-brand-text flex flex-col items-center" style={{ background: "var(--background)" }}>
+      {/* Mobile Sticky Filter Toggle */}
+      <div className="lg:hidden sticky top-[90px] w-full z-[80] px-6 mb-12">
+        <motion.button
+          onClick={() => setIsMobileFiltersOpen(!isMobileFiltersOpen)}
+          layoutId="mobileFilterBar"
+          className="w-full bg-white border border-road-paint/10 rounded-2xl p-4 flex items-center justify-between shadow-lg text-asphalt"
+        >
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-asphalt text-white rounded-lg">
+              <Tag size={18} />
+            </div>
+            <div className="flex flex-col items-start translate-y-[-1px]">
+              <span className="text-sm font-bold">Filters</span>
+            </div>
+          </div>
+          <motion.div
+            animate={{ rotate: isMobileFiltersOpen ? 180 : 0 }}
+            className="text-marking"
+          >
+            <ChevronDown size={24} />
+          </motion.div>
+        </motion.button>
+
+        <AnimatePresence>
+          {isMobileFiltersOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="mt-2 bg-white border border-road-paint/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[70vh]"
+            >
+              <div className="overflow-y-auto flex-1 custom-scrollbar">
+                {renderFilters(true)}
+              </div>
+              <div className="p-4 bg-asphalt/5 border-t border-road-paint/10 flex justify-center">
+                <button
+                  onClick={() => setIsMobileFiltersOpen(false)}
+                  className="px-8 py-3 bg-asphalt text-white rounded-full text-sm font-bold tracking-widest hover:scale-105 transition-transform"
+                >
+                  Close Panel
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
       <div className="w-full px-6 md:px-12 xl:px-20 relative z-10 w-full max-w-[1800px]">
 
         {/* Header Title */}
@@ -153,154 +359,9 @@ export default function ResourceDirectory() {
 
         <div className="flex flex-col lg:flex-row gap-12 xl:gap-20">
 
-          {/* Left Sidebar */}
-          <div className="w-full lg:w-[320px] 2xl:w-[380px] shrink-0 flex flex-col gap-10">
-
-            <div className="flex flex-col gap-4">
-              <h2 className="text-3xl font-black text-road-paint">Filter Resources</h2>
-              <div className="h-px w-full bg-road-paint/20" />
-            </div>
-
-            {/* Sort By */}
-            <div className="flex flex-col gap-2" ref={sortDropdownRef}>
-              <h3 className="text-xl font-black font-display text-asphalt tracking-widest">Sort By</h3>
-              <div className="relative">
-                <button
-                  onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
-                  className="w-full flex justify-between items-center bg-white border-2 border-road-paint/20 py-4 px-5 rounded-2xl text-base font-bold text-asphalt focus:outline-none focus:border-asphalt focus:ring-2 focus:ring-asphalt/20 transition-all cursor-pointer shadow-sm hover:border-asphalt/50"
-                >
-                  <span className="truncate">
-                    {sortBy === "default" ? "Default" :
-                      sortBy === "asc" ? "Alphabetical (A to Z)" : "Alphabetical (Z to A)"}
-                  </span>
-                  <ChevronDown size={20} className={`text-asphalt shrink-0 transition-transform duration-300 ${isSortDropdownOpen ? "rotate-180" : ""}`} />
-                </button>
-                <AnimatePresence>
-                  {isSortDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-road-paint/10 rounded-2xl overflow-hidden shadow-xl z-[60]"
-                    >
-                      {[
-                        { value: "default", label: "Default" },
-                        { value: "asc", label: "Alphabetical (A to Z)" },
-                        { value: "desc", label: "Alphabetical (Z to A)" }
-                      ].map((option) => (
-                        <div
-                          key={option.value}
-                          onClick={() => { setSortBy(option.value as any); setIsSortDropdownOpen(false); }}
-                          className={`px-5 py-4 text-asphalt font-bold transition-colors cursor-pointer border-b border-road-paint/5 last:border-0 ${sortBy === option.value ? "bg-asphalt text-white" : "hover:bg-asphalt/5"}`}
-                        >
-                          {option.label}
-                        </div>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
-
-            {/* Resource Type */}
-            <div className="flex flex-col gap-4 items-start w-full" ref={categoryDropdownRef}>
-              <h3 className="text-xl font-black font-display text-asphalt tracking-widest">Resource Type</h3>
-              <div className="relative w-full">
-                <button
-                  onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
-                  className="w-full flex justify-between items-center bg-white border-2 border-road-paint/20 py-4 px-5 rounded-2xl text-base font-bold text-asphalt focus:outline-none focus:border-asphalt focus:ring-2 focus:ring-asphalt/20 transition-all cursor-pointer shadow-sm hover:border-asphalt/50"
-                >
-                  <div className="flex items-center gap-3 overflow-hidden">
-                    <motion.div
-                      key={activeCategory}
-                      initial={{ scale: 0.8, opacity: 0, rotate: -10 }}
-                      animate={{ scale: 1, opacity: 1, rotate: 0 }}
-                      className="text-marking shrink-0"
-                    >
-                      {getCategoryIcon(activeCategory === "All Types" ? "all" : activeCategory)}
-                    </motion.div>
-                    <span className="truncate">{activeCategory}</span>
-                  </div>
-                  <ChevronDown size={20} className={`text-asphalt shrink-0 transition-transform duration-300 ${isCategoryDropdownOpen ? "rotate-180" : ""}`} />
-                </button>
-                <AnimatePresence>
-                  {isCategoryDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-road-paint/10 rounded-2xl overflow-hidden shadow-xl z-50 max-h-80 overflow-y-auto custom-scrollbar"
-                    >
-                      {allCategoryOptions.map((cat) => (
-                        <div
-                          key={cat}
-                          onClick={() => { setActiveCategory(cat); setIsCategoryDropdownOpen(false); }}
-                          className={`px-5 py-4 text-asphalt font-bold transition-colors cursor-pointer border-b border-road-paint/5 last:border-0 flex items-center gap-3 ${activeCategory === cat ? "bg-asphalt text-white" : "hover:bg-asphalt/5"}`}
-                        >
-                          <div className={`shrink-0 ${activeCategory === cat ? "text-marking" : "text-asphalt/40"}`}>
-                            {getCategoryIcon(cat === "All Types" ? "all" : cat)}
-                          </div>
-                          {cat}
-                        </div>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
-
-            {/* Category (type filter) */}
-            <div className="flex flex-col gap-4 items-start w-full" ref={typeDropdownRef}>
-              <h3 className="text-xl font-black font-display text-[var(--brand-medium)] tracking-widest">Category</h3>
-              <div className="relative w-full">
-                <button
-                  onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}
-                  className="w-full flex justify-between items-center bg-white border-2 border-[var(--brand-medium)]/20 py-4 px-5 rounded-2xl text-base font-bold text-[var(--brand-medium)] focus:outline-none focus:border-[var(--brand-medium)] focus:ring-2 focus:ring-[var(--brand-medium)]/20 transition-all cursor-pointer shadow-sm hover:border-[var(--brand-medium)]/50"
-                >
-                  <div className="flex items-center gap-3 overflow-hidden">
-                    <Tag size={20} className="text-[var(--brand-medium)] shrink-0" />
-                    <span className="truncate">{activeType}</span>
-                  </div>
-                  <ChevronDown size={20} className={`text-[var(--brand-medium)] shrink-0 transition-transform duration-300 ${isTypeDropdownOpen ? "rotate-180" : ""}`} />
-                </button>
-                <AnimatePresence>
-                  {isTypeDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-[var(--brand-medium)]/10 rounded-2xl overflow-hidden shadow-xl z-40 max-h-80 overflow-y-auto custom-scrollbar"
-                    >
-                      {["All Categories", ...types].map((type) => (
-                        <div
-                          key={type}
-                          onClick={() => { setActiveType(type); setIsTypeDropdownOpen(false); }}
-                          className={`px-5 py-4 text-[var(--brand-medium)] font-bold transition-colors cursor-pointer border-b border-[var(--brand-medium)]/5 last:border-0 flex items-center gap-3 ${activeType === type ? "bg-[var(--brand-medium)] text-white" : "hover:bg-[var(--brand-medium)]/5"}`}
-                        >
-                          {type}
-                        </div>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
-
-            {/* Island Location */}
-            <div className="flex flex-col gap-5">
-              <h3 className="text-xl font-black font-display text-asphalt tracking-widest">Island Location</h3>
-
-              <div className="bg-road-paint/5 border-l-4 border-asphalt p-4 rounded-r-xl">
-                <p className="text-sm font-bold text-asphalt leading-relaxed">
-                  Click an island to filter by location.<br />Leave blank to show all resources.
-                </p>
-              </div>
-
-              <div className="relative w-full aspect-square bg-[var(--brand-medium)] rounded-3xl shadow-sm border border-road-paint/10 overflow-hidden p-8 flex items-center justify-center">
-                <IslandImageMap activeIsland={activeIsland} onIslandClick={setActiveIsland} />
-              </div>
-            </div>
-
+          {/* Desktop Sidebar (hidden on mobile) */}
+          <div className="hidden lg:flex w-full lg:w-[320px] 2xl:w-[380px] shrink-0 flex-col gap-10">
+            {renderFilters()}
           </div>
 
           {/* Main Content */}
