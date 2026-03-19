@@ -391,7 +391,7 @@ export default function InteractiveMap() {
     );
 
     return (
-        <div className="relative w-full h-full flex flex-col bg-[#111827] overflow-hidden">
+        <div className="relative w-full h-full flex flex-col bg-[var(--brand-medium)]/80 overflow-hidden">
             {/* ── Map Area ─────────────────────────────────────────── */}
             <div className="flex-1 relative map-container overflow-hidden">
                 {/* SVG Map */}
