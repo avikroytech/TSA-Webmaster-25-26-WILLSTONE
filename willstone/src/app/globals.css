@@ -61,8 +61,8 @@ h6 {
 
 /* Webkit browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
-  width: 20px;
-  height: 12px;
+  width: 15px;
+  height: 10px;
 }
 
 /* Remove scrollbar arrows/buttons completely */
@@ -80,7 +80,7 @@ h6 {
 /* Scrollbar Thumb */
 ::-webkit-scrollbar-thumb {
   background: var(--brand-dark);
-  border-radius: 4px;
+  border-radius: 8px;
   border: 3px solid var(--brand-medium);
 }
 

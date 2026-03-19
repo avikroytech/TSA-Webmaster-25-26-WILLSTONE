@@ -14,7 +14,7 @@ const defaultEvents = [
     location: "Town Square",
     description: "Celebrate our heritage and future at the historic Town Square. Live music, local dining, and community awards.",
     date: new Date(2026, 0, 15), // June 15
-    image: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&h=600&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1611843467160-25afb8df1074",
     category: "Featured Event",
     color: "bg-[#264D52]" // Dark Teal
   },
@@ -24,7 +24,7 @@ const defaultEvents = [
     location: "Community Pavilion",
     description: "Local produce, handmade crafts, and hot beverages inside the Community Pavilion.",
     date: new Date(2026, 1, 15), // Jan 15
-    image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&h=600&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1606230749281-a3305ca0feac",
     category: "Market",
     color: "bg-[#264D52]" // Dark Teal
   },
@@ -34,7 +34,7 @@ const defaultEvents = [
     location: "City Council Chambers",
     description: "Join the Mayor to discuss the new solar initiatives for public buildings and residential...",
     date: new Date(2026, 1, 20), // Feb 20
-    image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&h=600&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1589996448606-27d38c70f3bc",
     category: "Town Hall",
     color: "bg-[#496A49]" // Green
   },

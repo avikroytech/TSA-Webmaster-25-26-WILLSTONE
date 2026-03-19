@@ -91,7 +91,7 @@ export default function Hero() {
           onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
           className="animate-bounce flex flex-col items-center cursor-pointer hover:text-white/80 transition-colors"
         >
-          <span className="text-sm font-semibold tracking-[0.2em] uppercase mb-2">Spotlight</span>
+          <span className="text-sm tracking-[0.1em] mb-2">Spotlight</span>
           <ArrowDown size={24} />
         </div>
       </div>

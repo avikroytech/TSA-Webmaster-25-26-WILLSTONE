@@ -188,7 +188,7 @@ export default function RequestForm() {
                 <p className="text-[var(--brand-dark)] text-sm font-medium mt-1 tracking-widest">Suggest a program/service to add to the community</p>
                 <div className="mt-4 flex items-center gap-1.5 bg-[#264D52]/5 px-4 py-2 rounded-xl text-xs font-bold text-[#264D52] border border-[#264D52]/10 w-fit">
                     <span className="text-red-500 text-lg leading-none">*</span>
-                    <span className="uppercase tracking-widest">Indicates a mandatory field</span>
+                    <span className="text-sm">Indicates a mandatory field</span>
                 </div>
             </div>
 

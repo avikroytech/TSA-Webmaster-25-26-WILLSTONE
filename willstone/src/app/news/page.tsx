@@ -138,7 +138,7 @@ export default function NewsPage() {
                 onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
                 className="animate-bounce flex flex-col items-center cursor-pointer hover:text-white transition-colors"
               >
-                <span className="text-[10px] font-black tracking-[0.3em] uppercase mb-3">Scroll down for more news</span>
+                <span className="text-sm tracking-[0.1em] mb-3">More News</span>
                 <ArrowDown size={20} strokeWidth={3} />
               </div>
             </div>
