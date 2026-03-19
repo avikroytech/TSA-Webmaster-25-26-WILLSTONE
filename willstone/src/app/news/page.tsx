@@ -106,7 +106,7 @@ export default function NewsPage() {
               </motion.div>
             </div>
 
-            <div className="relative h-full container mx-auto px-6 flex flex-col justify-end pb-24 md:pb-32">
+            <div className="relative h-full container mx-auto px-6 flex flex-col justify-end pb-44 md:pb-32">
               <motion.div
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
