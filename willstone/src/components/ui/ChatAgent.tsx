@@ -2,7 +2,20 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, X, Send, Loader2, ExternalLink, Bot, User } from "lucide-react";
+import {
+  Sparkles,
+  X,
+  Send,
+  Loader2,
+  ExternalLink,
+  Bot,
+  User,
+  ChevronRight,
+  Pencil,
+  ShieldCheck,
+  ArrowUp,
+  Search
+} from "lucide-react";
 
 interface Message {
   role: "user" | "assistant";
@@ -22,9 +35,56 @@ export default function ChatAgent() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const pendingQueryRef = useRef<string | null>(null);
+
+  // Constants
+  const PANEL_WIDTH = 400;
+
+  // Load from sessionStorage on mount
+  useEffect(() => {
+    const savedMessages = sessionStorage.getItem("willstone-chat-messages");
+    const savedIsOpen = sessionStorage.getItem("willstone-chat-open");
+
+    if (savedMessages) {
+      try {
+        setMessages(JSON.parse(savedMessages));
+      } catch (e) {
+        console.error("Failed to load chat history", e);
+      }
+    }
+
+    if (savedIsOpen === "true") {
+      setIsOpen(true);
+      // Synchronize layout on mount
+      updateLayout(true);
+    }
+    setIsInitialized(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Synchronize layout with isOpen state
+  function updateLayout(open: boolean) {
+    if (typeof window === 'undefined') return;
+    const wrapper = document.getElementById('main-content-wrapper');
+    if (wrapper) {
+      if (open) {
+        wrapper.style.marginRight = `${PANEL_WIDTH}px`;
+      } else {
+        wrapper.style.marginRight = '0px';
+      }
+    }
+  }
+
+  // Save to sessionStorage whenever state changes
+  useEffect(() => {
+    if (!isInitialized) return;
+    sessionStorage.setItem("willstone-chat-messages", JSON.stringify(messages));
+    sessionStorage.setItem("willstone-chat-open", String(isOpen));
+    updateLayout(isOpen);
+  }, [messages, isOpen, isInitialized]);
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -35,7 +95,6 @@ export default function ChatAgent() {
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 300);
-      // Process any pending query from external trigger
       if (pendingQueryRef.current) {
         const query = pendingQueryRef.current;
         pendingQueryRef.current = null;
@@ -45,7 +104,7 @@ export default function ChatAgent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
-  // Listen for custom events from Hero search / other AI search buttons
+  // Listen for custom events
   useEffect(() => {
     const handler = (e: Event) => {
       const query = (e as CustomEvent).detail;
@@ -82,7 +141,6 @@ export default function ChatAgent() {
       const data = await res.json();
 
       if (res.ok) {
-        // Deduplicate sources by link
         const seen = new Set<string>();
         const uniqueSources = (data.sources || []).filter((s: Source) => {
           const key = s.link || s.title;
@@ -104,7 +162,7 @@ export default function ChatAgent() {
           ...prev,
           {
             role: "assistant",
-            content: "Sorry, something went wrong. Please try again.",
+            content: "I ran into a bit of trouble finding that information. Could you try rephrasing?",
           },
         ]);
       }
@@ -113,8 +171,7 @@ export default function ChatAgent() {
         ...prev,
         {
           role: "assistant",
-          content:
-            "I couldn't connect to the server. Please check your connection and try again.",
+          content: "I couldn't reach the Willstone knowledge base. Please check your connection.",
         },
       ]);
     } finally {
@@ -129,277 +186,237 @@ export default function ChatAgent() {
     }
   }
 
-  // Enhanced markdown-like formatting
   function formatMessage(text: string) {
     const lines = text.split("\n");
     return lines.map((line, i) => {
       let processed = line;
+      processed = processed.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-[var(--brand-dark)]">$1</strong>');
+      processed = processed.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[var(--brand-medium)] underline font-bold hover:opacity-80 transition-opacity">$1</a>');
 
-      // 1. Bold: **text**
-      processed = processed.replace(
-        /\*\*(.*?)\*\*/g,
-        '<strong class="font-black">$1</strong>'
-      );
-
-      // 2. Links: [text](url)
-      processed = processed.replace(
-        /\[(.*?)\]\((.*?)\)/g,
-        '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[var(--brand-medium)] underline font-bold hover:opacity-80 transition-opacity">$1</a>'
-      );
-
-      // 3. Headers: ### Heading
       if (processed.startsWith("### ")) {
         return (
-          <h3
-            key={i}
-            className="text-sm font-display font-bold text-[var(--brand-medium)] mt-3 mb-1 uppercase tracking-wide"
-            dangerouslySetInnerHTML={{ __html: processed.slice(4) }}
-          />
+          <h3 key={i} className="text-sm font-display font-bold text-[var(--brand-dark)] mt-3 mb-1 uppercase tracking-wide">
+            {processed.slice(4)}
+          </h3>
         );
       }
 
-      // 4. Numbered Lists: 1. Item
       const numberedMatch = processed.match(/^(\d+)\.\s(.*)/);
       if (numberedMatch) {
         return (
           <div key={i} className="flex gap-2 my-1 pl-1">
-            <span className="font-bold text-[var(--brand-medium)] shrink-0">
-              {numberedMatch[1]}.
-            </span>
-            <div
-              className="text-[13px]"
-              dangerouslySetInnerHTML={{ __html: numberedMatch[2] }}
-            />
+            <span className="font-bold text-[var(--brand-medium)] shrink-0">{numberedMatch[1]}.</span>
+            <div className="text-[13px] text-[#2c3e3e]" dangerouslySetInnerHTML={{ __html: numberedMatch[2] }} />
           </div>
         );
       }
 
-      // 5. Bullet points: - Item or * Item
       if (processed.startsWith("- ") || processed.startsWith("* ")) {
         return (
           <div key={i} className="flex gap-2 my-1 pl-2 items-start">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-medium)] shrink-0 mt-1.5" />
-            <div
-              className="text-[13px]"
-              dangerouslySetInnerHTML={{ __html: processed.slice(2) }}
-            />
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-medium)]/40 shrink-0 mt-1.5" />
+            <div className="text-[13px] text-[#2c3e3e]" dangerouslySetInnerHTML={{ __html: processed.slice(2) }} />
           </div>
         );
       }
 
-      // 6. Manual Line Breaks
       if (processed.trim() === "") return <div key={i} className="h-2" />;
 
       return (
-        <div
-          key={i}
-          className="my-0.5 text-[13px] leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: processed }}
-        />
+        <div key={i} className="my-0.5 text-[13px] leading-relaxed text-[#2c3e3e]" dangerouslySetInnerHTML={{ __html: processed }} />
       );
     });
   }
 
   return (
     <>
-      {/* Floating Button */}
+      {/* Top Right Universal Toggle */}
       <AnimatePresence>
         {!isOpen && (
           <motion.button
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 right-6 z-[200] w-14 h-14 rounded-full bg-[var(--brand-medium)] hover:bg-[var(--brand-dark)] text-[#f5f0eb] shadow-[0_8px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.3)] flex items-center justify-center cursor-pointer transition-colors duration-300 group"
-            aria-label="Open AI Chat"
-            id="chat-agent-trigger"
+            className="fixed top-4 right-4 z-[250] flex items-center gap-3 px-5 py-3 bg-[#496A49] text-[#f5f0eb] rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-transform duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C59F82] group"
           >
-            <Sparkles
-              size={24}
-              className="group-hover:rotate-12 transition-transform duration-300"
-            />
+            <Sparkles size={20} className="shrink-0" />
+            <span className="font-bold uppercase tracking-[0.15em] text-sm">Beacon</span>
           </motion.button>
         )}
       </AnimatePresence>
 
-      {/* Chat Panel */}
-      <AnimatePresence>
+      {/* Side Panel */}
+      <AnimatePresence mode="wait">
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed bottom-6 right-6 z-[200] w-[420px] max-w-[calc(100vw-48px)] h-[600px] max-h-[calc(100vh-48px)] flex flex-col rounded-3xl overflow-hidden shadow-[0_24px_80px_-12px_rgba(0,0,0,0.25)] border border-[var(--brand-medium)]/10"
+            initial={{ x: PANEL_WIDTH, opacity: 0.5 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: PANEL_WIDTH, opacity: 0 }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed top-0 right-0 z-[200] h-full shadow-[-20px_0_60px_rgba(0,0,0,0.1)] flex flex-col pointer-events-auto"
+            style={{ width: PANEL_WIDTH }}
           >
-            {/* Header */}
-            <div className="bg-[var(--brand-medium)] px-6 py-4 flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center">
-                  <Bot size={18} className="text-white" />
-                </div>
-                <div>
-                  <h3 className="text-white font-display text-base tracking-wide leading-none">
-                    Willstone AI
-                  </h3>
-                  <p className="text-white/60 text-[10px] font-bold uppercase tracking-widest mt-1">
-                    Community Assistant
-                  </p>
+            {/* Main Panel Background with Rounded Corner */}
+            <div className="absolute inset-0 bg-[#F9F7F2] rounded-tl-[40px] border-l border-[var(--brand-medium)]/5 shadow-inner" />
+
+            {/* Panel Content Wrapper */}
+            <div className="relative flex flex-col h-full">
+
+              {/* Header */}
+              <div className="flex items-center justify-between px-8 pt-10 pb-6">
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="w-10 h-10 flex items-center justify-center rounded-xl bg-[var(--brand-medium)]/5 text-[var(--brand-medium)] hover:bg-[var(--brand-medium)]/10 transition-colors"
+                >
+                  <ChevronRight size={20} />
+                </button>
+                <div className="flex items-center gap-3">
+                  <h2 className="font-display text-2xl text-[var(--brand-dark)] tracking-tight">Beacon</h2>
+                  <div className="w-10 h-10 rounded-full border-2 border-[var(--brand-medium)]/20 flex items-center justify-center bg-white shadow-sm overflow-hidden text-[var(--brand-medium)]">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-5 h-5"
+                    >
+                      <path d="M11 11.5c.3 0 .5-.2.5-.5s-.2-.5-.5-.5-.5.2-.5.5.2.5.5.5z" />
+                      <path d="M12 11.5c.3 0 .5-.2.5-.5s-.2-.5-.5-.5-.5.2-.5.5.2.5.5.5z" />
+                      <path d="M13 11.5c.3 0 .5-.2.5-.5s-.2-.5-.5-.5-.5.2-.5.5.2.5.5.5z" />
+                      <path d="M9.5 15.5c.3 0 .5-.2.5-.5s-.2-.5-.5-.5-.5.2-.5.5.2.5.5.5z" />
+                      <path d="M10.5 15.5c.3 0 .5-.2.5-.5s-.2-.5-.5-.5-.5.2-.5.5.2.5.5.5z" />
+                      <path d="M11.5 15.5c.3 0 .5-.2.5-.5s-.2-.5-.5-.5-.5.2-.5.5.2.5.5.5z" />
+                      <path d="M12.5 15.5c.3 0 .5-.2.5-.5s-.2-.5-.5-.5-.5.2-.5.5.2.5.5.5z" />
+                      <path d="M13.5 15.5c.3 0 .5-.2.5-.5s-.2-.5-.5-.5-.5.2-.5.5.2.5.5.5z" />
+                      <path d="M14.5 15.5c.3 0 .5-.2.5-.5s-.2-.5-.5-.5-.5.2-.5.5.2.5.5.5z" />
+                      <path d="M12 2v2" />
+                      <path d="M12 22v-3" />
+                      <path d="M16 22H8" />
+                      <path d="M15 19l-1-12.2c0-.4-.3-.8-.7-.8h-2.6c-.4 0-.7.4-.7.8L9 19" />
+                      <path d="M10 7h4" />
+                    </svg>
+                  </div>
                 </div>
               </div>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="p-2 rounded-full hover:bg-white/10 text-white/80 hover:text-white transition-colors cursor-pointer"
-                aria-label="Close chat"
-              >
-                <X size={18} />
-              </button>
-            </div>
 
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto bg-[#f5f0eb] px-4 py-4 space-y-4 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[var(--brand-medium)]/20 [&::-webkit-scrollbar-thumb]:rounded-full">
-              {/* Welcome message */}
-              {messages.length === 0 && !isLoading && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="flex flex-col items-center justify-center h-full text-center px-6"
-                >
-                  <div className="w-16 h-16 rounded-full bg-[var(--brand-medium)]/10 flex items-center justify-center mb-4">
-                    <Sparkles
-                      size={28}
-                      className="text-[var(--brand-medium)]"
-                    />
-                  </div>
-                  <h4 className="font-display text-[var(--brand-medium)] text-xl mb-2">
-                    How can I help?
-                  </h4>
-                  <p className="text-[var(--brand-medium)]/60 text-sm leading-relaxed max-w-[280px]">
-                    Ask me about community resources, events, guides, news, or
-                    government officials in Willstone.
-                  </p>
-                  <div className="flex flex-wrap justify-center gap-2 mt-6">
-                    {[
-                      "What events are coming up?",
-                      "Where is the city library?",
-                      "Who is the mayor?",
-                    ].map((q) => (
+              {/* Chat Scroll Area */}
+              <div className="flex-1 overflow-y-auto px-8 py-4 space-y-6 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[var(--brand-medium)]/10 [&::-webkit-scrollbar-thumb]:rounded-full">
+
+                {/* Initial Suggestion State */}
+                {messages.length === 0 && !isLoading && (
+                  <div className="space-y-8 mt-4">
+                    <div className="flex gap-3 justify-center">
                       <button
-                        key={q}
-                        onClick={() => handleSend(q)}
-                        className="px-3 py-1.5 rounded-full bg-white border border-[var(--brand-medium)]/10 text-[var(--brand-medium)] text-xs font-bold hover:bg-[var(--brand-medium)] hover:text-white transition-all cursor-pointer shadow-sm"
+                        onClick={() => handleSend("Describe some of Willstone's resources.")}
+                        className="flex items-center gap-2 px-4 py-3 bg-[var(--brand-medium)]/5 border border-[var(--brand-medium)]/10 rounded-2xl text-[13px] text-[var(--brand-dark)] font-bold hover:bg-white hover:shadow-md transition-all group"
                       >
-                        {q}
+                        <Pencil size={16} className="text-[var(--brand-medium)] group-hover:scale-110 transition-transform" />
+                        Write about...
                       </button>
-                    ))}
+                      <button
+                        onClick={() => handleSend("Explain the government structure.")}
+                        className="flex items-center gap-2 px-4 py-3 bg-[var(--brand-medium)]/5 border border-[var(--brand-medium)]/10 rounded-2xl text-[13px] text-[var(--brand-dark)] font-bold hover:bg-white hover:shadow-md transition-all group"
+                      >
+                        <ShieldCheck size={16} className="text-[var(--brand-medium)] group-hover:scale-110 transition-transform" />
+                        Explain zoning...
+                      </button>
+                    </div>
+
+                    <div className="flex flex-wrap justify-center gap-2 px-10">
+                      {[
+                        "What events are coming up?",
+                        "Where is the city library?",
+                        "Find health nonprofits.",
+                      ].map((q) => (
+                        <button
+                          key={q}
+                          onClick={() => handleSend(q)}
+                          className="px-3 py-1.5 rounded-full bg-white border border-[var(--brand-medium)]/5 text-[var(--brand-medium)] text-[11px] font-bold hover:bg-[var(--brand-medium)] hover:text-white transition-all shadow-sm"
+                        >
+                          {q}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </motion.div>
-              )}
+                )}
 
-              {messages.map((msg, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className={`flex gap-2.5 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  {msg.role === "assistant" && (
-                    <div className="w-7 h-7 rounded-full bg-[var(--brand-medium)] flex items-center justify-center shrink-0 mt-0.5">
-                      <Bot size={14} className="text-white" />
-                    </div>
-                  )}
-
-                  <div
-                    className={`max-w-[85%] ${msg.role === "user"
-                        ? "bg-[var(--brand-medium)] text-white rounded-2xl rounded-br-md px-4 py-3"
-                        : "bg-white text-[#1c2b2b] rounded-2xl rounded-bl-md px-4 py-3 shadow-sm border border-[var(--brand-medium)]/5"
-                      }`}
+                {/* Message Loop */}
+                {messages.map((msg, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                   >
-                    <div className="text-[13px] leading-relaxed font-medium">
-                      {msg.role === "assistant"
-                        ? formatMessage(msg.content)
-                        : msg.content}
-                    </div>
+                    <div className={`max-w-[90%] flex flex-col ${msg.role === "user" ? "items-end" : "items-start"}`}>
+                      <div className={`px-5 py-4 rounded-[24px] shadow-sm ${msg.role === "user"
+                          ? "bg-[var(--brand-medium)] text-white rounded-br-md"
+                          : "bg-white text-[#1c2b2b] rounded-bl-md border border-[var(--brand-medium)]/5"
+                        }`}>
+                        <div className="text-[14px] leading-relaxed">
+                          {msg.role === "assistant" ? formatMessage(msg.content) : msg.content}
+                        </div>
+                      </div>
 
-                    {/* Source Citations */}
-                    {msg.sources && msg.sources.length > 0 && (
-                      <div className="mt-3 pt-2.5 border-t border-[var(--brand-medium)]/10">
-                        <p className="text-[9px] font-black uppercase tracking-widest text-[var(--brand-medium)]/50 mb-1.5">
-                          Sources
-                        </p>
-                        <div className="flex flex-wrap gap-1.5">
+                      {/* Source Chips */}
+                      {msg.role === "assistant" && msg.sources && msg.sources.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-2">
                           {msg.sources.map((src, j) => (
                             <a
                               key={j}
                               href={src.link || "#"}
-                              className="inline-flex items-center gap-1 px-2 py-1 bg-[var(--brand-medium)]/5 hover:bg-[var(--brand-medium)]/10 rounded-md text-[10px] font-bold text-[var(--brand-medium)] transition-colors"
+                              className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-[var(--brand-medium)]/10 rounded-full text-[10px] font-bold text-[var(--brand-medium)] hover:bg-[var(--brand-medium)] hover:text-white transition-all shadow-sm"
                             >
+                              <Search size={10} />
                               {src.title}
-                              {src.link && <ExternalLink size={8} />}
                             </a>
                           ))}
                         </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {msg.role === "user" && (
-                    <div className="w-7 h-7 rounded-full bg-[var(--brand-dark)] flex items-center justify-center shrink-0 mt-0.5">
-                      <User size={14} className="text-white" />
+                      )}
                     </div>
-                  )}
-                </motion.div>
-              ))}
+                  </motion.div>
+                ))}
 
-              {/* Loading indicator */}
-              {isLoading && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="flex gap-2.5"
-                >
-                  <div className="w-7 h-7 rounded-full bg-[var(--brand-medium)] flex items-center justify-center shrink-0">
-                    <Bot size={14} className="text-white" />
-                  </div>
-                  <div className="bg-white rounded-2xl rounded-bl-md px-4 py-3 shadow-sm border border-[var(--brand-medium)]/5">
-                    <div className="flex items-center gap-2 text-[var(--brand-medium)]/60">
-                      <Loader2
-                        size={14}
-                        className="animate-spin"
-                      />
-                      <span className="text-xs font-bold">Thinking...</span>
+                {isLoading && (
+                  <div className="flex justify-start">
+                    <div className="bg-white/80 backdrop-blur-sm px-5 py-4 rounded-[24px] rounded-bl-md border border-[var(--brand-medium)]/5 flex items-center gap-3">
+                      <Loader2 size={16} className="animate-spin text-[var(--brand-medium)]" />
+                      <span className="text-[13px] font-bold text-[var(--brand-medium)]/60 italic">Thinking...</span>
                     </div>
                   </div>
-                </motion.div>
-              )}
+                )}
 
-              <div ref={messagesEndRef} />
-            </div>
-
-            {/* Input Area */}
-            <div className="bg-white border-t border-[var(--brand-medium)]/10 px-4 py-3 shrink-0">
-              <div className="flex items-center gap-2">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Ask about Willstone..."
-                  disabled={isLoading}
-                  className="flex-1 bg-[#f5f0eb] border border-[var(--brand-medium)]/10 rounded-xl px-4 py-2.5 text-sm text-[#1c2b2b] placeholder:text-[#1c2b2b]/40 focus:outline-none focus:border-[var(--brand-medium)]/30 focus:ring-2 focus:ring-[var(--brand-medium)]/10 transition-all disabled:opacity-50 font-medium"
-                />
-                <button
-                  onClick={() => handleSend()}
-                  disabled={isLoading || !input.trim()}
-                  className="w-10 h-10 rounded-xl bg-[var(--brand-medium)] hover:bg-[var(--brand-dark)] disabled:opacity-40 disabled:cursor-not-allowed text-white flex items-center justify-center transition-colors cursor-pointer shrink-0"
-                  aria-label="Send message"
-                >
-                  <Send size={16} />
-                </button>
+                <div ref={messagesEndRef} className="h-4" />
               </div>
+
+              {/* Input Area */}
+              <div className="px-8 pb-10 pt-4">
+                <div className="relative flex items-center">
+                  <div className="absolute left-4 w-10 h-10 rounded-xl bg-[var(--brand-dark)] flex items-center justify-center text-white">
+                    <Sparkles size={18} />
+                  </div>
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Ask Beacon..."
+                    className="w-full bg-[#EFECE6] border-none rounded-2xl py-5 pl-16 pr-14 text-sm font-medium text-[var(--brand-dark)] placeholder:text-[var(--brand-dark)]/40 focus:ring-2 focus:ring-[var(--brand-medium)]/20 transition-all shadow-inner"
+                  />
+                  <button
+                    onClick={() => handleSend()}
+                    disabled={isLoading || !input.trim()}
+                    className="absolute right-4 w-10 h-10 flex items-center justify-center rounded-xl bg-transparent text-[var(--brand-dark)] hover:bg-[var(--brand-medium)]/5 transition-colors disabled:opacity-20"
+                  >
+                    <ArrowUp size={20} />
+                  </button>
+                </div>
+              </div>
+
             </div>
           </motion.div>
         )}
@@ -407,3 +424,4 @@ export default function ChatAgent() {
     </>
   );
 }
+

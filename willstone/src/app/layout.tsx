@@ -34,9 +34,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${andadaPro.variable} ${righteous.variable} antialiased`}
+        className={`${andadaPro.variable} ${righteous.variable} antialiased flex min-h-screen overflow-x-hidden`}
       >
-        {children}
+        <div id="main-content-wrapper" className="flex-1 w-full transition-all duration-300 ease-in-out">
+          {children}
+        </div>
         <ChatAgent />
         <Analytics />
       </body>
