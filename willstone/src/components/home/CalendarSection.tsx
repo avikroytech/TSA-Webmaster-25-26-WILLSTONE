@@ -69,7 +69,7 @@ const ProgressBar = ({ isPaused, onComplete, color }: { isPaused: boolean, onCom
   });
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-100/50 pointer-events-none rounded-b-3xl overflow-hidden">
+    <div className="absolute bottom-0 left-0 right-0 h-3 bg-gray-100 pointer-events-none rounded-b-3xl overflow-hidden">
       <motion.div
         style={{ width }}
         className={`h-full ${color}`}
@@ -122,7 +122,7 @@ export default function CalendarSection() {
   };
 
   return (
-    <section className="w-full py-12 bg-[var(--foreground)] text-[var(--background)] overflow-hidden relative">
+    <section className="w-full pt-24 pb-12 md:py-12 bg-[var(--foreground)] text-[var(--background)] overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
 
         {/* Header */}
