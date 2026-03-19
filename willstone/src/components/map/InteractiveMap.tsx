@@ -568,14 +568,22 @@ export default function InteractiveMap() {
             </div>
 
             {/* ── Bottom Controls ─────────────────────────────────── */}
-            <div className="bg-[#f8f5f0] p-6 mx-6 mb-6 rounded-2xl shadow-xl flex items-center justify-between gap-8 border border-black/5">
-                <div className="flex items-center gap-6">
-                    <div className="flex bg-[#e5e7eb] p-1 rounded-xl h-12 shadow-inner">
+            <div className="bg-[#f8f5f0] p-4 md:p-6 mx-4 md:mx-6 mb-6 rounded-2xl shadow-xl flex flex-col md:flex-row items-stretch md:items-center gap-4 md:gap-8 border border-black/5 animate-in slide-in-from-bottom-5 duration-500">
+                <div className="flex flex-col gap-4 min-w-fit">
+                    {/* Instruction Note */}
+                    <div className="flex flex-col gap-1 px-1">
+                        <p className="text-sm font-black tracking-[0.1em] text-[#264D52]">Map Navigation</p>
+                        <p className="text-xs font-bold text-[#1c2b2b]/60 leading-tight max-w-[280px]">
+                            Select routes to highlight their paths. Switch between train and bus maps.
+                        </p>
+                    </div>
+
+                    <div className="flex bg-[#1c2b2b]/10 p-1.5 rounded-xl h-12 shadow-inner w-full md:w-auto">
                         <button
                             onClick={() => handleModeChange("subway")}
-                            className={`flex items-center gap-2 px-4 rounded-lg transition-all duration-300 font-bold text-xs uppercase tracking-wider ${mode === "subway"
-                                ? "bg-white text-[#1f2937] shadow-md"
-                                : "text-[#6b7280] hover:text-[#1f2937]"
+                            className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 rounded-lg transition-all duration-300 font-bold text-[10px] md:text-xs uppercase tracking-wider ${mode === "subway"
+                                ? "bg-[#264D52] text-white shadow-lg scale-[1.02]"
+                                : "text-[#264D52]/60 hover:text-[#264D52] hover:bg-white/30"
                                 }`}
                         >
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -585,9 +593,9 @@ export default function InteractiveMap() {
                         </button>
                         <button
                             onClick={() => handleModeChange("bus")}
-                            className={`flex items-center gap-2 px-4 rounded-lg transition-all duration-300 font-bold text-xs uppercase tracking-wider ${mode === "bus"
-                                ? "bg-white text-[#1f2937] shadow-md"
-                                : "text-[#6b7280] hover:text-[#1f2937]"
+                            className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 rounded-lg transition-all duration-300 font-bold text-[10px] md:text-xs uppercase tracking-wider ${mode === "bus"
+                                ? "bg-[#264D52] text-white shadow-lg scale-[1.02]"
+                                : "text-[#264D52]/60 hover:text-[#264D52] hover:bg-white/30"
                                 }`}
                         >
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -598,7 +606,7 @@ export default function InteractiveMap() {
                     </div>
                 </div>
 
-                <div className="flex-1 flex gap-3 overflow-x-auto no-scrollbar py-3 px-1">
+                <div className="flex-1 w-full flex items-center gap-2 md:gap-3 overflow-x-auto no-scrollbar py-2 md:py-3 animate-in fade-in slide-in-from-right-4 duration-500">
                     {routes.map((route) => {
                         const isSelected = selectedRoutes.has(route.name);
                         return (
@@ -613,7 +621,7 @@ export default function InteractiveMap() {
                                     }
                                     setSelectedRoutes(next);
                                 }}
-                                className={`h-12 px-6 rounded-xl font-sans font-bold text-xs uppercase tracking-wider transition-all duration-300 shadow-sm whitespace-nowrap border-2 ${isSelected
+                                className={`h-11 md:h-12 px-5 md:px-6 rounded-xl font-sans font-bold text-[10px] md:text-xs uppercase tracking-wider transition-all duration-300 shadow-sm whitespace-nowrap border-2 ${isSelected
                                     ? "bg-white ring-2 ring-offset-2 scale-[1.02]"
                                     : "hover:scale-[1.02] active:scale-[0.98]"
                                     }`}
