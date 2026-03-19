@@ -176,53 +176,54 @@ export default function NewsPage() {
                   {filteredArticles.map((article) => (
                     <motion.article
                       key={article.id}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 20 }}
                       transition={{ duration: 0.3 }}
-                      className="bg-white rounded-3xl overflow-hidden shadow-[0_10px_40px_-15px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.15)] transition-all duration-500 border border-[#264D52]/5 flex flex-col h-full group"
+                      className="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 border border-road-paint/10 flex flex-col h-full group"
                     >
-                      <div className="relative h-60 overflow-hidden bg-gray-100">
-                        {article.imageUrl ? (
-                          <Image
-                            src={article.imageUrl}
-                            alt={article.title}
-                            fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-700"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-[#70AC90]/20 flex items-center justify-center">
-                            <Search size={32} className="text-[#70AC90]/50" />
-                          </div>
-                        )}
-                      </div>
+                      <Link href={`/news/${article.slug}`} className="flex flex-col h-full focus:outline-none focus-visible:ring-4 focus-visible:ring-asphalt/30 rounded-[2rem]">
+                        {/* Img Section */}
+                        <div className="relative h-60 overflow-hidden bg-gray-100 shrink-0">
+                          {article.imageUrl ? (
+                            <Image
+                              src={article.imageUrl}
+                              alt={article.title}
+                              fill
+                              className="object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-road-paint/5 flex items-center justify-center text-road-paint/20">
+                              <Search size={32} />
+                            </div>
+                          )}
+                        </div>
 
-                      <div className="p-10 flex flex-col flex-1">
-                        <h3 className="text-2xl font-display font-black text-[#1c2b2b] mb-4 leading-tight group-hover:text-[#70AC90] transition-colors">
-                          {article.title}
-                        </h3>
+                        {/* Text Section */}
+                        <div className="p-8 flex flex-col flex-1">
+                          <h3 className="text-2xl leading-tight font-display text-road-paint mb-4 group-hover:text-road-paint transition-colors line-clamp-2">
+                            {article.title}
+                          </h3>
 
-                        <p className="text-base text-[#1c2b2b]/70 font-sans leading-relaxed mb-8 line-clamp-3">
-                          {article.description}
-                        </p>
-
-                        <div className="mt-auto pt-8 border-t border-[#264D52]/10 flex items-center justify-between">
-                          <div className="flex items-center gap-2 text-[#264D52]/60">
-                            <Calendar size={16} />
+                          <div className="flex items-center gap-2 text-asphalt/60 mb-6">
+                            <Calendar size={16} className="text-marking" />
                             <span className="text-[11px] font-bold uppercase tracking-wider">
                               {formatDate(article.date)}
                             </span>
                           </div>
 
-                          <Link
-                            href={`/news/${article.slug}`}
-                            className="inline-flex items-center gap-1.5 text-[#70AC90] hover:text-[#496A49] text-xs font-black uppercase tracking-widest group/link transition-colors"
-                          >
-                            Read More
-                            <ArrowRight size={16} className="group-hover/link:translate-x-1 transition-transform" />
-                          </Link>
+                          <p className="text-base text-asphalt/70 font-sans leading-relaxed mb-8 line-clamp-3">
+                            {article.description}
+                          </p>
+
+                          <div className="mt-auto pt-6 border-t border-road-paint/10">
+                            <div className="inline-block group-hover:text-road-paint relative font-display text-sm tracking-widest uppercase text-asphalt transition-colors">
+                              Read More
+                              <span className="absolute -bottom-1.5 left-0 w-0 h-[3px] bg-marking transition-all duration-300 ease-out group-hover:w-full" />
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                      </Link>
                     </motion.article>
                   ))}
                 </AnimatePresence>
