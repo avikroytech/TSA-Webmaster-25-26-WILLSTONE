@@ -250,17 +250,7 @@ export default function GovernmentPage() {
                                         </div>
                                     </motion.div>
 
-                                    <motion.div
-                                        className="mt-10 md:mt-14"
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.3 }}
-                                    >
-                                        <button className="group relative flex items-center gap-4 px-8 md:px-10 py-4 md:py-5 bg-road-paint hover:bg-brand-dark text-[#f5f0eb] rounded-full transition-all duration-500 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] hover:shadow-brand-medium/30 active:scale-95 border border-white/10">
-                                            <Sparkles size={20} className="transition-transform duration-700 group-hover:rotate-[360deg] text-white" />
-                                            <span className="font-display tracking-tight text-lg md:text-xl transition-transform duration-300 group-hover:scale-105">What do you want to say?</span>
-                                        </button>
-                                    </motion.div>
+
                                 </div>
                             </div>
                         </motion.div>

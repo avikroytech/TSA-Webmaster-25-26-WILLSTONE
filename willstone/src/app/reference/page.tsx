@@ -27,7 +27,7 @@ const AccordionItem = ({ title, icon, children, isOpen, onToggle }: AccordionIte
                     <div className={`p-2.5 rounded-lg transition-colors ${isOpen ? 'bg-[#264D52] text-white' : 'bg-[#264D52]/10 text-[#264D52] group-hover:bg-[#264D52]/20'}`}>
                         {icon}
                     </div>
-                    <span className="font-display text-xl font-bold text-[#264D52] tracking-wide uppercase">
+                    <span className="font-display text-xl font-bold text-[#264D52] tracking-wide">
                         {title}
                     </span>
                 </div>
@@ -75,7 +75,7 @@ const PDFViewer = ({ src }: { src: string }) => {
                     </p>
                     <a
                         href={src}
-                        className="px-8 py-3 bg-[#264D52] text-white font-black uppercase tracking-widest hover:bg-[#496A49] transition-all transform hover:scale-105"
+                        className="px-8 py-3 bg-[#264D52] text-white font-black tracking-widest hover:bg-[#496A49] transition-all transform hover:scale-105"
                         download
                     >
                         Download Document
@@ -110,19 +110,14 @@ const LinkList = ({ items }: { items: { label: string; url: string }[] }) => {
     );
 };
 
-const CodeStackItem = ({ tech, items }: { tech: string; items: string[] }) => (
-    <div className="mb-6 last:mb-0">
-        <h3 className="font-display text-lg text-[#264D52] mb-3 flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-[#496A49]" />
-            {tech}
-        </h3>
-        <div className="flex flex-wrap gap-2">
-            {items.map((item, i) => (
-                <span key={i} className="px-3 py-1 bg-[#264D52]/10 text-[#264D52] rounded-full text-sm font-semibold border border-[#264D52]/20">
-                    {item}
-                </span>
-            ))}
-        </div>
+const CodeStackItem = ({ name, description }: { name: string; description: string }) => (
+    <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-6 mb-4 last:mb-0 p-4 bg-white/40 border border-[#264D52]/10 rounded-xl hover:bg-white hover:border-[#264D52]/30 transition-all group">
+        <span className="px-4 py-1.5 bg-[#264D52] text-white rounded-full text-xs whitespace-nowrap w-fit shadow-sm group-hover:bg-[#496A49] transition-colors">
+            {name}
+        </span>
+        <p className="text-[#264D52] font-sans text-sm md:text-base leading-relaxed font-medium">
+            {description}
+        </p>
     </div>
 );
 
@@ -213,10 +208,13 @@ export default function Reference() {
     ];
 
     const codeStack = [
-        { tech: "Frontend", items: ["Next.js 15", "React 19", "TypeScript", "Tailwind CSS 4"] },
-        { tech: "Animations", items: ["Framer Motion", "Lucide React"] },
-        { tech: "Backend & Auth", items: ["Supabase", "PostgreSQL", "Next Auth"] },
-        { tech: "Deployment", items: ["Vercel", "Edge Runtime"] },
+        { name: "lucide-react", description: "A library of modern icons for React-based websites." },
+        { name: "framer-motion", description: "A library used to create smooth animations and interactive transitions." },
+        { name: "supabase", description: "A backend service from Supabase used to communicate with the PostgreSQL database API." },
+        { name: "nodemailer", description: "A library used to send automated emails from a specified email address." },
+        { name: "vercel", description: "Our hosting platform, especially optimized for Next.js web application deployment." },
+        { name: "Gemini API", description: "An interface used to communicate with Google's advanced Gemini AI models." },
+        { name: "google/genai", description: "A library built for seamless Gemini API integration in Next.js applications." }
     ];
 
     return (
@@ -271,11 +269,15 @@ export default function Reference() {
                                 shorthand CSS to be written on components, and our own CSS classes. The logo and map are both designed
                                 by our team in Adobe Illustrator. All information for the resources, guides, and news articles, and
                                 calendar events are all written by our team. For storing our information relating to our website, we use
-                                Supabase, a PostgreSQL database, and its API library to retrieve and add data.
+                                Supabase, a PostgreSQL database, and its API library to retrieve and add data. We also utilized Google
+                                Gemini’s API to run our AI assistant on the backend.
                             </p>
-                            <div className="p-4 bg-white/40 rounded-xl">
-                                {codeStack.map((stack, i) => (
-                                    <CodeStackItem key={i} tech={stack.tech} items={stack.items} />
+                            <h2 className="text-foreground text-lg mt-4">
+                                Libraries Used:
+                            </h2>
+                            <div className="space-y-3">
+                                {codeStack.map((item, i) => (
+                                    <CodeStackItem key={i} name={item.name} description={item.description} />
                                 ))}
                             </div>
                         </AccordionItem>

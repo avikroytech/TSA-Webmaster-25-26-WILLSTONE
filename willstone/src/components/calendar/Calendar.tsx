@@ -245,7 +245,7 @@ export default function Calendar() {
             <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 flex-1 min-h-0 items-start">
 
                 {/* Left: Calendar Grid */}
-                <div className="flex flex-col flex-1 min-h-0 w-full bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden font-sans">
+                <div className="flex flex-col flex-1 min-h-0 w-full bg-white rounded-xl shadow-sm border border-gray-200 font-sans">
                     {/* Days Header */}
                     <div className="grid grid-cols-7 border-b border-gray-100 bg-white flex-shrink-0">
                         {DAYS_OF_WEEK.map(day => (
@@ -270,10 +270,10 @@ export default function Calendar() {
                                         className={`p-2 flex flex-col transition-all duration-300 origin-center ${!cell.date
                                             ? 'bg-gray-50/50'
                                             : hasSelectedEvent
-                                                ? 'bg-amber-50/60 scale-[1.02] shadow-xl -translate-y-1 relative z-50 cursor-pointer ring-1 ring-amber-200'
+                                                ? 'bg-amber-50/60 md:scale-[1.02] shadow-xl md:-translate-y-1 relative z-50 cursor-pointer ring-1 ring-amber-200'
                                                 : selectedEvent
                                                     ? `bg-white relative z-10 cursor-pointer opacity-60 ${isToday ? 'ring-2 ring-inset ring-[#70AC90] bg-[#eef6f2]' : ''}`
-                                                    : `bg-white relative z-10 cursor-pointer hover:bg-amber-50/40 hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1 hover:z-30 ${isToday ? 'ring-2 ring-inset ring-[#70AC90] bg-[#eef6f2]' : ''}`
+                                                    : `bg-white relative z-10 cursor-pointer hover:bg-amber-50/40 md:hover:scale-[1.02] md:hover:shadow-xl md:hover:-translate-y-1 hover:z-30 ${isToday ? 'ring-2 ring-inset ring-[#70AC90] bg-[#eef6f2]' : ''}`
                                             }`}
                                     >
                                         {cell.date && (
@@ -288,6 +288,10 @@ export default function Calendar() {
                                                 const horizontalPosition = colIndex > 3 ? 'right-0' : 'left-0';
 
                                                 const style = CATEGORY_STYLES[event.type];
+                                                const Icon = event.type === 'CULTURAL' ? Palette : 
+                                                            event.type === 'CIVIC' ? Gavel : 
+                                                            event.type === 'SOCIAL' ? Utensils : 
+                                                            event.type === 'HEALTH' ? ScanHeart : CalendarIcon;
 
                                                 return (
                                                     <div key={event.id} className={`relative ${isExpanded ? 'z-50' : 'z-20'}`}>
@@ -296,16 +300,22 @@ export default function Calendar() {
                                                                 e.stopPropagation();
                                                                 setSelectedEvent(isExpanded ? null : event);
                                                             }}
-                                                            className={`group relative w-full text-left px-2 py-1.5 rounded-full transition-all duration-300 hover:scale-[1.04] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#496A49] shrink-0 cursor-pointer ${style.bg} ${style.text}`}
+                                                            className={`group relative w-full flex items-center justify-center md:block px-2 py-1.5 rounded-full transition-all duration-300 hover:scale-[1.04] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#496A49] shrink-0 cursor-pointer ${style.bg} ${style.text}`}
+                                                            title={event.title}
                                                         >
-                                                            <div className="text-[10px] md:text-xs font-bold leading-tight truncate px-1">
+                                                            {/* Show Icon for long titles on small screens */}
+                                                            <div className={`md:hidden ${event.title.length > 8 ? 'block' : 'hidden'}`}>
+                                                                <Icon size={14} strokeWidth={2.5} />
+                                                            </div>
+                                                            {/* Show Text on larger screens or for short titles on small screens */}
+                                                            <div className={`text-[10px] md:text-xs font-bold leading-tight truncate px-1 text-center md:text-left ${event.title.length > 8 ? 'hidden md:block' : 'block'}`}>
                                                                 {event.title}
                                                             </div>
                                                         </button>
 
                                                         {/* Floating Popover */}
                                                         {isExpanded && (
-                                                            <div className={`absolute w-72 bg-white shadow-xl rounded-xl border border-gray-100 z-[60] overflow-hidden ${verticalPosition} ${horizontalPosition} animate-in fade-in zoom-in-95 duration-200`}>
+                                                            <div className={`fixed md:absolute z-[60] w-[calc(100%-2rem)] md:w-72 bg-white shadow-2xl md:shadow-xl rounded-2xl md:rounded-xl border border-gray-100 overflow-hidden left-4 right-4 bottom-10 md:bottom-auto md:left-auto md:right-auto md:${verticalPosition} md:${horizontalPosition} animate-in fade-in zoom-in-95 duration-200`}>
 
 
                                                                 <div className="p-4 flex flex-col gap-4">

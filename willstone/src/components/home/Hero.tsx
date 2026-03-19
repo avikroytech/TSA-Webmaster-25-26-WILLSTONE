@@ -67,22 +67,26 @@ export default function Hero() {
       {/* --- MAIN CONTENT --- */}
       <div className="relative z-10 w-full px-6 flex flex-col items-center justify-center mt-12">
         <h1
-          className={`text-4xl md:text-5xl lg:text-7xl font-display font-medium text-[#f5f0eb] text-center transition-all duration-1000 ease-out transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+          className={`text-5xl md:text-6xl lg:text-9xl font-display font-medium text-[#f5f0eb] text-center transition-all duration-1000 ease-out transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}
         >
-          Find Anything in Willstone
-          <br />
-          With <span className="text-[var(--brand-light)]">Beacon</span>
+          Willstone
         </h1>
+        <h3
+          className={`text-2xl md:text-3xl lg:text-4xl mt-15 font-display font-medium text-[#f5f0eb] text-center transition-all duration-1000 ease-out transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+            }`}
+        >
+          Find What You Need with <span className="text-[var(--brand-light)]">Beacon</span>
+        </h3>
 
         <div
-          className={`mt-10 relative w-full max-w-lg transition-opacity duration-1000 delay-500 flex flex-col items-center ${isLoaded ? 'opacity-100' : 'opacity-0'
+          className={`mt-6 relative w-full max-w-lg transition-opacity duration-1000 delay-500 flex flex-col items-center ${isLoaded ? 'opacity-100' : 'opacity-0'
             }`}
         >
           <div className="relative w-full">
             <input
               type="text"
-              placeholder="how do I prepare for a disaster?"
+              placeholder="Find nonprofits focused on Health & Safety"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -115,7 +119,7 @@ export default function Hero() {
           onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
           className="animate-bounce flex flex-col items-center cursor-pointer hover:text-white/80 transition-colors"
         >
-          <span className="text-sm tracking-[0.1em] mb-2">Spotlight</span>
+          <span className="text-sm tracking-[0.1em] mb-2">Highlights</span>
           <ArrowDown size={24} />
         </div>
       </div>

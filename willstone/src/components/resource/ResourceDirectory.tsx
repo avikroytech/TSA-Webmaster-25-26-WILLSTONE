@@ -318,10 +318,7 @@ export default function ResourceDirectory() {
                 />
                 <Search className="absolute right-8 top-1/2 -translate-y-1/2 text-brand-text/40" size={24} />
               </div>
-              <button className="w-full md:w-auto flex items-center justify-center gap-3 px-8 py-5 bg-[var(--brand-medium)] hover:bg-[var(--brand-light)] active:bg-[var(--brand-dark)] text-[var(--background)] rounded-full transition-all duration-300 shadow-sm cursor-pointer group hover:scale-[1.03] hover:shadow-md shrink-0 border border-transparent">
-                <Sparkles size={22} className="group-hover:rotate-12 transition-transform duration-300" />
-                <span className="font-bold tracking-wide">Search with AI</span>
-              </button>
+
             </div>
 
             {/* Grid */}

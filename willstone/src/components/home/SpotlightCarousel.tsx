@@ -62,7 +62,7 @@ export default function SpotlightCarousel() {
   }, []);
 
   return (
-    <section className="w-full bg-[var(--background)] text-[var(--background)] overflow-hidden relative py-5">
+    <section className="w-full bg-[var(--background)] text-[var(--background)] relative py-5">
       <div className="max-w-7xl mx-auto px-6 py-3">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">

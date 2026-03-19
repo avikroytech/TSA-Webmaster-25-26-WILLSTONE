@@ -108,11 +108,7 @@ export default function GuidesPage() {
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="flex-1 bg-transparent py-4 px-6 text-[#1c2b2b] placeholder:text-[#1c2b2b]/40 focus:outline-none text-lg font-medium"
                         />
-                        {/* AI Button matching ResourceHub */}
-                        <button className="flex items-center justify-center gap-2.5 px-8 py-4 bg-[var(--brand-medium)] hover:bg-[var(--brand-light)] active:bg-[var(--brand-dark)] text-[var(--background)] rounded-full transition-all duration-300 shadow-sm cursor-pointer group hover:scale-[1.03] hover:shadow-md shrink-0 border border-transparent">
-                            <Sparkles size={20} className="group-hover:rotate-12 transition-transform duration-300" />
-                            <span className="font-bold tracking-wide">AI Assist</span>
-                        </button>
+
                     </motion.div>
 
                     {/* Category Pills */}
