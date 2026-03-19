@@ -23,8 +23,37 @@ export default function RequestForm() {
     const [errorMessage, setErrorMessage] = useState("");
     const [submittedData, setSubmittedData] = useState<typeof formData | null>(null);
     const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+    const [categories, setCategories] = useState<string[]>([]);
+    const [isLoadingCategories, setIsLoadingCategories] = useState(true);
     const categoryRef = useRef<HTMLDivElement>(null);
     const maxChars = 500;
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            setIsLoadingCategories(true);
+            try {
+                const { data, error } = await supabase
+                    .from("community_resources")
+                    .select("category");
+
+                if (error) {
+                    console.error("Error fetching categories:", error);
+                } else if (data) {
+                    const uniqueCategories = Array.from(
+                        new Set(data.map((item: any) => item.category))
+                    ).filter(Boolean) as string[];
+
+                    setCategories(uniqueCategories.sort());
+                }
+            } catch (err) {
+                console.error("Unexpected error fetching categories:", err);
+            } finally {
+                setIsLoadingCategories(false);
+            }
+        };
+
+        fetchCategories();
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -108,7 +137,7 @@ export default function RequestForm() {
                     <h2 className="text-3xl font-display font-black text-[#264D52]">
                         Resource <span className="text-[#496A49]">Submitted</span>
                     </h2>
-                    <p className="text-[#264D52] text-sm font-medium mt-2 uppercase tracking-widest">Thank you for contributing to Willstone</p>
+                    <p className="text-[#264D52] text-sm font-medium mt-2 uppercase tracking-widest">Thank you for contributing to Willstone. An email has been sent to you with the details of your request.</p>
                 </div>
 
                 <div className="space-y-4 mb-10">
@@ -252,10 +281,9 @@ export default function RequestForm() {
                     >
                         <span className={formData.category ? "text-white" : "text-white/50"}>
                             {formData.category ?
-                                (formData.category === 'education' ? 'Education' :
-                                    formData.category === 'health' ? 'Health' :
-                                        formData.category === 'community' ? 'Community' : 'Other')
-                                : "Select a category"}
+                                (formData.category === 'other' ? 'Other' :
+                                    formData.category.charAt(0).toUpperCase() + formData.category.slice(1))
+                                : (isLoadingCategories ? "Loading categories..." : "Select a category")}
                         </span>
                         <ChevronDown size={20} className={`text-white transition-transform ${isCategoryOpen ? 'rotate-180' : ''}`} />
                     </div>
@@ -263,9 +291,7 @@ export default function RequestForm() {
                     {isCategoryOpen && (
                         <div className="absolute top-full left-0 right-0 mt-2 bg-[#264D52] border-2 border-[#264D52] rounded-xl overflow-hidden shadow-2xl animate-in fade-in slide-in-from-top-2 z-50">
                             {[
-                                { value: "education", label: "Education" },
-                                { value: "health", label: "Health" },
-                                { value: "community", label: "Community" },
+                                ...categories.map(cat => ({ value: cat, label: cat.charAt(0).toUpperCase() + cat.slice(1) })),
                                 { value: "other", label: "Other" }
                             ].map((option) => (
                                 <div
