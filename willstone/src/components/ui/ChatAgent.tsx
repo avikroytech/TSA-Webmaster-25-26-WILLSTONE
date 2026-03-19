@@ -308,23 +308,6 @@ export default function ChatAgent() {
                 {/* Initial Suggestion State */}
                 {messages.length === 0 && !isLoading && (
                   <div className="space-y-8 mt-4">
-                    <div className="flex gap-3 justify-center">
-                      <button
-                        onClick={() => handleSend("Describe some of Willstone's resources.")}
-                        className="flex items-center gap-2 px-4 py-3 bg-[var(--brand-medium)]/5 border border-[var(--brand-medium)]/10 rounded-2xl text-[13px] text-[var(--brand-dark)] font-bold hover:bg-white hover:shadow-md transition-all group"
-                      >
-                        <Pencil size={16} className="text-[var(--brand-medium)] group-hover:scale-110 transition-transform" />
-                        Write about...
-                      </button>
-                      <button
-                        onClick={() => handleSend("Explain the government structure.")}
-                        className="flex items-center gap-2 px-4 py-3 bg-[var(--brand-medium)]/5 border border-[var(--brand-medium)]/10 rounded-2xl text-[13px] text-[var(--brand-dark)] font-bold hover:bg-white hover:shadow-md transition-all group"
-                      >
-                        <ShieldCheck size={16} className="text-[var(--brand-medium)] group-hover:scale-110 transition-transform" />
-                        Explain zoning...
-                      </button>
-                    </div>
-
                     <div className="flex flex-wrap justify-center gap-2 px-10">
                       {[
                         "What events are coming up?",
@@ -353,8 +336,8 @@ export default function ChatAgent() {
                   >
                     <div className={`max-w-[90%] flex flex-col ${msg.role === "user" ? "items-end" : "items-start"}`}>
                       <div className={`px-5 py-4 rounded-[24px] shadow-sm ${msg.role === "user"
-                          ? "bg-[var(--brand-medium)] text-white rounded-br-md"
-                          : "bg-white text-[#1c2b2b] rounded-bl-md border border-[var(--brand-medium)]/5"
+                        ? "bg-[var(--brand-medium)] text-white rounded-br-md"
+                        : "bg-white text-[#1c2b2b] rounded-bl-md border border-[var(--brand-medium)]/5"
                         }`}>
                         <div className="text-[14px] leading-relaxed">
                           {msg.role === "assistant" ? formatMessage(msg.content) : msg.content}
