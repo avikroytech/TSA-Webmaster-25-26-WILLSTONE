@@ -16,7 +16,7 @@ export default function Footer() {
     { name: "News", href: "/news" },
     { name: "Guides", href: "/guides" },
     { name: "Government", href: "/government" },
-    { name: "Reference", href: "/reference" },
+    { name: "References", href: "/reference" },
   ];
 
   const socials = [
@@ -85,7 +85,7 @@ export default function Footer() {
 
           {/* Contact Column */}
           <div className="md:col-span-3">
-            <h4 className="text-[#C59F82] font-bold uppercase tracking-widest text-[10px] mb-4">Contact</h4>
+            <h4 className="text-[#C59F82] font-bold uppercase tracking-widest text-[10px] mb-4">Contact City Office</h4>
             <div className="space-y-3">
               <a href="tel:+1234567890" className="flex items-center gap-2 text-xs text-[#f5f0eb]/70 hover:text-white transition-colors group">
                 <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">

@@ -70,7 +70,7 @@ export default function Hero() {
           className={`text-5xl md:text-6xl lg:text-9xl font-display font-medium text-[#f5f0eb] text-center transition-all duration-1000 ease-out transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}
         >
-          Willstone
+          City of Willstone
         </h1>
         <h3
           className={`text-2xl md:text-3xl lg:text-4xl mt-15 font-display font-medium text-[#f5f0eb] text-center transition-all duration-1000 ease-out transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'

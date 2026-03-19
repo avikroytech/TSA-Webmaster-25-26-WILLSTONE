@@ -264,13 +264,15 @@ export default function Reference() {
                                 This website was built on NextJS, a professional optimized framework that is built on top of ReactJS.
                                 For deployment, we used Vercel as it has a semi-customizable URL for recognizability and a reliable
                                 server-hosting platform. Figma was mainly used for picking out the color scheme, designing components,
-                                and putting together all the pages shown on our website. These designs were then translated into HTML
+                                and putting together all the pages shown on our website.
+                                <span className="font-semibold"> All webpages and components shown on this website were designed by our own team with our own creativity and skill.</span>
+                                These designs were then translated into HTML
                                 using a combination of TailwindCSS, a framework with a robust set of predefined classes that allow
                                 shorthand CSS to be written on components, and our own CSS classes. The logo and map are both designed
                                 by our team in Adobe Illustrator. All information for the resources, guides, and news articles, and
                                 calendar events are all written by our team. For storing our information relating to our website, we use
-                                Supabase, a PostgreSQL database, and its API library to retrieve and add data. We also utilized Google
-                                Gemini’s API to run our AI assistant on the backend.
+                                Supabase, a PostgreSQL database, and its API library to retrieve and add data. We also utilized the Google
+                                Gemini API to run our AI assistant on the backend.
                             </p>
                             <h2 className="text-foreground text-lg mt-4">
                                 Libraries Used:
