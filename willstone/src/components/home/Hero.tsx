@@ -70,7 +70,9 @@ export default function Hero() {
           className={`text-4xl md:text-5xl lg:text-7xl font-display font-medium text-[#f5f0eb] text-center transition-all duration-1000 ease-out transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}
         >
-          Welcome to Willstone
+          Find Anything in Willstone
+          <br />
+          With <span className="text-[var(--brand-light)]">Beacon</span>
         </h1>
 
         <div
