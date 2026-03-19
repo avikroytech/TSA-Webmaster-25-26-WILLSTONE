@@ -3,6 +3,7 @@ import { Andada_Pro, Righteous } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import Navbar from "@/components/home/Navbar";
+import ChatAgent from "@/components/ui/ChatAgent";
 
 const andadaPro = Andada_Pro({
   variable: "--font-andada",
@@ -36,6 +37,7 @@ export default function RootLayout({
         className={`${andadaPro.variable} ${righteous.variable} antialiased`}
       >
         {children}
+        <ChatAgent />
         <Analytics />
       </body>
     </html>

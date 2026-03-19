@@ -7,6 +7,7 @@ import { Sparkles, ArrowDown } from "lucide-react";
 export default function Hero() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isLoaded, setIsLoaded] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     setIsLoaded(true);
@@ -17,6 +18,21 @@ export default function Hero() {
       const x = (e.clientX / window.innerWidth - 0.5) * 2;
       const y = (e.clientY / window.innerHeight - 0.5) * 2;
       setMousePos({ x, y });
+    }
+  };
+
+  const handleAISearch = () => {
+    if (!searchQuery.trim()) return;
+    window.dispatchEvent(
+      new CustomEvent("willstone-ai-search", { detail: searchQuery.trim() })
+    );
+    setSearchQuery("");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAISearch();
     }
   };
 
@@ -54,7 +70,7 @@ export default function Hero() {
           className={`text-4xl md:text-5xl lg:text-7xl font-display font-medium text-[#f5f0eb] text-center transition-all duration-1000 ease-out transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
             }`}
         >
-          What do you want to do?
+          Welcome to Willstone
         </h1>
 
         <div
@@ -65,9 +81,15 @@ export default function Hero() {
             <input
               type="text"
               placeholder="how do I prepare for a disaster?"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="w-full pl-6 pr-14 py-4 rounded-full bg-[#f5f0eb] border-2 border-[#496A49] text-[#1c2b2b] placeholder-[#1c2b2b]/60 focus:outline-none focus:ring-4 focus:ring-[#70AC90]/50 text-lg transition-all"
             />
-            <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-[#264D52] hover:bg-[#70AC90] active:bg-[#496A49] text-[#f5f0eb] rounded-full transition-colors shadow-sm cursor-pointer group">
+            <button
+              onClick={handleAISearch}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-[#264D52] hover:bg-[#70AC90] active:bg-[#496A49] text-[#f5f0eb] rounded-full transition-colors shadow-sm cursor-pointer group"
+            >
               <Sparkles size={20} className="group-hover:rotate-12 transition-transform" />
             </button>
           </div>
