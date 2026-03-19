@@ -244,7 +244,7 @@ export default function Reference() {
                             isOpen={openSection === "Worklog"}
                             onToggle={() => toggleSection("Worklog")}
                         >
-                            <PDFViewer src="/pdf/Copyright-Checklist-Signed.pdf" />
+                            <PDFViewer src="/pdf/Webmaster_Worklog_States.pdf" />
                         </AccordionItem>
 
                         <AccordionItem
@@ -262,7 +262,17 @@ export default function Reference() {
                             isOpen={openSection === "Code Stack"}
                             onToggle={() => toggleSection("Code Stack")}
                         >
-                            <p className="text-foreground text-lg mb-4">The following technologies were used to create this website:</p>
+                            <p className="text-foreground text-lg mb-4">
+                                This website was built on NextJS, a professional optimized framework that is built on top of ReactJS.
+                                For deployment, we used Vercel as it has a semi-customizable URL for recognizability and a reliable
+                                server-hosting platform. Figma was mainly used for picking out the color scheme, designing components,
+                                and putting together all the pages shown on our website. These designs were then translated into HTML
+                                using a combination of TailwindCSS, a framework with a robust set of predefined classes that allow
+                                shorthand CSS to be written on components, and our own CSS classes. The logo and map are both designed
+                                by our team in Adobe Illustrator. All information for the resources, guides, and news articles, and
+                                calendar events are all written by our team. For storing our information relating to our website, we use
+                                Supabase, a PostgreSQL database, and its API library to retrieve and add data.
+                            </p>
                             <div className="p-4 bg-white/40 rounded-xl">
                                 {codeStack.map((stack, i) => (
                                     <CodeStackItem key={i} tech={stack.tech} items={stack.items} />
