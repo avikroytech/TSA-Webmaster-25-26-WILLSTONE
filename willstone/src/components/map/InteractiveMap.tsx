@@ -15,6 +15,7 @@ interface Route {
     name: string;
     color: string;
     stations: Station[];
+    path: Station[];
 }
 
 interface UniqueStation {
@@ -22,212 +23,152 @@ interface UniqueStation {
     x: number;
     y: number;
     routes: { name: string; color: string }[];
-    /** label offset direction: "right" | "left" | "above" | "below" */
-    labelDir: "right" | "left" | "above" | "below";
 }
 
 // ─── City silhouette (smooth cubic-bezier curves from reference images) ──
 // viewBox is 0 0 1000 1000
-const CITY_OUTLINE = [
-    "M 540 60",
-    "C 565 65, 590 72, 610 80",
-    "C 630 90, 645 105, 660 110",
-    "C 680 100, 700 93, 720 95",
-    "C 740 100, 752 118, 760 130",
-    "C 775 132, 790 135, 800 140",
-    "C 812 152, 822 164, 830 175",
-    "C 845 188, 858 198, 870 210",
-    "C 882 232, 892 250, 900 270",
-    "C 908 290, 916 310, 920 330",
-    "C 926 350, 932 365, 935 380",
-    "C 938 395, 940 408, 940 420",
-    "C 940 440, 936 455, 930 470",
-    "C 926 485, 924 498, 920 510",
-    "C 917 520, 914 530, 910 540",
-    "C 903 548, 896 555, 890 560",
-    "C 882 564, 876 566, 870 570",
-    "C 866 580, 862 590, 860 600",
-    "C 862 615, 868 628, 870 640",
-    "C 868 655, 864 668, 860 680",
-    "C 852 696, 842 708, 830 720",
-    "C 816 732, 802 742, 790 750",
-    "C 775 762, 762 772, 750 780",
-    "C 735 792, 722 802, 710 810",
-    "C 698 825, 688 838, 680 850",
-    "C 672 862, 666 872, 660 880",
-    "C 652 892, 646 902, 640 910",
-    "C 630 918, 620 928, 610 930",
-    "C 600 928, 590 924, 580 920",
-    "C 565 908, 552 898, 540 890",
-    "C 520 882, 505 876, 490 870",
-    "C 470 862, 455 856, 440 850",
-    "C 420 842, 405 836, 390 830",
-    "C 370 816, 355 804, 340 790",
-    "C 320 770, 305 755, 290 740",
-    "C 275 724, 262 712, 250 700",
-    "C 235 684, 222 672, 210 660",
-    "C 195 644, 182 632, 170 620",
-    "C 155 604, 142 592, 130 580",
-    "C 118 564, 108 552, 100 540",
-    "C 95 524, 90 512, 90 500",
-    "C 90 484, 94 472, 100 460",
-    "C 106 444, 112 432, 120 420",
-    "C 130 404, 140 392, 150 380",
-    "C 164 368, 178 358, 190 350",
-    "C 204 342, 218 335, 230 330",
-    "C 242 322, 252 316, 260 310",
-    "C 272 298, 282 288, 290 280",
-    "C 298 268, 304 258, 310 250",
-    "C 320 238, 330 228, 340 220",
-    "C 354 210, 368 200, 380 195",
-    "C 394 184, 408 176, 420 170",
-    "C 436 158, 448 148, 460 140",
-    "C 475 128, 488 118, 500 110",
-    "C 512 98, 522 88, 530 80",
-    "C 534 72, 537 66, 540 60",
-    "Z",
-].join(" ");
+
 
 // ─── Subway Data ────────────────────────────────────────────────────
 const SUBWAY_ROUTES: Route[] = [
     {
-        name: "Central Line",
-        color: "#E53935",
+        name: "Emerald Line",
+        color: "#f97316", // Orange-Red
         stations: [
-            { name: "North Point", x: 625, y: 140 },
-            { name: "Metro Center", x: 640, y: 260 },
-            { name: "Uptown", x: 560, y: 360 },
-            { name: "Central Station", x: 580, y: 470 },
-            { name: "Brookton", x: 520, y: 580 },
-            { name: "The Terminal", x: 620, y: 660 },
-            { name: "University Square", x: 620, y: 730 },
-            { name: "South Terminal", x: 620, y: 850 },
+            { name: "Sentinel Peak", x: 220, y: 200 },
+            { name: "West Interchange", x: 180, y: 300 },
+            { name: "Summit Center", x: 720, y: 260 },
         ],
-    },
+        path: [
+            { x: 180, y: 300 },
+            { x: 220, y: 200 },
+            { x: 420, y: 250 },
+            { x: 720, y: 260 },
+        ],
+    } as any,
+
     {
-        name: "Crosstown Line",
-        color: "#264D52",
+        name: "Central Loop",
+        color: "#15803d", // Green (adjusted to match image better)
         stations: [
-            { name: "Westbrook", x: 170, y: 590 },
-            { name: "Transit Plaza", x: 250, y: 570 },
-            { name: "Riverside", x: 360, y: 600 },
-            { name: "Brookton", x: 520, y: 580 },
-            { name: "Commerce District", x: 740, y: 570 },
-            { name: "Eastgate", x: 870, y: 570 },
+            { name: "West Interchange", x: 180, y: 300 },
+            { name: "Mid Junction", x: 320, y: 520 },
+            { name: "Southern Gate", x: 360, y: 780 },
+            { name: "Deep South", x: 200, y: 870 },
         ],
-    },
+        path: [
+            { x: 180, y: 300 },
+            { x: 250, y: 360 },
+            { x: 320, y: 520 },
+            { x: 320, y: 650 },
+            { x: 360, y: 780 },
+            { x: 300, y: 820 },
+            { x: 200, y: 870 },
+        ],
+    } as any,
+
     {
-        name: "Uptown Line",
-        color: "#4CAF50",
+        name: "Summit Shuttle",
+        color: "#1d4ed8", // Blue
         stations: [
-            { name: "Southwest Park", x: 240, y: 640 },
-            { name: "Memorial Plaza", x: 330, y: 530 },
-            { name: "Hill Crest", x: 380, y: 470 },
-            { name: "Union Square", x: 430, y: 420 },
-            { name: "Garden District", x: 490, y: 380 },
-            { name: "Uptown", x: 560, y: 360 },
-            { name: "Metro Center", x: 640, y: 260 },
-            { name: "Northeast Heights", x: 720, y: 190 },
+            { name: "Mid Junction", x: 320, y: 520 },
+            { name: "East Hub", x: 720, y: 420 },
+            { name: "Horizon Terminus", x: 820, y: 700 },
         ],
-    },
-    {
-        name: "West Hills Line",
-        color: "#4DD0E1",
-        stations: [
-            { name: "Observatory Park", x: 370, y: 350 },
-            { name: "Union Square", x: 430, y: 420 },
+        path: [
+            { x: 320, y: 520 },
+            { x: 420, y: 460 },
+            { x: 600, y: 450 },
+            { x: 720, y: 420 },
+            { x: 680, y: 520 },
+            { x: 690, y: 650 },
+            { x: 820, y: 700 },
         ],
-    },
-    {
-        name: "Garden Line",
-        color: "#F48FB1",
-        stations: [
-            { name: "Garden District", x: 490, y: 380 },
-            { name: "Central Station", x: 580, y: 470 },
-            { name: "Airport Junction", x: 710, y: 430 },
-            { name: "Lakeside", x: 800, y: 490 },
-        ],
-    },
+    } as any,
 ];
 
 // ─── Bus Data ───────────────────────────────────────────────────────
 const BUS_ROUTES: Route[] = [
     {
-        name: "Red Horizon Route",
-        color: "#E53935",
+        name: "Sentinel Loop",
+        color: "#22c55e", // Green
         stations: [
-            { name: "Falcon's Tip", x: 620, y: 155 },
-            { name: "Juniper's Square", x: 680, y: 250 },
-            { name: "Atlas Convergence", x: 540, y: 410 },
-            { name: "Eastgate Pavillion", x: 830, y: 370 },
-            { name: "Briarwood", x: 810, y: 490 },
-            { name: "Slatebrook", x: 640, y: 530 },
-            { name: "Tail's End", x: 620, y: 860 },
+            { name: "North Sentinel", x: 120, y: 180 },
+            { name: "East Sentinel", x: 280, y: 150 },
+            { name: "South Sentinel", x: 320, y: 280 },
         ],
-    },
+        path: [
+            { x: 120, y: 180 },
+            { x: 190, y: 140 },
+            { x: 280, y: 150 },
+            { x: 250, y: 200 },
+            { x: 320, y: 280 },
+            { x: 250, y: 320 },
+            { x: 150, y: 330 },
+            { x: 120, y: 180 }
+        ]
+    } as any,
     {
-        name: "Ironclad Route",
-        color: "#264D52",
+        name: "Summit Circle",
+        color: "#1e3a8a", // Dark Blue
         stations: [
-            { name: "Westgate Pavillion", x: 270, y: 440 },
-            { name: "Driftwood's Pass", x: 340, y: 530 },
-            { name: "Atlas Convergence", x: 540, y: 410 },
-            { name: "Slatebrook", x: 640, y: 530 },
-            { name: "Tail's End", x: 620, y: 860 },
+            { name: "Summit West", x: 680, y: 220 },
+            { name: "Summit Peak", x: 880, y: 350 },
+            { name: "Summit South", x: 750, y: 420 },
         ],
-    },
+        path: [
+            { x: 680, y: 220 },
+            { x: 780, y: 230 },
+            { x: 880, y: 350 },
+            { x: 830, y: 450 },
+            { x: 750, y: 420 },
+            { x: 720, y: 350 },
+            { x: 680, y: 220 }
+        ]
+    } as any,
     {
-        name: "Crosswind Route",
-        color: "#4CAF50",
+        name: "Central Way",
+        color: "#ef4444", // Red
         stations: [
-            { name: "Highmark's Junction", x: 140, y: 560 },
-            { name: "Driftwood's Pass", x: 340, y: 530 },
-            { name: "Copperstone", x: 340, y: 660 },
-            { name: "Westgate Pavillion", x: 270, y: 440 },
-            { name: "Moonrise", x: 430, y: 330 },
-            { name: "Juniper's Square", x: 680, y: 250 },
+            { name: "Central West", x: 250, y: 500 },
+            { name: "Central East", x: 400, y: 540 },
+            { name: "Central South", x: 250, y: 580 },
         ],
-    },
+        path: [
+            { x: 250, y: 500 },
+            { x: 330, y: 480 },
+            { x: 380, y: 500 },
+            { x: 400, y: 540 },
+            { x: 340, y: 560 },
+            { x: 250, y: 580 },
+            { x: 250, y: 500 }
+        ]
+    } as any,
     {
-        name: "Summit Route",
-        color: "#4DD0E1",
+        name: "Horizon Express",
+        color: "#06b6d4", // Light Blue
         stations: [
-            { name: "Moonrise", x: 430, y: 330 },
-            { name: "Atlas Convergence", x: 540, y: 410 },
-            { name: "Slatebrook", x: 640, y: 530 },
-            { name: "Crestwall Sector", x: 580, y: 680 },
-            { name: "Tail's End", x: 620, y: 860 },
+            { name: "Horizon West", x: 180, y: 800 },
+            { name: "Horizon Bridge", x: 350, y: 820 },
+            { name: "Horizon Center", x: 560, y: 750 },
+            { name: "Horizon Arch", x: 680, y: 680 },
+            { name: "Horizon East", x: 840, y: 740 },
         ],
-    },
-    {
-        name: "Midpass Route",
-        color: "#F48FB1",
-        stations: [
-            { name: "Westgate Pavillion", x: 270, y: 440 },
-            { name: "Driftwood's Pass", x: 340, y: 530 },
-            { name: "Slatebrook", x: 640, y: 530 },
-            { name: "Briarwood", x: 810, y: 490 },
-            { name: "Eastgate Pavillion", x: 830, y: 370 },
-        ],
+        path: [
+            { x: 180, y: 800 },
+            { x: 250, y: 850 },
+            { x: 350, y: 820 },
+            { x: 450, y: 750 },
+            { x: 530, y: 650 },
+            { x: 560, y: 750 },
+            { x: 680, y: 680 },
+            { x: 780, y: 650 },
+            { x: 840, y: 740 }
+        ]
     },
 ];
 
-// ─── Label positioning: custom overrides for stations that clip ─────
-// Stations on the right edge get labels to the left, etc.
-const LABEL_OVERRIDES: Record<string, "left" | "right" | "above" | "below"> = {
-    // Subway
-    "Eastgate": "left",
-    "Commerce District": "left",
-    "Lakeside": "left",
-    "Northeast Heights": "left",
-    "Airport Junction": "left",
-    "South Terminal": "above",
-    // Bus
-    "Eastgate Pavillion": "left",
-    "Briarwood": "left",
-    "Tail's End": "above",
-    "Highmark's Junction": "right",
-};
+
 
 // ─── Helper: deduplicate stations and compute routes per station ────
 function getUniqueStations(routes: Route[]): UniqueStation[] {
@@ -240,15 +181,11 @@ function getUniqueStations(routes: Route[]): UniqueStation[] {
                     existing.routes.push({ name: route.name, color: route.color });
                 }
             } else {
-                const labelDir =
-                    LABEL_OVERRIDES[station.name] ??
-                    (station.x > 750 ? "left" : "right");
                 map.set(station.name, {
                     name: station.name,
                     x: station.x,
                     y: station.y,
                     routes: [{ name: route.name, color: route.color }],
-                    labelDir,
                 });
             }
         }
@@ -314,25 +251,29 @@ function initVehicles(routes: Route[]): VehicleInternal[][] {
 export default function InteractiveMap() {
     const [mode, setMode] = useState<MapMode>("subway");
     const [hoveredStation, setHoveredStation] = useState<string | null>(null);
-    const [selectedRoute, setSelectedRoute] = useState<string | null>(null);
+    const [selectedRoutes, setSelectedRoutes] = useState<Set<string>>(new Set());
     const svgRef = useRef<SVGSVGElement>(null);
     const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
     const routes = mode === "subway" ? SUBWAY_ROUTES : BUS_ROUTES;
     const uniqueStations = useMemo(() => getUniqueStations(routes), [routes]);
 
-    // Station names on the selected route (for highlight/dim)
+    // Station names on the selected routes (for highlight/dim)
     const selectedRouteStations = useMemo(() => {
-        if (!selectedRoute) return null;
-        const route = routes.find((r) => r.name === selectedRoute);
-        if (!route) return null;
-        return new Set(route.stations.map((s) => s.name));
-    }, [routes, selectedRoute]);
+        if (selectedRoutes.size === 0) return null;
+        const stationSet = new Set<string>();
+        routes.forEach((r) => {
+            if (selectedRoutes.has(r.name)) {
+                r.stations.forEach((s) => stationSet.add(s.name));
+            }
+        });
+        return stationSet;
+    }, [routes, selectedRoutes]);
 
     // Clear selection when switching modes
     const handleModeChange = useCallback((newMode: MapMode) => {
         setMode(newMode);
-        setSelectedRoute(null);
+        setSelectedRoutes(new Set());
     }, []);
 
     // ── Vehicle animation ────────────────────────────────────────
@@ -358,8 +299,10 @@ export default function InteractiveMap() {
 
             vehiclesRef.current.forEach((vehicleArr, ri) => {
                 const route = routes[ri];
-                if (!route || route.stations.length < 2) return;
-                const segCount = route.stations.length - 1;
+                if (!route) return;
+                const rPath = (route as any).path || route.stations;
+                if (rPath.length < 2) return;
+                const segCount = rPath.length - 1;
 
                 vehicleArr.forEach((v) => {
                     if (v.paused) {
@@ -371,8 +314,9 @@ export default function InteractiveMap() {
                     }
 
                     if (!v.paused) {
-                        const from = route.stations[v.segIndex];
-                        const to = route.stations[v.segIndex + 1];
+                        const rPath = (route as any).path || route.stations;
+                        const from = rPath[v.segIndex];
+                        const to = rPath[v.segIndex + 1];
                         const segLen = dist(from, to);
                         if (segLen > 0) {
                             const progressDelta = (VEHICLE_SPEED * (dt / 1000)) / segLen;
@@ -392,8 +336,9 @@ export default function InteractiveMap() {
                     }
 
                     // Interpolate position
-                    const from = route.stations[v.segIndex];
-                    const to = route.stations[v.segIndex + 1] ?? route.stations[v.segIndex];
+                    const rPath = (route as any).path || route.stations;
+                    const from = rPath[v.segIndex];
+                    const to = rPath[v.segIndex + 1] ?? rPath[v.segIndex];
                     const x = from.x + (to.x - from.x) * v.segProgress;
                     const y = from.y + (to.y - from.y) * v.segProgress;
                     const angle = angleBetween(from, to);
@@ -415,8 +360,12 @@ export default function InteractiveMap() {
         [uniqueStations, hoveredStation]
     );
 
-    const handleStationHover = useCallback(
+    const handleStationClick = useCallback(
         (stationName: string, svgX: number, svgY: number) => {
+            if (hoveredStation === stationName) {
+                setHoveredStation(null);
+                return;
+            }
             setHoveredStation(stationName);
             // Convert SVG coords to screen coords for the tooltip
             if (svgRef.current) {
@@ -438,106 +387,48 @@ export default function InteractiveMap() {
                 }
             }
         },
-        []
+        [hoveredStation]
     );
 
     return (
-        <div className="relative w-full flex" style={{ height: "100%", minHeight: 0 }}>
-            {/* ── Legend Panel (left side) ─────────────────────────── */}
-            <div className="w-56 shrink-0 bg-[#264D52]/90 backdrop-blur-sm text-white p-5 flex flex-col gap-2 z-10 border-r-4 border-[#496A49]">
-                <h2 className="text-lg font-black uppercase tracking-[0.15em] mb-3 border-b-2 border-[#496A49] pb-2">
-                    {mode === "subway" ? "Subway Lines" : "Bus Routes"}
-                </h2>
-                {routes.map((route) => {
-                    const isSelected = selectedRoute === route.name;
-                    const isDimmed = selectedRoute !== null && !isSelected;
-                    return (
-                        <div
-                            key={route.name}
-                            onClick={() => setSelectedRoute(isSelected ? null : route.name)}
-                            className={`flex items-center gap-3 py-2 px-2 -mx-2 rounded cursor-pointer transition-all duration-200 ${isSelected
-                                ? "bg-white/20 ring-1 ring-white/40"
-                                : isDimmed
-                                    ? "opacity-40"
-                                    : "hover:bg-white/10"
-                                }`}
-                        >
-                            <span
-                                className="w-5 h-5 rounded-sm shrink-0 border border-white/30"
-                                style={{ backgroundColor: route.color }}
-                            />
-                            <span className="text-sm font-semibold tracking-wide leading-tight">
-                                {route.name}
-                            </span>
-                        </div>
-                    );
-                })}
-            </div>
-
+        <div className="relative w-full h-full flex flex-col bg-[#111827] overflow-hidden">
             {/* ── Map Area ─────────────────────────────────────────── */}
-            <div className="flex-1 relative bg-[#C59F82] overflow-hidden map-container">
-                {/* Toggle buttons */}
-                <div className="absolute top-4 left-4 z-20 flex gap-2">
-                    <button
-                        onClick={() => handleModeChange("subway")}
-                        className={`px-5 py-2.5 text-sm font-black uppercase tracking-[0.15em] transition-all duration-200 border-[3px] cursor-pointer ${mode === "subway"
-                            ? "bg-[#264D52] text-white border-[#264D52] shadow-lg"
-                            : "bg-white/80 text-[#264D52] border-[#496A49] hover:bg-white"
-                            }`}
-                    >
-                        Subway
-                    </button>
-                    <button
-                        onClick={() => handleModeChange("bus")}
-                        className={`px-5 py-2.5 text-sm font-black uppercase tracking-[0.15em] transition-all duration-200 border-[3px] cursor-pointer ${mode === "bus"
-                            ? "bg-[#264D52] text-white border-[#264D52] shadow-lg"
-                            : "bg-white/80 text-[#264D52] border-[#496A49] hover:bg-white"
-                            }`}
-                    >
-                        Bus
-                    </button>
-                </div>
-
-                {/* Title */}
-                <div className="absolute top-4 right-6 z-20">
-                    <h1 className="text-2xl md:text-3xl font-black text-[#264D52] uppercase tracking-[0.1em] drop-shadow-sm">
-                        {mode === "subway"
-                            ? "Willstone Subway Map"
-                            : "Willstone Bus Lines Map"}
-                    </h1>
-                </div>
-
+            <div className="flex-1 relative map-container overflow-hidden">
                 {/* SVG Map */}
                 <svg
                     ref={svgRef}
                     viewBox="0 0 1000 1000"
                     className="absolute inset-0 w-full h-full"
                     preserveAspectRatio="xMidYMid meet"
+                    onClick={() => setHoveredStation(null)}
                 >
-                    {/* City silhouette */}
-                    <path
-                        d={CITY_OUTLINE}
-                        fill="#FAFAD2"
-                        stroke="#264D52"
-                        strokeWidth="3"
-                        strokeLinejoin="round"
+                    {/* Background Map Image */}
+                    <image
+                        href="/img/full_map.png"
+                        x="0"
+                        y="0"
+                        width="1000"
+                        height="1000"
+                        preserveAspectRatio="xMidYMid meet"
+                        className="opacity-90"
                     />
 
                     {/* Route lines */}
                     {routes.map((route) => {
-                        const dimmed = selectedRoute !== null && selectedRoute !== route.name;
+                        const hasSelection = selectedRoutes.size > 0;
+                        const dimmed = hasSelection && !selectedRoutes.has(route.name);
                         return (
                             <polyline
                                 key={route.name}
-                                points={route.stations
-                                    .map((s) => `${s.x},${s.y}`)
+                                points={((route as any).path || route.stations)
+                                    .map((s: any) => `${s.x},${s.y}`)
                                     .join(" ")}
                                 fill="none"
                                 stroke={dimmed ? "#555" : route.color}
-                                strokeWidth={dimmed ? 3 : 5}
+                                strokeWidth={dimmed ? 3 : 6}
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                opacity={dimmed ? 0.18 : 1}
+                                opacity={dimmed ? 0.2 : 1}
                                 className="transition-all duration-300"
                             />
                         );
@@ -545,41 +436,41 @@ export default function InteractiveMap() {
 
                     {/* Deduplicated station dots */}
                     {uniqueStations.map((station) => {
-                        const isHovered = hoveredStation === station.name;
+                        const isSelected = hoveredStation === station.name;
                         const onSelectedRoute = selectedRouteStations === null || selectedRouteStations.has(station.name);
                         const dimmed = !onSelectedRoute;
 
                         return (
                             <g
                                 key={station.name}
-                                onMouseEnter={() =>
-                                    handleStationHover(station.name, station.x, station.y)
-                                }
-                                onMouseLeave={() => setHoveredStation(null)}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleStationClick(station.name, station.x, station.y);
+                                }}
                                 style={{ cursor: "pointer" }}
                                 opacity={dimmed ? 0.18 : 1}
                                 className="transition-opacity duration-300"
                             >
-                                {/* Hover ring (larger, subtle glow) */}
+                                {/* Active ring */}
                                 <circle
                                     cx={station.x}
                                     cy={station.y}
-                                    r={isHovered ? 14 : 0}
+                                    r={isSelected ? 14 : 0}
                                     fill="none"
-                                    stroke="#496A49"
+                                    stroke="#fff"
                                     strokeWidth="2"
-                                    opacity={isHovered ? 0.5 : 0}
+                                    opacity={isSelected ? 0.8 : 0}
                                     style={{ transition: "r 0.2s, opacity 0.2s" }}
                                 />
                                 {/* Dot */}
                                 <circle
                                     cx={station.x}
                                     cy={station.y}
-                                    r={isHovered ? 10 : 6}
-                                    fill={dimmed ? "#999" : "white"}
-                                    stroke={dimmed ? "#555" : "#264D52"}
+                                    r={isSelected ? 10 : 8}
+                                    fill={isSelected ? "#fff" : "#1e293b"}
+                                    stroke="white"
                                     strokeWidth="2.5"
-                                    style={{ transition: "r 0.2s ease-out" }}
+                                    style={{ transition: "r 0.2s ease-out, fill 0.2s" }}
                                 />
                             </g>
                         );
@@ -589,10 +480,10 @@ export default function InteractiveMap() {
                     {vehiclePositions.map((vp, i) => {
                         const route = routes[vp.routeIndex];
                         if (!route) return null;
-                        const dimmed = selectedRoute !== null && selectedRoute !== route.name;
+                        const hasSelection = selectedRoutes.size > 0;
+                        const dimmed = hasSelection && !selectedRoutes.has(route.name);
                         const angleDeg = (vp.angle * 180) / Math.PI;
                         const isBus = mode === "bus";
-                        // Bus: 14×9, Train: 18×10
                         const w = isBus ? 14 : 18;
                         const h = isBus ? 9 : 10;
                         return (
@@ -601,8 +492,8 @@ export default function InteractiveMap() {
                                 transform={`translate(${vp.x}, ${vp.y}) rotate(${angleDeg})`}
                                 opacity={dimmed ? 0.15 : 1}
                                 className="transition-opacity duration-300"
+                                pointerEvents="none"
                             >
-                                {/* Vehicle body */}
                                 <rect
                                     x={-w / 2}
                                     y={-h / 2}
@@ -614,7 +505,6 @@ export default function InteractiveMap() {
                                     stroke="white"
                                     strokeWidth="1.5"
                                 />
-                                {/* Windshield (front) */}
                                 <rect
                                     x={w / 2 - (isBus ? 4 : 5)}
                                     y={-h / 2 + 1.5}
@@ -626,31 +516,12 @@ export default function InteractiveMap() {
                             </g>
                         );
                     })}
-
-                    {/* Compass rose (bottom-left corner) */}
-                    <g transform="translate(60, 890)">
-                        <circle cx="0" cy="0" r="45" fill="rgba(255,255,255,0.6)" stroke="#264D52" strokeWidth="3" />
-                        {/* Cross lines */}
-                        <line x1="0" y1="-38" x2="0" y2="38" stroke="#264D52" strokeWidth="2.5" />
-                        <line x1="-38" y1="0" x2="38" y2="0" stroke="#264D52" strokeWidth="2.5" />
-                        {/* Diagonal lines */}
-                        <line x1="-22" y1="-22" x2="22" y2="22" stroke="#264D52" strokeWidth="1" opacity="0.4" />
-                        <line x1="22" y1="-22" x2="-22" y2="22" stroke="#264D52" strokeWidth="1" opacity="0.4" />
-                        {/* North arrow */}
-                        <polygon points="0,-36 -6,-20 6,-20" fill="#E53935" />
-                        <polygon points="0,36 -6,20 6,20" fill="#264D52" opacity="0.5" />
-                        {/* Labels */}
-                        <text x="0" y="-52" textAnchor="middle" fontSize="22" fontWeight="900" fill="#264D52">N</text>
-                        <text x="0" y="68" textAnchor="middle" fontSize="22" fontWeight="900" fill="#264D52">S</text>
-                        <text x="58" y="8" textAnchor="middle" fontSize="22" fontWeight="900" fill="#264D52">E</text>
-                        <text x="-58" y="8" textAnchor="middle" fontSize="22" fontWeight="900" fill="#264D52">W</text>
-                    </g>
                 </svg>
 
-                {/* ── Hover tooltip card (HTML overlay) ──────────── */}
+                {/* ── Click tooltip card (HTML overlay) ──────────── */}
                 {hoveredData && (
                     <div
-                        className="absolute z-30 pointer-events-none"
+                        className="absolute z-30"
                         style={{
                             left: tooltipPos.x,
                             top: tooltipPos.y,
@@ -658,32 +529,106 @@ export default function InteractiveMap() {
                         }}
                     >
                         <div
-                            className="bg-white/95 backdrop-blur-sm border-2 border-[#264D52] rounded-lg shadow-xl px-4 py-3 min-w-[180px]"
+                            className="bg-[#f8f5f0]/95 backdrop-blur-md border border-black/10 rounded-xl shadow-2xl p-4 min-w-[200px]"
                             style={{
                                 animation: "fadeUp 0.2s ease-out forwards",
                             }}
                         >
-                            <h3 className="text-sm font-black text-[#264D52] uppercase tracking-wider mb-2">
-                                {hoveredData.name}
-                            </h3>
-                            <div className="flex flex-col gap-1">
+                            <div className="flex justify-between items-center mb-2">
+                                <h3 className="text-sm font-sans font-black text-[#1f2937] uppercase tracking-wider">
+                                    {hoveredData.name}
+                                </h3>
+                                <button
+                                    onClick={() => setHoveredStation(null)}
+                                    className="text-[#6b7280] hover:text-[#1f2937] transition-colors"
+                                >
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div className="flex flex-col gap-2">
                                 {hoveredData.routes.map((r) => (
-                                    <div key={r.name} className="flex items-center gap-2">
+                                    <div key={r.name} className="flex items-center gap-3 bg-white/50 p-2 rounded-lg border border-black/5">
                                         <span
-                                            className="w-3 h-3 rounded-full shrink-0"
-                                            style={{ backgroundColor: r.color }}
+                                            className="w-3 h-3 rounded-full shrink-0 shadow-[0_0_8px_rgba(0,0,0,0.2)]"
+                                            style={{ backgroundColor: r.color, boxShadow: `0 0 10px ${r.color}60` }}
                                         />
-                                        <span className="text-xs font-semibold text-[#264D52]/80">
+                                        <span className="text-xs font-bold text-[#374151]">
                                             {r.name}
                                         </span>
                                     </div>
                                 ))}
                             </div>
                             {/* Arrow */}
-                            <div className="absolute left-1/2 -translate-x-1/2 -bottom-[7px] w-3 h-3 bg-white/95 border-r-2 border-b-2 border-[#264D52] rotate-45" />
+                            <div className="absolute left-1/2 -translate-x-1/2 -bottom-[6px] w-3 h-3 bg-[#f8f5f0]/95 border-r border-b border-black/10 rotate-45" />
                         </div>
                     </div>
                 )}
+            </div>
+
+            {/* ── Bottom Controls ─────────────────────────────────── */}
+            <div className="bg-[#f8f5f0] p-6 mx-6 mb-6 rounded-2xl shadow-xl flex items-center justify-between gap-8 border border-black/5">
+                <div className="flex items-center gap-6">
+                    <div className="flex bg-[#e5e7eb] p-1 rounded-xl h-12 shadow-inner">
+                        <button
+                            onClick={() => handleModeChange("subway")}
+                            className={`flex items-center gap-2 px-4 rounded-lg transition-all duration-300 font-bold text-xs uppercase tracking-wider ${mode === "subway"
+                                ? "bg-white text-[#1f2937] shadow-md"
+                                : "text-[#6b7280] hover:text-[#1f2937]"
+                                }`}
+                        >
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v10h-2V7z" />
+                            </svg>
+                            Subway
+                        </button>
+                        <button
+                            onClick={() => handleModeChange("bus")}
+                            className={`flex items-center gap-2 px-4 rounded-lg transition-all duration-300 font-bold text-xs uppercase tracking-wider ${mode === "bus"
+                                ? "bg-white text-[#1f2937] shadow-md"
+                                : "text-[#6b7280] hover:text-[#1f2937]"
+                                }`}
+                        >
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M18 11V7c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h1c0 1.1.9 2 2 2s2-.9 2-2h6c0 1.1.9 2 2 2s2-.9 2-2h1c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2zM4 7h12v4H4V7zm1 10c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm12 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z" />
+                            </svg>
+                            Bus
+                        </button>
+                    </div>
+                </div>
+
+                <div className="flex-1 flex gap-3 overflow-x-auto no-scrollbar py-3 px-1">
+                    {routes.map((route) => {
+                        const isSelected = selectedRoutes.has(route.name);
+                        return (
+                            <button
+                                key={route.name}
+                                onClick={() => {
+                                    const next = new Set(selectedRoutes);
+                                    if (next.has(route.name)) {
+                                        next.delete(route.name);
+                                    } else {
+                                        next.add(route.name);
+                                    }
+                                    setSelectedRoutes(next);
+                                }}
+                                className={`h-12 px-6 rounded-xl font-sans font-bold text-xs uppercase tracking-wider transition-all duration-300 shadow-sm whitespace-nowrap border-2 ${isSelected
+                                    ? "bg-white ring-2 ring-offset-2 scale-[1.02]"
+                                    : "hover:scale-[1.02] active:scale-[0.98]"
+                                    }`}
+                                style={{
+                                    backgroundColor: isSelected ? "white" : route.color,
+                                    borderColor: isSelected ? route.color : "transparent",
+                                    color: isSelected ? route.color : "white",
+                                    boxShadow: isSelected ? `0 4px 12px ${route.color}40` : "none"
+                                }}
+                            >
+                                {route.name}
+                            </button>
+                        );
+                    })}
+                </div>
             </div>
 
             {/* Tooltip animation keyframes */}
