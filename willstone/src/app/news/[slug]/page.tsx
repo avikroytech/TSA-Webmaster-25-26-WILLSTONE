@@ -1,4 +1,3 @@
-import Navbar from "@/components/home/Navbar";
 import Footer from "@/components/home/Footer";
 import { supabase } from "@/utils/supabase/server";
 import Link from "next/link";
@@ -21,7 +20,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
     const formatDate = (dateString: string) => {
         if (!dateString) return "";
         const [year, month, day] = dateString.split("-");
-        const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10));
         return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     };
 
@@ -31,8 +30,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
 
     return (
         <div className="min-h-screen flex flex-col bg-[#f5f0eb] text-[#1c2b2b]">
-            <Navbar />
-            <main className="flex-1 w-full max-w-4xl mx-auto px-6 pt-32 pb-16 md:pt-40 md:pb-24">
+            <main className="flex-1 w-full max-w-4xl mx-auto px-6 pt-12 pb-16 md:pt-16 md:pb-24">
                 {article && (
                     <article>
                         {/* Back Link */}

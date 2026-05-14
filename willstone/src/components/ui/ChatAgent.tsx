@@ -14,8 +14,11 @@ import {
   Pencil,
   ShieldCheck,
   ArrowUp,
-  Search
+  Search,
+  Mic
 } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface Message {
   role: "user" | "assistant";
@@ -39,6 +42,7 @@ export default function ChatAgent() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const pendingQueryRef = useRef<string | null>(null);
+  const pathname = usePathname();
 
   // Constants
   const PANEL_WIDTH = 400;
@@ -140,6 +144,12 @@ export default function ChatAgent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, isLoading]);
 
+  useEffect(() => {
+    const handler = () => setIsOpen(true);
+    window.addEventListener("willstone-open-beacon", handler);
+    return () => window.removeEventListener("willstone-open-beacon", handler);
+  }, []);
+
   async function handleSend(overrideMessage?: string) {
     const messageText = overrideMessage || input.trim();
     if (!messageText || isLoading) return;
@@ -204,6 +214,23 @@ export default function ChatAgent() {
     }
   }
 
+  function startVoiceInput() {
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setInput("Voice input is not available in this browser.");
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.onresult = (event: any) => {
+      const transcript = event.results?.[0]?.[0]?.transcript;
+      if (transcript) setInput(transcript);
+    };
+    recognition.start();
+  }
+
   function formatMessage(text: string) {
     const lines = text.split("\n");
     return lines.map((line, i) => {
@@ -248,22 +275,6 @@ export default function ChatAgent() {
 
   return (
     <>
-      {/* Top Right Universal Toggle */}
-      <AnimatePresence>
-        {!isOpen && (
-          <motion.button
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0, opacity: 0 }}
-            onClick={() => setIsOpen(true)}
-            className="fixed top-4 right-4 z-[90] flex items-center gap-3 px-5 py-3 bg-[#496A49] text-[#f5f0eb] rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-transform duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C59F82] group"
-          >
-            <Sparkles size={20} className="shrink-0" />
-            <span className="font-bold uppercase tracking-[0.15em] text-sm">Beacon</span>
-          </motion.button>
-        )}
-      </AnimatePresence>
-
       {/* Side Panel */}
       <AnimatePresence mode="wait">
         {isOpen && (
@@ -335,9 +346,9 @@ export default function ChatAgent() {
                   <div className="space-y-8 mt-4">
                     <div className="flex flex-wrap justify-center gap-2 px-10">
                       {[
-                        "What are important events in April?",
-                        "Where is the city library?",
-                        "Find nonprofits focused on Health & Safety.",
+                        pathname.startsWith("/calendar") ? "What events are happening soon?" : "What are important events in April?",
+                        pathname.startsWith("/resource-hub") ? "Find health resources nearby." : "Where is the city library?",
+                        pathname.startsWith("/request") ? "How do I submit a resource?" : "Find nonprofits focused on Health & Safety.",
                       ].map((q) => (
                         <button
                           key={q}
@@ -371,16 +382,18 @@ export default function ChatAgent() {
 
                       {/* Source Chips */}
                       {msg.role === "assistant" && msg.sources && msg.sources.length > 0 && (
-                        <div className="mt-3 flex flex-wrap gap-2">
+                        <div className="mt-3 grid w-full gap-2">
                           {msg.sources.map((src, j) => (
-                            <a
+                            <Link
                               key={j}
                               href={src.link || "#"}
-                              className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-[var(--brand-medium)]/10 rounded-full text-[10px] font-bold text-[var(--brand-medium)] hover:bg-[var(--brand-medium)] hover:text-white transition-all shadow-sm"
+                              className="rounded-2xl border border-[var(--brand-medium)]/10 bg-white px-4 py-3 text-[var(--brand-medium)] shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                             >
-                              <Search size={10} />
-                              {src.title}
-                            </a>
+                              <span className="mb-1 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-[var(--brand-dark)]">
+                                <Search size={10} /> {src.source_table.replaceAll("_", " ")}
+                              </span>
+                              <span className="block text-sm font-black">{src.title}</span>
+                            </Link>
                           ))}
                         </div>
                       )}
@@ -416,6 +429,15 @@ export default function ChatAgent() {
                     className="w-full bg-[#EFECE6] border-none rounded-2xl py-5 pl-16 pr-14 text-sm font-medium text-[var(--brand-dark)] placeholder:text-[var(--brand-dark)]/40 focus:ring-2 focus:ring-[var(--brand-medium)]/20 transition-all shadow-inner resize-none min-h-[60px] overflow-y-auto custom-scrollbar"
                   />
                   <button
+                    type="button"
+                    onClick={startVoiceInput}
+                    className="absolute right-14 bottom-3 w-10 h-10 flex items-center justify-center rounded-xl bg-transparent text-[var(--brand-dark)] hover:bg-[var(--brand-medium)]/5 transition-colors z-10"
+                    aria-label="Use voice input"
+                  >
+                    <Mic size={18} />
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => handleSend()}
                     disabled={isLoading || !input.trim()}
                     className="absolute right-4 bottom-3 w-10 h-10 flex items-center justify-center rounded-xl bg-transparent text-[var(--brand-dark)] hover:bg-[var(--brand-medium)]/5 transition-colors disabled:opacity-20 z-10"
@@ -432,4 +454,3 @@ export default function ChatAgent() {
     </>
   );
 }
-

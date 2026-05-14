@@ -1,9 +1,9 @@
-import Navbar from "@/components/home/Navbar";
 import Footer from "@/components/home/Footer";
 import { supabase } from "@/utils/supabase/server";
 import Link from "next/link";
 import Image from "next/image";
 import { SpotlightCarouselGallery } from "@/components/ui/spotlight-carousel";
+import ReviewSection from "@/components/resource/ReviewSection";
 import {
   ArrowLeft, ArrowRight, Map, MapPin, Globe, Phone, Target, Boxes,
   Folder, Stethoscope, Library, Users, TreePine, Briefcase, Scale, Car, Activity
@@ -49,7 +49,6 @@ export default async function ResourcePage({ params }: { params: { slug: string 
   if (error || !resource) {
     return (
       <div className="min-h-screen flex flex-col bg-[var(--background)]">
-        <Navbar />
         <main className="flex-1 flex flex-col items-center justify-center">
           <h1 className="text-4xl text-road-paint font-display">Resource Not Found</h1>
           <Link href="/resource-hub" className="mt-4 text-asphalt hover:underline font-bold">Return to Hub</Link>
@@ -71,9 +70,7 @@ export default async function ResourcePage({ params }: { params: { slug: string 
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--background)] font-sans">
-      <Navbar />
-
-      <main className="flex-1 w-full max-w-[1400px] mx-auto px-6 md:px-12 xl:px-20 pt-32 pb-12 flex flex-col gap-10">
+      <main className="flex-1 w-full max-w-[1400px] mx-auto px-6 md:px-12 xl:px-20 pt-12 pb-12 flex flex-col gap-10">
 
         {/* Back Link */}
         <Link
@@ -86,12 +83,14 @@ export default async function ResourcePage({ params }: { params: { slug: string 
 
         {/* Image Gallery */}
         {resource.images && resource.images.length > 0 ? (
-          <SpotlightCarouselGallery
-            items={resource.images.map((img: string, idx: number) => ({
-              id: idx,
-              image: img,
-            }))}
-          />
+          <div className="resource-gallery-mobile-safe">
+            <SpotlightCarouselGallery
+              items={resource.images.map((img: string, idx: number) => ({
+                id: idx,
+                image: img,
+              }))}
+            />
+          </div>
         ) : (
           <div className="w-full h-[300px] md:h-[500px] rounded-[2rem] flex items-center justify-center bg-road-paint/5 text-road-paint/20">
             <Target size={64} />
@@ -166,6 +165,8 @@ export default async function ResourcePage({ params }: { params: { slug: string 
             </div>
           </div>
         </div>
+
+        <ReviewSection resourceId={resource.id} />
 
         {/* Related Resources */}
         {related && related.length > 0 && (

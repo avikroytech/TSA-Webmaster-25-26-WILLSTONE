@@ -11,7 +11,6 @@ import {
   ArrowDown,
   Loader2
 } from "lucide-react";
-import Navbar from "@/components/home/Navbar";
 import Footer from "@/components/home/Footer";
 import { supabase } from "@/utils/supabase/client";
 
@@ -70,13 +69,11 @@ export default function NewsPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f5f0eb] text-[#1c2b2b]">
-      <Navbar />
-
       <main className="flex-1">
         {/* Full-Viewport Hero Section with Mouse Tracking */}
         {featuredArticle && (
           <section
-            className="w-full relative h-screen overflow-hidden group"
+            className="w-full relative min-h-[620px] overflow-hidden group bg-[#173b3f]"
             onMouseMove={handleMouseMove}
           >
             <div
@@ -106,25 +103,26 @@ export default function NewsPage() {
               </motion.div>
             </div>
 
-            <div className="relative h-full container mx-auto px-6 flex flex-col justify-end pb-44 md:pb-32">
+            <div className="relative min-h-[620px] container mx-auto px-6 flex flex-col justify-end pb-24 md:pb-28">
               <motion.div
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5, duration: 0.8 }}
                 className="w-full"
               >
-                <h1 className="text-5xl md:text-7xl font-display font-black text-white mb-6 leading-tight">
+                <p className="city-kicker text-[#d5b08c] mb-3">City news</p>
+                <h1 className="text-4xl md:text-6xl font-black text-white mb-5 leading-[1.02] max-w-5xl">
                   {featuredArticle.title}
                 </h1>
                 <p className="text-white/80 text-lg font-bold uppercase tracking-widest mb-6">
                   {formatDate(featuredArticle.date)}
                 </p>
-                <p className="text-xl md:text-2xl text-white/90 mb-10 font-sans leading-relaxed line-clamp-2 md:line-clamp-none">
+                <p className="text-lg md:text-xl text-white/88 mb-8 font-sans leading-relaxed line-clamp-3 max-w-4xl">
                   {featuredArticle.description}
                 </p>
                 <Link
                   href={`/news/${featuredArticle.slug}`}
-                  className="inline-flex items-center gap-2 px-10 py-4 bg-[#70AC90] hover:bg-[#496A49] text-white font-bold rounded-full transition-all group/btn shadow-xl hover:shadow-2xl hover:scale-105"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#d5b08c] hover:bg-white text-[#173b3f] font-black rounded-md transition-all group/btn shadow-xl"
                 >
                   Read Full Story
                   <ArrowRight size={22} className="group-hover/btn:translate-x-1 transition-transform" />
@@ -149,7 +147,7 @@ export default function NewsPage() {
         <div className="w-full flex flex-col items-center">
 
           {/* Curved Full-Width Search Bar */}
-          <div className="w-full px-6 py-8">
+          <div className="w-full px-6 py-8 bg-[#fbfaf7] border-b border-[#ded6c9]">
             <div className="relative w-full group">
               <div className="absolute left-6 top-1/2 -translate-y-1/2 text-[#264D52]/60 z-10">
                 <Search size={24} strokeWidth={2} />
@@ -159,7 +157,7 @@ export default function NewsPage() {
                 placeholder="Search news, updates, and announcements..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white border-2 border-[#264D52]/5 rounded-3xl py-5 pl-16 pr-8 focus:outline-none focus:border-[#70AC90]/30 transition-all text-[#1c2b2b] placeholder:text-[#264D52]/40 text-lg font-medium shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.08)]"
+                className="w-full bg-white border border-[#cfc7ba] rounded-lg py-4 pl-16 pr-8 focus:outline-none focus:border-[#173b3f] focus:ring-4 focus:ring-[#d5b08c]/25 transition-all text-[#173b3f] placeholder:text-[#173b3f]/40 text-base font-semibold shadow-sm"
               />
             </div>
           </div>
@@ -180,7 +178,7 @@ export default function NewsPage() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 20 }}
                       transition={{ duration: 0.3 }}
-                      className="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 border border-road-paint/10 flex flex-col h-full group"
+                      className="city-card overflow-hidden hover:-translate-y-1 transition-all duration-300 flex flex-col h-full group"
                     >
                       <Link href={`/news/${article.slug}`} className="flex flex-col h-full focus:outline-none focus-visible:ring-4 focus-visible:ring-asphalt/30 rounded-[2rem]">
                         {/* Img Section */}

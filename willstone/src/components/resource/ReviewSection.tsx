@@ -1,0 +1,92 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import StarRating from "@/components/resource/StarRating";
+
+type Review = {
+  rating: number;
+  text: string;
+  name: string;
+  created_at: string;
+};
+
+export default function ReviewSection({ resourceId }: { resourceId: string | number }) {
+  const storageKey = `willstone-reviews-${resourceId}`;
+  const [reviews, setReviews] = useState<Review[]>(() => {
+    if (typeof window === "undefined") return [];
+    const saved = window.localStorage.getItem(storageKey);
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [rating, setRating] = useState(5);
+  const [text, setText] = useState("");
+  const [name, setName] = useState("");
+
+  const average = useMemo(() => {
+    if (reviews.length === 0) return 0;
+    return reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
+  }, [reviews]);
+
+  const submitReview = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!text.trim()) return;
+    const nextReviews = [
+      { rating, text: text.trim(), name: name.trim() || "Willstone Resident", created_at: new Date().toISOString() },
+      ...reviews,
+    ].slice(0, 10);
+    setReviews(nextReviews);
+    window.localStorage.setItem(storageKey, JSON.stringify(nextReviews));
+    setText("");
+    setName("");
+    setRating(5);
+  };
+
+  return (
+    <section className="mt-12 rounded-3xl border border-road-paint/10 bg-white p-6 shadow-sm md:p-8">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="font-display text-3xl text-road-paint">Community Reviews</h2>
+          <p className="text-sm font-bold text-asphalt/65">
+            {reviews.length > 0 ? `${average.toFixed(1)} average from ${reviews.length} review${reviews.length === 1 ? "" : "s"}` : "Be the first resident to review this resource."}
+          </p>
+        </div>
+        <StarRating value={Math.round(average || rating)} readonly />
+      </div>
+
+      <form onSubmit={submitReview} className="grid gap-3 rounded-2xl bg-[var(--background)] p-4">
+        <StarRating value={rating} onChange={setRating} />
+        <div className="grid gap-3 sm:grid-cols-[0.8fr_1.2fr_auto]">
+          <input
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            placeholder="Your name"
+            className="min-h-11 rounded-xl border border-road-paint/15 px-4 font-bold text-asphalt outline-none focus:ring-4 focus:ring-asphalt/10"
+          />
+          <input
+            required
+            value={text}
+            onChange={(event) => setText(event.target.value)}
+            placeholder="Share a concise review"
+            className="min-h-11 rounded-xl border border-road-paint/15 px-4 font-bold text-asphalt outline-none focus:ring-4 focus:ring-asphalt/10"
+          />
+          <button type="submit" className="min-h-11 rounded-xl bg-road-paint px-5 font-black text-white">
+            Post
+          </button>
+        </div>
+      </form>
+
+      {reviews.length > 0 && (
+        <div className="mt-6 grid gap-3">
+          {reviews.map((review, index) => (
+            <article key={`${review.created_at}-${index}`} className="rounded-2xl border border-road-paint/10 p-4">
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <p className="font-black text-asphalt">{review.name}</p>
+                <StarRating value={review.rating} readonly />
+              </div>
+              <p className="text-sm font-bold leading-relaxed text-asphalt/70">{review.text}</p>
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}

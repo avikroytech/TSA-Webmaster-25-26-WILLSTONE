@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Mail, X, Target, User, Loader2 } from "lucide-react";
-import Navbar from "@/components/home/Navbar";
+import { Mail, X, Target, Loader2 } from "lucide-react";
 import Footer from "@/components/home/Footer";
+import SubpageHero from "@/components/layout/SubpageHero";
 import { supabase } from "@/utils/supabase/client";
 
 interface Representative {
@@ -54,28 +54,14 @@ export default function GovernmentPage() {
 
     return (
         <div className="min-h-screen flex flex-col bg-[#f5f0eb] text-foreground font-sans">
-            {/* Navbar with explicit z-index to stay above modal overlay if needed */}
-            <div className="relative z-[110]">
-                <Navbar />
-            </div>
-
-            <main className="flex-1 relative pt-24 pb-32 overflow-hidden">
-                {/* Decorative Background Elements - Subtle */}
-                <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[500px] h-[500px] bg-brand-light/5 rounded-full blur-[120px] -z-10" />
-                <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-brand-muted/5 rounded-full blur-[120px] -z-10" />
-
+            <main className="flex-1 relative pb-20 overflow-hidden bg-[#f8f4ec]">
+                <SubpageHero
+                    title="Government"
+                    eyebrow="City leadership"
+                    description="Meet the elected officials and civic departments serving every island in Willstone."
+                    image="/img/city-home.jpg"
+                />
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="text-center mb-8 md:mb-16"
-                    >
-                        <h1 className="text-4xl md:text-7xl lg:text-8xl font-display text-[#264D52] mb-2 leading-none">
-                            Government
-                        </h1>
-                        <div className="w-24 h-1.5 bg-brand-muted mx-auto rounded-full opacity-50" />
-                    </motion.div>
-
                     {isLoading ? (
                         <div className="flex flex-col items-center justify-center min-h-[400px]">
                             <Loader2 className="w-12 h-12 text-brand-medium animate-spin mb-4" />
@@ -89,11 +75,11 @@ export default function GovernmentPage() {
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                                    className="group flex flex-col items-center mb-20 md:mb-24 cursor-pointer"
+                                    className="group city-card flex flex-col items-center mb-12 md:mb-16 cursor-pointer p-6"
                                     onClick={() => setSelectedRep(mayor)}
                                 >
-                                    <div className="relative w-56 h-56 md:w-80 md:h-80 mb-6 md:mb-8 transition-transform duration-500 group-hover:scale-105">
-                                        <div className="absolute inset-0 rounded-full border-4 border-brand-muted/20 group-hover:border-brand-muted/40 transition-colors duration-500 shadow-xl" />
+                                        <div className="relative w-44 h-44 md:w-64 md:h-64 mb-6 md:mb-8 transition-transform duration-500 group-hover:scale-105">
+                                        <div className="absolute inset-0 rounded-full border-4 border-[#d5b08c]/35 group-hover:border-[#d5b08c]/60 transition-colors duration-500 shadow-xl" />
                                         <div className="absolute inset-4 rounded-full overflow-hidden bg-brand-medium/5">
                                             <Image
                                                 src={mayor.image}
@@ -104,7 +90,7 @@ export default function GovernmentPage() {
                                         </div>
                                     </div>
                                     <div className="text-center">
-                                        <h2 className="font-display text-3xl md:text-5xl text-foreground leading-none mb-2">
+                                        <h2 className="text-3xl md:text-4xl font-black text-[#173b3f] leading-none mb-2">
                                             {mayor.role}
                                         </h2>
                                         <p className="text-sm md:text-base text-brand-muted uppercase tracking-[0.3em] font-bold">
@@ -115,17 +101,17 @@ export default function GovernmentPage() {
                             )}
 
                             {/* Remaining 8 Officials Grid */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 md:gap-x-16 md:gap-y-20 w-full max-w-6xl">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-x-12 lg:gap-y-16 w-full max-w-6xl">
                                 {otherReps.map((rep, index) => (
                                     <motion.div
                                         key={rep.id || index}
                                         initial={{ opacity: 0, y: 30 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: 0.2 + index * 0.1, duration: 0.6 }}
-                                        className="group flex flex-col items-center cursor-pointer"
+                                        className="group flex min-h-[260px] flex-col items-center justify-start cursor-pointer rounded-2xl bg-white/45 p-5 shadow-sm transition hover:-translate-y-1 hover:bg-white"
                                         onClick={() => setSelectedRep(rep)}
                                     >
-                                        <div className="relative w-40 h-40 md:w-48 md:h-48 mb-6 transition-transform duration-500 group-hover:scale-110">
+                                        <div className="relative w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 mb-5 transition-transform duration-500 group-hover:scale-105">
                                             <div className="absolute inset-0 rounded-full border-2 border-brand-muted/10 group-hover:border-brand-muted/30 transition-colors duration-500" />
                                             <div className="absolute inset-3 rounded-full overflow-hidden bg-brand-medium/5">
                                                 <Image
@@ -260,4 +246,3 @@ export default function GovernmentPage() {
         </div>
     );
 }
-

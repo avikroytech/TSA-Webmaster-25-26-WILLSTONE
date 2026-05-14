@@ -1,6 +1,5 @@
 "use client";
 
-import Navbar from "@/components/home/Navbar";
 import Footer from "@/components/home/Footer";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -219,9 +218,7 @@ export default function Reference() {
 
     return (
         <div className="min-h-screen flex flex-col bg-[#f5f0eb]">
-            <Navbar />
-
-            <main className="flex-1 px-6 pt-32 pb-16 md:px-16 md:pt-40 md:pb-24 lg:px-24 lg:pt-48 lg:pb-32 flex flex-col items-center">
+            <main className="flex-1 px-6 pt-16 pb-16 md:px-16 md:pt-20 md:pb-24 lg:px-24 lg:pb-32 flex flex-col items-center">
                 <div className="w-full max-w-5xl">
                     {/* Page Header */}
                     <motion.div

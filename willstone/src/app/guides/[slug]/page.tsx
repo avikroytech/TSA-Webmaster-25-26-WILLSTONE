@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowLeft, Loader2 } from "lucide-react";
-import Navbar from "@/components/home/Navbar";
 import Footer from "@/components/home/Footer";
 import { supabase } from "@/utils/supabase/client";
 
@@ -59,7 +58,6 @@ export default function IndividualGuidePage() {
     if (loading) {
         return (
             <div className="min-h-screen flex flex-col bg-[#f5f0eb] text-[#1c2b2b]">
-                <Navbar />
                 <main className="flex-1 flex items-center justify-center">
                     <Loader2 className="animate-spin text-[var(--brand-medium)]" size={48} />
                 </main>
@@ -71,7 +69,6 @@ export default function IndividualGuidePage() {
     if (!guide) {
         return (
             <div className="min-h-screen flex flex-col bg-[#f5f0eb] text-[#1c2b2b]">
-                <Navbar />
                 <main className="flex-1 flex flex-col items-center justify-center text-center px-6">
                     <h1 className="text-4xl md:text-5xl font-display font-black text-[#1c2b2b] mb-4">Guide Not Found</h1>
                     <p className="text-[#1c2b2b]/60 mb-8 max-w-md">We couldn't find the guide you're looking for. It may have been moved or doesn't exist.</p>
@@ -86,9 +83,7 @@ export default function IndividualGuidePage() {
 
     return (
         <div className="min-h-screen flex flex-col bg-[#f5f0eb] text-[#1c2b2b]">
-            <Navbar />
-
-            <main className="flex-1 w-full max-w-5xl mx-auto px-6 pt-32 pb-32">
+            <main className="flex-1 w-full max-w-5xl mx-auto px-6 pt-12 pb-32">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

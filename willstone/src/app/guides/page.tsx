@@ -4,9 +4,9 @@ import React, { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Sparkles, ArrowRight, Loader2, Leaf, Bus, Users, Palette, Briefcase, Landmark, Globe } from "lucide-react";
-import Navbar from "@/components/home/Navbar";
+import { Search, Loader2, Leaf, Bus, Users, Palette, Briefcase, Landmark, Globe } from "lucide-react";
 import Footer from "@/components/home/Footer";
+import SubpageHero from "@/components/layout/SubpageHero";
 import { supabase } from "@/utils/supabase/client";
 
 const getCategoryIcon = (category: string) => {
@@ -78,25 +78,30 @@ export default function GuidesPage() {
 
     return (
         <div className="min-h-screen flex flex-col bg-[#f5f0eb] text-[#1c2b2b]">
-            <Navbar />
-
-            <main className="flex-1 w-full pt-32 pb-24 px-6">
+            <main className="flex-1 w-full pb-24">
+                <SubpageHero
+                    title="Find a Guide"
+                    eyebrow="Step-by-step support"
+                    description="Practical guides for city services, transit, civic participation, business, and community life."
+                    image="/img/city-home2.jpg"
+                />
+                <div className="px-6">
                 {/* Header Section */}
-                <div className="flex flex-col items-center text-center mb-16 mt-8">
-                    <motion.h1
+                <div className="flex flex-col items-center text-center mb-12 pt-12">
+                    <motion.h2
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-5xl md:text-7xl font-display font-black text-[var(--brand-medium)] mb-10"
+                        className="city-heading text-3xl md:text-4xl mb-8"
                     >
-                        Find a Guide
-                    </motion.h1>
+                        Search City Guides
+                    </motion.h2>
 
                     {/* Search Bar matching image with AI button from Resource Hub */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="w-full max-w-4xl relative flex items-center bg-white rounded-full p-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-[#1c2b2b]/5 mb-14"
+                        className="w-full max-w-4xl relative flex items-center bg-white rounded-lg p-1.5 shadow-sm border border-[#cfc7ba] mb-10"
                     >
                         <div className="pl-6 text-[#1c2b2b]/40">
                             <Search size={24} strokeWidth={2} />
@@ -106,7 +111,7 @@ export default function GuidesPage() {
                             placeholder="Search for neighborhood services, transit, or rules"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="flex-1 bg-transparent py-4 px-6 text-[#1c2b2b] placeholder:text-[#1c2b2b]/40 focus:outline-none text-lg font-medium"
+                            className="flex-1 bg-transparent py-3 px-5 text-[#173b3f] placeholder:text-[#173b3f]/40 focus:outline-none text-base font-semibold"
                         />
 
                     </motion.div>
@@ -151,7 +156,7 @@ export default function GuidesPage() {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, scale: 0.95 }}
                                     transition={{ duration: 0.3, delay: index * 0.05 }}
-                                    className="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-[#1c2b2b]/10 flex flex-col group h-auto md:h-[300px]"
+                                    className="city-card overflow-hidden hover:-translate-y-1 transition-all duration-300 flex flex-col group h-auto md:h-[280px]"
                                 >
                                     <Link href={`/guides/${guide.slug}`} className="flex flex-col md:flex-row h-full focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--brand-medium)]/30">
                                         {/* Left Side: Image */}
@@ -203,6 +208,7 @@ export default function GuidesPage() {
                         <p className="text-[#1c2b2b]/60">Try adjusting your search or category filter.</p>
                     </div>
                 )}
+                </div>
             </main>
 
             <Footer />

@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-14T00:00:00-07:00",
+  "title": "Design System: Willstone City",
+  "extensions": {
+    "colorMeta": {
+      "civic-teal": {
+        "role": "primary",
+        "displayName": "Civic Teal",
+        "canonical": "#173b3f",
+        "tonalRamp": ["#071415", "#0d2426", "#173b3f", "#24555a", "#397076", "#669095", "#a4bfc1", "#e7f0ef"]
+      },
+      "harbor-green": {
+        "role": "primary",
+        "displayName": "Harbor Green",
+        "canonical": "#3f6256",
+        "tonalRamp": ["#101c18", "#22362f", "#3f6256", "#5d7d70", "#7c998c", "#a3baaf", "#cad9d2", "#eef5f1"]
+      },
+      "civic-copper": {
+        "role": "secondary",
+        "displayName": "Civic Copper",
+        "canonical": "#b98d63",
+        "tonalRamp": ["#2c1d11", "#5c3d24", "#8b6646", "#b98d63", "#cfa986", "#dec4aa", "#ede0d1", "#faf5ee"]
+      },
+      "meeting-gold": {
+        "role": "secondary",
+        "displayName": "Meeting Gold",
+        "canonical": "#d5b08c",
+        "tonalRamp": ["#2f2217", "#644a31", "#96734f", "#c39d77", "#d5b08c", "#e4c8ac", "#f0ded0", "#fbf4ec"]
+      },
+      "parchment-bg": {
+        "role": "neutral",
+        "displayName": "Parchment Background",
+        "canonical": "#f8f4ec",
+        "tonalRamp": ["#1d1a16", "#423c33", "#71685b", "#9f9484", "#c9beb0", "#e3dacf", "#f0e8df", "#f8f4ec"]
+      },
+      "civic-paper": {
+        "role": "neutral",
+        "displayName": "Civic Paper",
+        "canonical": "#fbfaf7",
+        "tonalRamp": ["#1d1c1a", "#43413c", "#747068", "#a29d92", "#ccc6b9", "#e5dfd4", "#f3eee7", "#fbfaf7"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero and subpage titles only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings and major editorial moments."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Cards, panels, and form headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Resident-readable service copy and descriptions."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Short civic labels, metadata, and eyebrows."
+      }
+    },
+    "shadows": [
+      {
+        "name": "civic-card-rest",
+        "value": "0 12px 36px rgba(23, 59, 63, 0.07)",
+        "purpose": "Default reusable card shadow."
+      },
+      {
+        "name": "civic-card-hover",
+        "value": "0 18px 46px rgba(23, 59, 63, 0.11)",
+        "purpose": "Hover lift for interactive cards."
+      },
+      {
+        "name": "dropdown-panel",
+        "value": "0 18px 45px rgba(23, 59, 63, 0.14)",
+        "purpose": "Menus and floating panels."
+      },
+      {
+        "name": "beacon-drawer",
+        "value": "-20px 0 60px rgba(0, 0, 0, 0.10)",
+        "purpose": "The Beacon assistant side panel."
+      }
+    ],
+    "motion": [
+      {
+        "name": "state-standard",
+        "value": "150ms to 300ms ease-out",
+        "purpose": "Hover, focus, dropdown, and card feedback."
+      },
+      {
+        "name": "image-reveal",
+        "value": "400ms to 800ms ease-out",
+        "purpose": "Carousel and image-led content transitions."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "0.001ms duration, one iteration",
+        "purpose": "Global reduced motion override."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main resident task button for service search, reset, and form actions.",
+      "html": "<button class=\"ds-btn-primary\">Search Services</button>",
+      "css": ".ds-btn-primary { min-height: 48px; padding: 0 20px; border: 0; border-radius: 8px; background: #173b3f; color: #f8f4ec; font: 900 14px Inter, Segoe UI, Arial, sans-serif; cursor: pointer; transition: background 200ms ease-out, transform 200ms ease-out; } .ds-btn-primary:hover { background: #3f6256; transform: translateY(-1px); } .ds-btn-primary:focus-visible { outline: 3px solid #d5b08c; outline-offset: 3px; }"
+    },
+    {
+      "name": "Accent Button",
+      "kind": "button",
+      "refersTo": "button-accent",
+      "description": "High-value resident action button for Submit Resource.",
+      "html": "<button class=\"ds-btn-accent\">Submit Resource</button>",
+      "css": ".ds-btn-accent { min-height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #b98d63; color: #f8f4ec; font: 900 14px Inter, Segoe UI, Arial, sans-serif; cursor: pointer; transition: background 200ms ease-out; } .ds-btn-accent:hover { background: #173b3f; } .ds-btn-accent:focus-visible { outline: 3px solid #d5b08c; outline-offset: 3px; }"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "Primary search input for services and Beacon entry.",
+      "html": "<label class=\"ds-search\"><span class=\"ds-search-label\">Search</span><input placeholder=\"Search by name, service, or address\" /></label>",
+      "css": ".ds-search { display: block; color: #173b3f; font-family: Inter, Segoe UI, Arial, sans-serif; } .ds-search-label { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 900; letter-spacing: 0.16em; text-transform: uppercase; color: #3f6256; } .ds-search input { width: 100%; min-height: 56px; padding: 16px 24px; border: 1px solid #cfc7ba; border-radius: 8px; background: #fbfaf7; color: #173b3f; font: 700 15px Inter, Segoe UI, Arial, sans-serif; } .ds-search input:focus { outline: none; border-color: #173b3f; box-shadow: 0 0 0 4px rgba(213, 176, 140, 0.25); }"
+    },
+    {
+      "name": "Civic Card",
+      "kind": "card",
+      "refersTo": "card-civic",
+      "description": "Standard paper-like card for resources, stats, panels, and list items.",
+      "html": "<article class=\"ds-card\"><p class=\"ds-card-kicker\">Community snapshot</p><h3>A working hub for every island.</h3><p>Live directory counts make the site feel accountable, current, and civic.</p></article>",
+      "css": ".ds-card { max-width: 360px; padding: 20px; border: 1px solid #ded6c9; border-radius: 14px; background: #fbfaf7; color: #173b3f; box-shadow: 0 12px 36px rgba(23, 59, 63, 0.07); font-family: Inter, Segoe UI, Arial, sans-serif; transition: box-shadow 200ms ease-out, transform 200ms ease-out; } .ds-card:hover { transform: translateY(-2px); box-shadow: 0 18px 46px rgba(23, 59, 63, 0.11); } .ds-card h3 { margin: 8px 0; font: 900 24px Source Sans 3, Segoe UI, Arial, sans-serif; line-height: 1.12; } .ds-card p { margin: 0; color: #48605b; font-weight: 650; line-height: 1.6; } .ds-card-kicker { color: #3f6256; font-size: 12px; font-weight: 900; letter-spacing: 0.16em; text-transform: uppercase; }"
+    },
+    {
+      "name": "Header Navigation",
+      "kind": "nav",
+      "refersTo": "navigation",
+      "description": "Two-tier official city navigation with utility strip and task CTAs.",
+      "html": "<nav class=\"ds-nav\"><span class=\"ds-brand\">City of <strong>Willstone</strong></span><a class=\"ds-nav-active\" href=\"#\">Services</a><a href=\"#\">Calendar</a><a href=\"#\">Government</a><button>Submit Resource</button></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; gap: 8px; padding: 16px; border-bottom: 1px solid #d8d1c6; background: #fbfaf7; color: #173b3f; font-family: Inter, Segoe UI, Arial, sans-serif; } .ds-brand { margin-right: auto; font-size: 11px; font-weight: 900; letter-spacing: 0.22em; text-transform: uppercase; color: #5d7169; } .ds-brand strong { display: block; margin-top: 2px; font: 900 26px Source Sans 3, Segoe UI, Arial, sans-serif; letter-spacing: 0; text-transform: none; color: #173b3f; } .ds-nav a { min-height: 40px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 8px; color: #173b3f; text-decoration: none; font-size: 14px; font-weight: 800; } .ds-nav a:hover { background: #eef3ee; } .ds-nav-active { background: #173b3f !important; color: #f8f4ec !important; } .ds-nav button { min-height: 40px; border: 0; border-radius: 8px; background: #b98d63; color: #f8f4ec; padding: 0 16px; font-weight: 900; }"
+    },
+    {
+      "name": "Beacon Message Bubble",
+      "kind": "custom",
+      "refersTo": "beacon-message",
+      "description": "Assistant and user message shape used in the Beacon drawer.",
+      "html": "<div class=\"ds-beacon\"><div class=\"ds-beacon-assistant\">Where can I find health resources?</div><div class=\"ds-beacon-user\">Show clinics near Central.</div></div>",
+      "css": ".ds-beacon { display: grid; gap: 12px; max-width: 360px; padding: 20px; background: #f9f7f2; font-family: Inter, Segoe UI, Arial, sans-serif; } .ds-beacon-assistant, .ds-beacon-user { max-width: 90%; padding: 16px 20px; border-radius: 24px; font-size: 14px; line-height: 1.55; box-shadow: 0 1px 3px rgba(23, 59, 63, 0.08); } .ds-beacon-assistant { justify-self: start; border: 1px solid rgba(23, 59, 63, 0.05); border-bottom-left-radius: 8px; background: #fbfaf7; color: #1c2b2b; } .ds-beacon-user { justify-self: end; border-bottom-right-radius: 8px; background: #173b3f; color: #f8f4ec; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Civic Harbor",
+    "overview": "Willstone should feel like a well-run municipal office beside the water: practical, quiet, and unmistakably official. The system uses deep civic teal as the authority color, parchment surfaces for public readability, and copper-gold accents for resident actions. Imagery and the four-island structure carry the brand, while task routes stay visible.\n\nThis is a brand-led civic site, but residents still need to get things done. The homepage can make an impression, yet the Resource Hub, map, calendar, request form, and Beacon entry points must stay fast, calm, and legible.",
+    "keyCharacteristics": [
+      "Image-led civic identity with dark teal overlays.",
+      "Rectangular municipal controls, not pill-heavy startup UI.",
+      "Soft paper surfaces with restrained shadows and clear borders.",
+      "Heavy, compact headings balanced by readable service copy.",
+      "Accessibility settings reinforce the brand promise, they do not excuse inaccessible defaults."
+    ],
+    "rules": [
+      {
+        "name": "The Official Color Rule",
+        "body": "Civic Teal must appear on every major page as a structural color, not as decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The Copper Rarity Rule",
+        "body": "Civic Copper is for resident action. Do not scatter it across passive icons or decorative flourishes.",
+        "section": "colors"
+      },
+      {
+        "name": "The Municipal Label Rule",
+        "body": "Uppercase tracking is allowed for short labels only. Never use all-caps body copy.",
+        "section": "typography"
+      },
+      {
+        "name": "The No Reflex Font Rule",
+        "body": "Do not add decorative serif, mono, or trendy display families unless they serve the municipal voice.",
+        "section": "typography"
+      },
+      {
+        "name": "The Paper Lift Rule",
+        "body": "A surface may lift when it is interactive or layered above the page. Static civic information should rely on borders and spacing first.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do make the city feel official before it feels promotional.",
+      "Do keep resident routes visible: Services, Calendar, Map, Government, About, Submit Resource, and Beacon.",
+      "Do use the four-island identity as structure through maps, locations, filters, and civic storytelling.",
+      "Do use real imagery or map assets on brand surfaces. A civic homepage without imagery feels unfinished.",
+      "Do preserve WCAG AA defaults, visible focus states, reduced motion support, and high contrast mode.",
+      "Do use Civic Teal as the visual anchor and Civic Copper only for important resident actions."
+    ],
+    "donts": [
+      "Don't create generic AI slop: template landing-page sections, vague inspirational copy, identical card grids, ornamental gradients, excessive glow effects, glassmorphism as decoration, or generic SaaS aesthetics.",
+      "Don't use fantasy-game styling, overly whimsical city lore, cluttered government portal visuals, or corporate startup visuals.",
+      "Don't hide practical services behind decorative storytelling.",
+      "Don't use gradient text, colored side-stripe borders, or glass cards as default styling.",
+      "Don't repeat tiny uppercase tracked labels above every section unless the label adds real civic context.",
+      "Don't add decorative motion that delays a resident from completing a task."
+    ]
+  }
+}

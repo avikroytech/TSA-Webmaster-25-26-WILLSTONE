@@ -1,177 +1,232 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import {
-  Home,
-  FolderOpen,
-  PlusCircle,
-  Map,
-  Calendar,
-  Newspaper,
-  BookOpen,
-  Landmark,
-  FileText,
-  Menu,
-  X,
-  ArrowLeft
-} from "lucide-react";
 
-const navLinks = [
-  { name: "Home", href: "/", icon: Home },
-  { name: "Resource Hub", href: "/resource-hub", icon: FolderOpen },
-  { name: "Request a Resource", href: "/request", icon: PlusCircle },
-  { name: "Map", href: "/map", icon: Map },
-  { name: "Calendar", href: "/calendar", icon: Calendar },
-  { name: "News", href: "/news", icon: Newspaper },
-  { name: "Guides", href: "/guides", icon: BookOpen },
-  { name: "Government", href: "/government", icon: Landmark },
-  { name: "References", href: "/reference", icon: FileText },
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import {
+  Bot,
+  Building2,
+  CalendarDays,
+  ChevronDown,
+  FileText,
+  Landmark,
+  Map,
+  Menu,
+  Newspaper,
+  Phone,
+  PlusCircle,
+  Search,
+  Users,
+  X,
+} from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+
+const primaryLinks = [
+  { label: "Services", href: "/resource-hub" },
+  { label: "Calendar", href: "/calendar" },
+  { label: "News", href: "/news" },
+  { label: "Government", href: "/government" },
+  { label: "About", href: "/about" },
+];
+
+const moreLinks = [
+  { label: "Guides", href: "/guides", icon: FileText },
+  { label: "City Map", href: "/map", icon: Map },
+  { label: "Dashboard", href: "/dashboard", icon: Building2 },
+  { label: "References", href: "/reference", icon: Landmark },
+];
+
+const mobileLinks = [
+  { label: "Services", href: "/resource-hub", icon: Search },
+  { label: "Calendar", href: "/calendar", icon: CalendarDays },
+  { label: "News", href: "/news", icon: Newspaper },
+  { label: "Government", href: "/government", icon: Landmark },
+  { label: "About", href: "/about", icon: Users },
+  ...moreLinks,
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
-  const panelRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
 
-  // Close on Escape
   useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsOpen(false);
+    setMobileOpen(false);
+    setMoreOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    const close = (event: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(event.target as Node)) setMoreOpen(false);
     };
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMobileOpen(false);
+        setMoreOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", close);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("mousedown", close);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
   }, []);
 
+  const askBeacon = () => {
+    window.dispatchEvent(new CustomEvent("willstone-open-beacon"));
+  };
+
   return (
-    <>
-      {/* Trigger Button */}
-      <div className="fixed top-4 left-4 z-[100]">
-        <button
-          onClick={() => setIsOpen(true)}
-          aria-expanded={isOpen}
-          aria-controls="nav-panel"
-          className="flex items-center gap-3 px-5 py-3 bg-[#264D52] text-[#f5f0eb] rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-transform duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C59F82]"
-        >
-          <div className="relative w-6 h-6 shrink-0">
-            <Image
-              src="/logo2.png"
-              alt=""
-              fill
-              className="object-contain brightness-0 invert"
-              aria-hidden="true"
-            />
+    <header className="sticky top-0 z-[120] border-b border-[#d8d1c6] bg-[#fbfaf7]/95 text-[#173b3f] shadow-[0_1px_0_rgba(23,59,63,0.04)] backdrop-blur-xl">
+      <div className="border-b border-[#e6dfd5] bg-[#173b3f] text-[#f8f4ec]">
+        <div className="mx-auto flex h-9 max-w-7xl items-center justify-between px-4 text-[12px] font-semibold sm:px-6">
+          <div className="flex items-center gap-4">
+            <span className="hidden items-center gap-1.5 sm:inline-flex">
+              <Phone size={13} /> City Office: (123) 456-7890
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <CalendarDays size={13} /> Public meetings posted weekly
+            </span>
           </div>
-          <span className="font-bold uppercase tracking-[0.15em] text-sm">Menu</span>
+          <div className="hidden items-center gap-4 md:flex">
+            {user && <span>Signed in as {user.name}</span>}
+            <button type="button" onClick={askBeacon} className="inline-flex items-center gap-1.5 hover:text-[#d5b08c]">
+              <Bot size={13} /> Ask Beacon
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+        <Link href="/" className="flex min-w-0 items-center gap-3 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b98d63]">
+          <span className="relative h-11 w-11 shrink-0 rounded-lg bg-[#173b3f] p-1.5">
+            <Image src="/logo2.png" alt="Willstone city seal" fill className="object-contain p-1 brightness-0 invert" />
+          </span>
+          <span className="min-w-0">
+            <span className="block text-[11px] font-black uppercase tracking-[0.22em] text-[#5d7169]">City of</span>
+            <span className="block truncate font-display text-[26px] leading-none text-[#173b3f]">Willstone</span>
+          </span>
+        </Link>
+
+        <nav aria-label="Main navigation" className="hidden items-center gap-1 lg:flex">
+          {primaryLinks.map((link) => (
+            <NavLink key={link.href} href={link.href} active={pathname === link.href}>
+              {link.label}
+            </NavLink>
+          ))}
+          <div ref={moreRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setMoreOpen((value) => !value)}
+              aria-expanded={moreOpen}
+              className="inline-flex h-10 items-center gap-1 rounded-md px-3 text-[14px] font-bold text-[#173b3f] transition hover:bg-[#eef3ee] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b98d63]"
+            >
+              More <ChevronDown size={15} className={moreOpen ? "rotate-180 transition" : "transition"} />
+            </button>
+            {moreOpen && (
+              <div className="absolute right-0 top-[calc(100%+0.75rem)] w-56 rounded-xl border border-[#ded6c9] bg-[#fbfaf7] p-2 shadow-[0_18px_45px_rgba(23,59,63,0.14)]">
+                {moreLinks.map((link) => (
+                  <DropdownLink key={link.href} href={link.href} active={pathname === link.href} icon={link.icon}>
+                    {link.label}
+                  </DropdownLink>
+                ))}
+              </div>
+            )}
+          </div>
+        </nav>
+
+        <div className="hidden items-center gap-2 lg:flex">
+          <Link
+            href="/resource-hub"
+            className="inline-flex h-10 items-center gap-2 rounded-md border border-[#cfc7ba] bg-white px-4 text-[14px] font-black text-[#173b3f] transition hover:border-[#173b3f]"
+          >
+            <Search size={16} /> Find Services
+          </Link>
+          <Link
+            href="/request"
+            className="inline-flex h-10 items-center gap-2 rounded-md bg-[#b98d63] px-4 text-[14px] font-black text-white transition hover:bg-[#173b3f]"
+          >
+            <PlusCircle size={16} /> Submit Resource
+          </Link>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setMobileOpen((value) => !value)}
+          aria-expanded={mobileOpen}
+          aria-controls="mobile-navigation"
+          aria-label="Toggle navigation"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-md bg-[#173b3f] text-white lg:hidden"
+        >
+          {mobileOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
 
-      {/* Backdrop overlay */}
-      <div
-        className={`fixed inset-0 z-[105] bg-[#1c2b2b]/40 backdrop-blur-sm transition-opacity duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-          }`}
-        onClick={() => setIsOpen(false)}
-        aria-hidden="true"
-      />
-
-      {/* Slide-in Panel */}
-      <nav
-        id="nav-panel"
-        ref={panelRef}
-        role="navigation"
-        aria-label="Main navigation panel"
-        aria-hidden={!isOpen}
-        className={`
-          fixed top-0 left-0 bottom-0 z-[110]
-          w-[min(400px,90vw)] max-w-full
-          bg-[#f5f0eb] 
-          shadow-2xl
-          flex flex-col
-          transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]
-          ${isOpen ? "translate-x-0" : "-translate-x-full"}
-        `}
-      >
-        {/* Panel Header */}
-        <div className="flex items-center justify-between px-6 py-6 border-b-2 border-[#264D52]/10 shrink-0">
-          <div className="flex items-center gap-4">
-            <div className="relative w-9 h-9 shrink-0">
-              <Image
-                src="/logo2.png"
-                alt="Willstone Logo"
-                fill
-                className="object-contain"
-                aria-hidden="true"
-              />
-            </div>
-            <span className="font-display font-bold tracking-[0.15em] text-[#264D52] text-3xl pt-1">
-              Willstone
-            </span>
-          </div>
-          <button
-            onClick={() => setIsOpen(false)}
-            aria-label="Close menu"
-            className="p-2 text-[#264D52] hover:bg-[#264D52]/10 rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C59F82]"
-          >
-            <ArrowLeft size={24} />
-          </button>
-        </div>
-
-        {/* Links Container */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden p-6">
-          <div className="flex flex-col gap-2">
-            {navLinks.map((link) => (
-              <NavItem
-                key={link.href}
-                link={link}
-                isActive={pathname === link.href}
-                onNavigate={() => setIsOpen(false)}
-              />
+      {mobileOpen && (
+        <div id="mobile-navigation" className="border-t border-[#e6dfd5] bg-[#fbfaf7] px-4 pb-5 pt-3 lg:hidden">
+          <nav aria-label="Mobile navigation" className="grid gap-1">
+            {mobileLinks.map((link) => (
+              <DropdownLink key={link.href} href={link.href} active={pathname === link.href} icon={link.icon}>
+                {link.label}
+              </DropdownLink>
             ))}
+          </nav>
+          <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
+            <button type="button" onClick={askBeacon} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-[#cfc7ba] bg-white px-4 font-black text-[#173b3f]">
+              <Bot size={16} /> Ask Beacon
+            </button>
+            <Link href="/resource-hub" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-[#cfc7ba] bg-white px-4 font-black text-[#173b3f]">
+              <Search size={16} /> Find Services
+            </Link>
+            <Link href="/request" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-[#b98d63] px-4 font-black text-white">
+              <PlusCircle size={16} /> Submit Resource
+            </Link>
           </div>
         </div>
-      </nav>
-    </>
+      )}
+    </header>
   );
 }
 
-/* ----------------------------------------- */
-/* Individual Nav Link                       */
-/* ----------------------------------------- */
-interface NavItemProps {
-  link: { name: string; href: string; icon: React.ComponentType<{ size?: number; className?: string }> };
-  isActive: boolean;
-  onNavigate: () => void;
-}
-
-function NavItem({ link, isActive, onNavigate }: NavItemProps) {
-  const Icon = link.icon;
+function NavLink({ href, active, children }: { href: string; active: boolean; children: React.ReactNode }) {
   return (
     <Link
-      href={link.href}
-      role="menuitem"
-      onClick={onNavigate}
-      className={`
-        group flex items-center gap-4 px-5 py-4 rounded-xl border-2
-        transition-all duration-200
-        focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#C59F82]
-        ${isActive
-          ? "bg-[#264D52] text-[#f5f0eb] border-[#264D52] shadow-md"
-          : "bg-transparent border-transparent text-[#1c2b2b] hover:bg-[#70AC90]/15 hover:border-[#264D52] hover:scale-[1.02] hover:shadow-sm"
-        }
-      `}
+      href={href}
+      aria-current={active ? "page" : undefined}
+      className={`inline-flex h-10 items-center rounded-md px-3 text-[14px] font-bold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b98d63] ${
+        active ? "bg-[#173b3f] text-white" : "text-[#173b3f] hover:bg-[#eef3ee]"
+      }`}
     >
-      <Icon
-        size={24}
-        className={`shrink-0 transition-all duration-200 group-hover:scale-110 ${isActive
-          ? "text-[#C59F82]"
-          : "text-[#496A49] group-hover:text-[#264D52]"
-          }`}
-      />
-      <span className={`font-semibold tracking-wide transition-all duration-200 ${isActive ? "text-[16px] text-[#f5f0eb]" : "text-[15px] group-hover:text-[16px]"
-        }`}>
-        {link.name}
-      </span>
+      {children}
+    </Link>
+  );
+}
+
+function DropdownLink({
+  href,
+  active,
+  icon: Icon,
+  children,
+}: {
+  href: string;
+  active: boolean;
+  icon: React.ComponentType<{ size?: number }>;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      aria-current={active ? "page" : undefined}
+      className={`flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-[14px] font-bold transition ${
+        active ? "bg-[#173b3f] text-white" : "text-[#173b3f] hover:bg-[#eef3ee]"
+      }`}
+    >
+      <Icon size={16} />
+      {children}
     </Link>
   );
 }

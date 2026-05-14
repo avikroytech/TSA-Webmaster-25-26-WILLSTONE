@@ -4,6 +4,7 @@ import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 
 // ─── Types ──────────────────────────────────────────────────────────
 type MapMode = "subway" | "bus";
+type PinCategory = "Health" | "Education" | "Parks" | "Civic";
 
 interface Station {
     name: string;
@@ -168,6 +169,20 @@ const BUS_ROUTES: Route[] = [
     },
 ];
 
+const RESOURCE_PINS: { title: string; category: PinCategory; x: number; y: number; href: string }[] = [
+    { title: "Central Library", category: "Education", x: 320, y: 520, href: "/resource-hub" },
+    { title: "Harbor Clinic", category: "Health", x: 720, y: 420, href: "/resource-hub" },
+    { title: "Emerald Trailhead", category: "Parks", x: 220, y: 200, href: "/resource-hub" },
+    { title: "City Services Desk", category: "Civic", x: 360, y: 780, href: "/government" },
+];
+
+const PIN_COLORS: Record<PinCategory, string> = {
+    Health: "#dc2626",
+    Education: "#2563eb",
+    Parks: "#15803d",
+    Civic: "#7c3aed",
+};
+
 
 
 // ─── Helper: deduplicate stations and compute routes per station ────
@@ -252,11 +267,16 @@ export default function InteractiveMap() {
     const [mode, setMode] = useState<MapMode>("subway");
     const [hoveredStation, setHoveredStation] = useState<string | null>(null);
     const [selectedRoutes, setSelectedRoutes] = useState<Set<string>>(new Set());
+    const [selectedPinCategory, setSelectedPinCategory] = useState<PinCategory | "All">("All");
     const svgRef = useRef<SVGSVGElement>(null);
     const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
     const routes = mode === "subway" ? SUBWAY_ROUTES : BUS_ROUTES;
     const uniqueStations = useMemo(() => getUniqueStations(routes), [routes]);
+    const visiblePins = useMemo(
+        () => RESOURCE_PINS.filter((pin) => selectedPinCategory === "All" || pin.category === selectedPinCategory),
+        [selectedPinCategory]
+    );
 
     // Station names on the selected routes (for highlight/dim)
     const selectedRouteStations = useMemo(() => {
@@ -391,7 +411,7 @@ export default function InteractiveMap() {
     );
 
     return (
-        <div className="relative w-full h-full flex flex-col bg-[var(--brand-medium)]/80 overflow-hidden">
+        <div className="relative w-full min-h-[calc(100vh-76px)] flex flex-col bg-[#dfe9e3] overflow-hidden">
             {/* ── Map Area ─────────────────────────────────────────── */}
             <div className="flex-1 relative map-container overflow-hidden">
                 {/* SVG Map */}
@@ -401,6 +421,8 @@ export default function InteractiveMap() {
                     className="absolute inset-0 w-full h-full"
                     preserveAspectRatio="xMidYMid meet"
                     onClick={() => setHoveredStation(null)}
+                    role="img"
+                    aria-label="Interactive Willstone transit and resource map"
                 >
                     {/* Background Map Image */}
                     <image
@@ -410,7 +432,7 @@ export default function InteractiveMap() {
                         width="1000"
                         height="1000"
                         preserveAspectRatio="xMidYMid meet"
-                        className="opacity-90"
+                        className="opacity-95"
                     />
 
                     {/* Route lines */}
@@ -475,6 +497,26 @@ export default function InteractiveMap() {
                             </g>
                         );
                     })}
+
+                    {/* Color-coded resource pins */}
+                    {visiblePins.map((pin) => (
+                        <a key={pin.title} href={pin.href} aria-label={`${pin.title}, ${pin.category} resource`}>
+                            <g className="transition-transform duration-300 hover:scale-110">
+                                <circle cx={pin.x} cy={pin.y} r="18" fill="white" opacity="0.92" />
+                                <circle cx={pin.x} cy={pin.y} r="11" fill={PIN_COLORS[pin.category]} stroke="white" strokeWidth="3" />
+                                <text
+                                    x={pin.x}
+                                    y={pin.y - 25}
+                                    textAnchor="middle"
+                                    className="pointer-events-none select-none fill-[#1c2b2b]"
+                                    fontSize="22"
+                                    fontWeight="800"
+                                >
+                                    {pin.title}
+                                </text>
+                            </g>
+                        </a>
+                    ))}
 
                     {/* Animated vehicles */}
                     {vehiclePositions.map((vp, i) => {
@@ -568,7 +610,7 @@ export default function InteractiveMap() {
             </div>
 
             {/* ── Bottom Controls ─────────────────────────────────── */}
-            <div className="bg-[#f8f5f0] p-4 md:p-6 mx-4 md:mx-6 mb-6 rounded-2xl shadow-xl flex flex-col md:flex-row items-stretch md:items-center gap-4 md:gap-8 border border-black/5 animate-in slide-in-from-bottom-5 duration-500">
+            <div className="bg-[#f8f5f0] p-4 md:p-6 mx-4 md:mx-6 mb-6 rounded-2xl shadow-xl flex flex-col lg:flex-row items-stretch lg:items-center gap-4 md:gap-8 border border-black/5 animate-in slide-in-from-bottom-5 duration-500">
                 <div className="flex flex-col gap-4 min-w-fit">
                     {/* Instruction Note */}
                     <div className="flex flex-col gap-1 px-1">
@@ -636,6 +678,21 @@ export default function InteractiveMap() {
                             </button>
                         );
                     })}
+                </div>
+
+                <div className="flex w-full items-center gap-2 overflow-x-auto lg:w-auto">
+                    {(["All", "Health", "Education", "Parks", "Civic"] as const).map((category) => (
+                        <button
+                            key={category}
+                            type="button"
+                            onClick={() => setSelectedPinCategory(category)}
+                            className={`h-11 rounded-xl px-4 text-xs font-black uppercase tracking-wider transition ${
+                                selectedPinCategory === category ? "bg-[#264D52] text-white" : "bg-white text-[#264D52] hover:bg-[#264D52]/10"
+                            }`}
+                        >
+                            {category}
+                        </button>
+                    ))}
                 </div>
             </div>
 

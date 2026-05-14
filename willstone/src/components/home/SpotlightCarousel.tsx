@@ -62,17 +62,16 @@ export default function SpotlightCarousel() {
   }, []);
 
   return (
-    <section className="w-full bg-[var(--background)] text-[var(--background)] relative py-5">
-      <div className="max-w-7xl mx-auto px-6 py-3">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
-          <h2 className="text-5xl md:text-7xl font-display font-black text-[var(--brand-medium)] leading-none capitalize py-1">
-            Spotlight
-          </h2>
-          <Link href="/resource-hub" className="group flex items-center gap-2 text-[var(--foreground)] font-bold mt-4 md:mt-0 relative pb-1 overflow-hidden transition-colors">
-            <span className="relative z-10">Explore More Resources</span>
+    <section className="city-section bg-[#fbfaf7] text-[#173b3f]">
+      <div className="city-container">
+        <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="city-kicker">Featured services</p>
+            <h2 className="city-heading mt-2 text-4xl md:text-5xl">Resource Spotlight</h2>
+          </div>
+          <Link href="/resource-hub" className="group inline-flex items-center gap-2 font-black text-[#173b3f]">
+            <span>Explore all services</span>
             <ArrowRight className="w-5 h-5 relative z-10 transition-transform group-hover:translate-x-1" />
-            <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[var(--foreground)] transform -translate-x-full transition-transform duration-300 group-hover:translate-x-0" />
           </Link>
         </div>
       </div>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -105,7 +105,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-4 border-t border-white/5 flex justify-between items-center">
-          <p className="text-[10px] font-bold text-[#f5f0eb]/30">
+          <p className="text-[10px] font-bold text-[#f5f0eb]/70">
             © {currentYear} City of Willstone. All rights reserved.
           </p>
         </div>
@@ -113,3 +113,5 @@ export default function Footer() {
     </footer>
   );
 }
+
+

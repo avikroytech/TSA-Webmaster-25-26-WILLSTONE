@@ -2,16 +2,29 @@
 
 :root {
   /* Willstone Color Palette */
-  --background: #f5f0eb;
-  --foreground: #1c2b2b;
+  --background: #f8f4ec;
+  --foreground: #173b3f;
   /* Brand Text */
 
   /* Brand Colors */
-  --brand-light: #70AC90;
-  --brand-muted: #C59F82;
-  --brand-medium: #264D52;
-  --brand-dark: #496A49;
-  --brand-text: #1c2b2b;
+  --brand-light: #dfe9df;
+  --brand-muted: #b98d63;
+  --brand-medium: #173b3f;
+  --brand-dark: #3f6256;
+  --brand-text: #173b3f;
+  --accessibility-font-scale: 1;
+  --font-andada: "Inter", "Segoe UI", Arial;
+  --font-righteous: "Source Sans 3", "Segoe UI", Arial;
+}
+
+:root[data-theme="dark"] {
+  --background: #142323;
+  --foreground: #f5f0eb;
+  --brand-light: #8cc9ab;
+  --brand-muted: #d3aa88;
+  --brand-medium: #d7e7df;
+  --brand-dark: #9bc0a6;
+  --brand-text: #f5f0eb;
 }
 
 @theme inline {
@@ -32,7 +45,9 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-andada), Georgia, serif;
+  font-size: calc(1rem * var(--accessibility-font-scale));
   transition: background-color 0.3s ease;
+  text-rendering: geometricPrecision;
 }
 
 /* Headings use Righteous */
@@ -43,6 +58,7 @@ h4,
 h5,
 h6 {
   font-family: var(--font-righteous), sans-serif;
+  letter-spacing: 0;
 }
 
 .font-display {
@@ -55,6 +71,58 @@ h6 {
 
 .text-foreground {
   color: var(--brand-medium);
+}
+
+.city-shell {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(248, 244, 236, 0) 320px),
+    var(--background);
+}
+
+.city-section {
+  padding: 4.5rem 1.5rem;
+}
+
+.city-container {
+  width: min(100%, 80rem);
+  margin-inline: auto;
+}
+
+.city-kicker {
+  color: var(--brand-dark);
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.city-heading {
+  color: var(--brand-medium);
+  font-family: var(--font-righteous), sans-serif;
+  font-weight: 800;
+  line-height: 0.98;
+}
+
+.city-card {
+  border: 1px solid #ded6c9;
+  background: rgba(255, 255, 255, 0.84);
+  border-radius: 14px;
+  box-shadow: 0 12px 36px rgba(23, 59, 63, 0.07);
+}
+
+.city-card:hover {
+  box-shadow: 0 18px 46px rgba(23, 59, 63, 0.11);
+}
+
+.city-button {
+  align-items: center;
+  background: var(--brand-medium);
+  border-radius: 8px;
+  color: white;
+  display: inline-flex;
+  font-weight: 900;
+  min-height: 44px;
+  padding: 0 1rem;
 }
 
 /* --- Willstone Scrollbar --- */
@@ -121,4 +189,38 @@ h6 {
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: var(--brand-muted);
+}
+
+.high-contrast {
+  --background: #ffffff;
+  --foreground: #000000;
+  --brand-light: #005c2f;
+  --brand-muted: #743700;
+  --brand-medium: #002f34;
+  --brand-dark: #003d1f;
+}
+
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.001ms;
+  animation-iteration-count: 1;
+  scroll-behavior: auto;
+  transition-duration: 0.001ms;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: var(--brand-light);
+  color: var(--brand-medium);
+}
+
+@media (max-width: 640px) {
+  .resource-gallery-mobile-safe>div {
+    max-height: 360px;
+    overflow: hidden;
+  }
 }

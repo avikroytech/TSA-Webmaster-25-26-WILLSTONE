@@ -2,13 +2,11 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import Navbar from "@/components/home/Navbar";
 import Footer from "@/components/home/Footer";
 
 export default function NotFound() {
   return (
     <>
-      <Navbar />
       <main className="min-h-screen bg-[#f5f0eb] flex flex-col items-center justify-center px-6 font-sans text-center">
 
         {/* 404 Graphic */}
