@@ -1,248 +1,424 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import {
+  Building2,
+  CalendarDays,
+  Landmark,
+  Loader2,
+  Mail,
+  MapPin,
+  Target,
+  Users,
+  X,
+} from "lucide-react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
-import { Mail, X, Target, Loader2 } from "lucide-react";
+import { type ComponentType, useEffect, useMemo, useState } from "react";
 import Footer from "@/components/home/Footer";
 import SubpageHero from "@/components/layout/SubpageHero";
 import { supabase } from "@/utils/supabase/client";
 
 interface Representative {
-    id: string;
-    name: string;
-    role: string;
-    email: string;
-    mission: string;
-    image: string;
+  id: string;
+  name: string;
+  role: string;
+  email: string;
+  mission: string;
+  image: string;
 }
 
+const GOVERNMENT_CUES: Array<{
+  title: string;
+  text: string;
+  icon: ComponentType<{ size?: number; className?: string }>;
+}> = [
+  {
+    title: "Public meetings",
+    text: "Agendas, hearings, and council sessions stay visible to residents.",
+    icon: CalendarDays,
+  },
+  {
+    title: "Island service desks",
+    text: "Each district has a clear route back to city departments.",
+    icon: MapPin,
+  },
+  {
+    title: "Department accountability",
+    text: "Officials are listed by role, mission, and official contact path.",
+    icon: Building2,
+  },
+];
+
+const getRepImage = (representative: Representative) =>
+  representative.image || "/logo2.png";
+
 export default function GovernmentPage() {
-    const [allRepresentatives, setAllRepresentatives] = useState<Representative[]>([]);
-    const [selectedRep, setSelectedRep] = useState<Representative | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isMounted, setIsMounted] = useState(false);
+  const [allRepresentatives, setAllRepresentatives] = useState<
+    Representative[]
+  >([]);
+  const [selectedRep, setSelectedRep] = useState<Representative | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
+  const [loadError, setLoadError] = useState("");
 
-    useEffect(() => {
-        setIsMounted(true);
-        const fetchData = async () => {
-            try {
-                const { data, error } = await supabase
-                    .from("government")
-                    .select("*");
+  useEffect(() => {
+    setIsMounted(true);
+    const fetchData = async () => {
+      try {
+        const { data, error } = await supabase.from("government").select("*");
 
-                if (error) {
-                    console.error("Error fetching government data:", error);
-                } else if (data) {
-                    setAllRepresentatives(data as Representative[]);
-                }
-            } catch (err) {
-                console.error("Unexpected error fetching government data:", err);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+        if (error) {
+          setLoadError("Government data could not be loaded.");
+          return;
+        }
 
-        fetchData();
-    }, []);
+        if (data) {
+          setAllRepresentatives(data as Representative[]);
+        }
+      } catch {
+        setLoadError("Government data could not be loaded.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    if (!isMounted) return null;
+    fetchData();
+  }, []);
 
-    // Identify the Mayor and the other representatives
-    const mayor = allRepresentatives.find(rep => rep.role.toLowerCase() === 'mayor') || allRepresentatives[0];
-    const otherReps = allRepresentatives.filter(rep => rep !== mayor).slice(0, 8);
+  const mayor = useMemo(
+    () =>
+      allRepresentatives.find(
+        (representative) => representative.role.toLowerCase() === "mayor",
+      ) || allRepresentatives[0],
+    [allRepresentatives],
+  );
 
-    return (
-        <div className="min-h-screen flex flex-col bg-[#f5f0eb] text-foreground font-sans">
-            <main className="flex-1 relative pb-20 overflow-hidden bg-[#f8f4ec]">
-                <SubpageHero
-                    title="Government"
-                    eyebrow="City leadership"
-                    description="Meet the elected officials and civic departments serving every island in Willstone."
-                    image="/img/city-home.jpg"
-                />
-                <div className="max-w-7xl mx-auto px-6 relative z-10">
-                    {isLoading ? (
-                        <div className="flex flex-col items-center justify-center min-h-[400px]">
-                            <Loader2 className="w-12 h-12 text-brand-medium animate-spin mb-4" />
-                            <p className="text-brand-muted font-display tracking-widest uppercase text-sm">Loading Officials...</p>
-                        </div>
-                    ) : (
-                        <div className="flex flex-col items-center">
-                            {/* Mayor Section - Prominent at the top */}
-                            {mayor && (
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                                    className="group city-card flex flex-col items-center mb-12 md:mb-16 cursor-pointer p-6"
-                                    onClick={() => setSelectedRep(mayor)}
-                                >
-                                        <div className="relative w-44 h-44 md:w-64 md:h-64 mb-6 md:mb-8 transition-transform duration-500 group-hover:scale-105">
-                                        <div className="absolute inset-0 rounded-full border-4 border-[#d5b08c]/35 group-hover:border-[#d5b08c]/60 transition-colors duration-500 shadow-xl" />
-                                        <div className="absolute inset-4 rounded-full overflow-hidden bg-brand-medium/5">
-                                            <Image
-                                                src={mayor.image}
-                                                alt={mayor.name}
-                                                fill
-                                                className="object-cover transition-transform duration-1000 group-hover:scale-110 grayscale-[0.2] group-hover:grayscale-0"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="text-center">
-                                        <h2 className="text-3xl md:text-4xl font-black text-[#173b3f] leading-none mb-2">
-                                            {mayor.role}
-                                        </h2>
-                                        <p className="text-sm md:text-base text-brand-muted uppercase tracking-[0.3em] font-bold">
-                                            {mayor.name}
-                                        </p>
-                                    </div>
-                                </motion.div>
-                            )}
+  const otherReps = useMemo(
+    () =>
+      allRepresentatives
+        .filter((representative) => representative !== mayor)
+        .slice(0, 8),
+    [allRepresentatives, mayor],
+  );
 
-                            {/* Remaining 8 Officials Grid */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-x-12 lg:gap-y-16 w-full max-w-6xl">
-                                {otherReps.map((rep, index) => (
-                                    <motion.div
-                                        key={rep.id || index}
-                                        initial={{ opacity: 0, y: 30 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.2 + index * 0.1, duration: 0.6 }}
-                                        className="group flex min-h-[260px] flex-col items-center justify-start cursor-pointer rounded-2xl bg-white/45 p-5 shadow-sm transition hover:-translate-y-1 hover:bg-white"
-                                        onClick={() => setSelectedRep(rep)}
-                                    >
-                                        <div className="relative w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 mb-5 transition-transform duration-500 group-hover:scale-105">
-                                            <div className="absolute inset-0 rounded-full border-2 border-brand-muted/10 group-hover:border-brand-muted/30 transition-colors duration-500" />
-                                            <div className="absolute inset-3 rounded-full overflow-hidden bg-brand-medium/5">
-                                                <Image
-                                                    src={rep.image}
-                                                    alt={rep.name}
-                                                    fill
-                                                    className="object-cover transition-transform duration-1000 group-hover:scale-110 grayscale-[0.3] group-hover:grayscale-0"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="text-center">
-                                            <h3 className="font-display text-xl md:text-2xl text-foreground leading-tight mb-1">
-                                                {rep.role}
-                                            </h3>
-                                            <p className="text-[10px] md:text-xs text-brand-muted uppercase tracking-[0.2em] font-bold">
-                                                {rep.name}
-                                            </p>
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </div>
+  useEffect(() => {
+    if (!selectedRep) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSelectedRep(null);
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [selectedRep]);
 
-                            {allRepresentatives.length === 0 && !isLoading && (
-                                <div className="text-center py-20">
-                                    <p className="text-brand-muted font-display tracking-widest uppercase">No government data found.</p>
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
-            </main>
+  if (!isMounted) return null;
 
-            <Footer />
+  return (
+    <div className="flex min-h-screen flex-col bg-[#f8f4ec] text-[#173b3f]">
+      <main className="flex-1 bg-[#f8f4ec]">
+        <SubpageHero
+          title="Government"
+          eyebrow="City leadership"
+          description="Meet the elected officials and civic departments serving every island in Willstone."
+          image="/img/city-home.jpg"
+        />
 
-            {/* Detail Overlay / Panel */}
-            <AnimatePresence>
-                {selectedRep && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[120] flex items-center justify-center p-4 md:p-8"
+        <section className="city-section city-section-tight">
+          <div className="city-container">
+            {isLoading ? (
+              <div className="flex min-h-[360px] flex-col items-center justify-center rounded-2xl border border-[#ded6c9] bg-[#fbfaf7] text-center shadow-sm">
+                <Loader2 className="mb-4 h-12 w-12 animate-spin text-[#3f6256]" />
+                <p className="city-kicker text-[#48605b]">Loading officials</p>
+              </div>
+            ) : allRepresentatives.length === 0 ? (
+              <div className="rounded-2xl border border-[#ded6c9] bg-[#fbfaf7] p-8 text-center shadow-sm">
+                <p className="city-kicker text-[#48605b]">No records found</p>
+                <h2 className="mt-2 font-display text-3xl font-black text-[#173b3f]">
+                  Government directory unavailable
+                </h2>
+                <p className="mx-auto mt-3 max-w-xl text-base font-semibold leading-relaxed text-[#48605b]">
+                  {loadError ||
+                    "The official directory is not available right now. Please check back soon."}
+                </p>
+              </div>
+            ) : (
+              <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+                <div className="grid gap-8">
+                  {mayor && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedRep(mayor)}
+                      className="group grid overflow-hidden rounded-3xl border border-[#ded6c9] bg-[#fbfaf7] text-left shadow-[0_18px_46px_rgba(23,59,63,0.08)] transition-[border-color,box-shadow,transform] duration-200 ease-out hover:border-[#b98d63]/45 hover:shadow-[0_22px_54px_rgba(23,59,63,0.12)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b98d63] motion-safe:hover:-translate-y-0.5 lg:grid-cols-[0.82fr_1fr]"
                     >
-                        {/* Darken Overlay - No Blur */}
-                        <motion.div
-                            className="absolute inset-0 bg-black/70"
-                            onClick={() => setSelectedRep(null)}
+                      <div className="relative min-h-[320px] overflow-hidden bg-[#173b3f] sm:min-h-[380px] lg:min-h-full">
+                        <Image
+                          src={getRepImage(mayor)}
+                          alt={mayor.name}
+                          fill
+                          priority
+                          sizes="(min-width: 1024px) 42vw, 100vw"
+                          className="object-cover grayscale-[0.18] transition-transform duration-700 ease-out group-hover:scale-[1.03] group-hover:grayscale-0"
                         />
+                        <div className="absolute inset-0 bg-[#173b3f]/20" />
+                        <div className="absolute bottom-5 left-5 rounded-xl border border-[#d5b08c]/35 bg-[#173b3f]/88 px-4 py-3 text-[#f8f4ec] shadow-[0_18px_45px_rgba(20,35,35,0.24)]">
+                          <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#d5b08c]">
+                            Office of the Mayor
+                          </p>
+                          <p className="mt-1 text-sm font-bold">
+                            Citywide executive office
+                          </p>
+                        </div>
+                      </div>
 
-                        <motion.div
-                            initial={{ scale: 0.95, y: 30, opacity: 0 }}
-                            animate={{ scale: 1, y: 0, opacity: 1 }}
-                            exit={{ scale: 0.95, y: 30, opacity: 0 }}
-                            className="relative w-full max-w-5xl bg-[#f5f0eb] rounded-[40px] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] border border-white/10"
-                            onClick={(e) => e.stopPropagation()}
+                      <div className="flex min-h-[360px] flex-col justify-between gap-8 p-6 sm:p-8 lg:p-10">
+                        <div>
+                          <p className="city-kicker text-[#48605b]">
+                            Lead official
+                          </p>
+                          <h2 className="mt-3 font-display text-4xl font-black leading-none text-[#173b3f] sm:text-5xl">
+                            {mayor.role}
+                          </h2>
+                          <p className="mt-3 text-lg font-black uppercase tracking-[0.18em] text-[#3f6256]">
+                            {mayor.name}
+                          </p>
+                        </div>
+
+                        <p className="max-w-2xl text-lg font-semibold leading-relaxed text-[#48605b]">
+                          {mayor.mission}
+                        </p>
+
+                        <div className="grid gap-3 border-t border-[#ded6c9] pt-5 sm:grid-cols-2">
+                          <div>
+                            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#48605b]">
+                              Contact
+                            </p>
+                            <p className="mt-1 break-all text-sm font-bold text-[#173b3f]">
+                              {mayor.email}
+                            </p>
+                          </div>
+                          <div className="flex items-end justify-start sm:justify-end">
+                            <span className="inline-flex min-h-11 items-center rounded-md bg-[#b98d63] px-4 text-sm font-black text-[#fbfaf7]">
+                              View profile
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </button>
+                  )}
+
+                  <section
+                    aria-labelledby="council-roster"
+                    className="grid gap-5"
+                  >
+                    <div className="flex flex-col gap-3 border-b border-[#ded6c9] pb-5 md:flex-row md:items-end md:justify-between">
+                      <div>
+                        <p className="city-kicker text-[#48605b]">
+                          Council roster
+                        </p>
+                        <h2
+                          id="council-roster"
+                          className="mt-2 font-display text-3xl font-black text-[#173b3f] md:text-4xl"
                         >
-                            {/* Enhanced Close Button */}
-                            <button
-                                onClick={() => setSelectedRep(null)}
-                                className="absolute top-8 right-8 p-3 rounded-full bg-brand-medium/5 hover:bg-brand-medium text-brand-medium hover:text-[var(--brand-light)] transition-all duration-300 z-10 group active:scale-90"
-                                aria-label="Close details"
-                            >
-                                <X size={28} className="transition-transform group-hover:rotate-90" />
-                            </button>
+                          Representatives
+                        </h2>
+                      </div>
+                      <p className="max-w-xl text-sm font-semibold leading-relaxed text-[#48605b]">
+                        Officials are grouped as a working directory, with quick
+                        context before opening a full civic profile.
+                      </p>
+                    </div>
 
-                            <div className="flex flex-col md:flex-row min-h-[500px]">
-                                {/* Left: Image with dramatic reveal */}
-                                <div className="w-full md:w-5/12 relative min-h-[400px]">
-                                    <Image
-                                        src={selectedRep.image}
-                                        alt={selectedRep.name}
-                                        fill
-                                        className="object-cover"
-                                        priority
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-brand-medium/40 to-transparent" />
-                                </div>
+                    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                      {otherReps.map((representative, index) => (
+                        <button
+                          type="button"
+                          key={representative.id || representative.email}
+                          onClick={() => setSelectedRep(representative)}
+                          className={`group flex min-h-[172px] items-start gap-4 rounded-2xl border border-[#ded6c9] bg-[#fbfaf7] p-4 text-left shadow-sm transition-[background-color,border-color,box-shadow,transform] duration-200 ease-out hover:border-[#b98d63]/40 hover:bg-[#fdfbf6] hover:shadow-[0_16px_36px_rgba(23,59,63,0.08)] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#b98d63] motion-safe:hover:-translate-y-0.5 ${
+                            index < 2 ? "xl:col-span-2" : ""
+                          }`}
+                        >
+                          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-[#173b3f]/10">
+                            <Image
+                              src={getRepImage(representative)}
+                              alt={representative.name}
+                              fill
+                              sizes="80px"
+                              className="object-cover grayscale-[0.25] transition-transform duration-500 ease-out group-hover:scale-[1.05] group-hover:grayscale-0"
+                            />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#3f6256]">
+                              {representative.role}
+                            </p>
+                            <h3 className="mt-1 font-display text-2xl font-black leading-tight text-[#173b3f] text-wrap">
+                              {representative.name}
+                            </h3>
+                            <p className="mt-3 line-clamp-2 text-sm font-semibold leading-relaxed text-[#48605b]">
+                              {representative.mission}
+                            </p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </section>
+                </div>
 
-                                {/* Right: Info */}
-                                <div className="flex-1 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
-                                    <motion.div
-                                        initial={{ opacity: 0, x: 20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: 0.1 }}
-                                    >
-                                        <span className="text-brand-muted font-display uppercase tracking-[0.3em] text-[10px] md:text-xs mb-3 block font-bold bg-brand-medium/5 py-1 px-3 rounded-full w-fit">
-                                            {selectedRep.role}
-                                        </span>
-                                        <h2 className="text-3xl md:text-5xl lg:text-7xl font-display text-foreground mb-6 md:mb-10 leading-[0.85]">
-                                            {selectedRep.name}
-                                        </h2>
-                                    </motion.div>
+                <aside className="grid gap-4 lg:sticky lg:top-[128px]">
+                  <div className="rounded-2xl bg-[#173b3f] p-5 text-[#f8f4ec] shadow-[0_18px_45px_rgba(23,59,63,0.16)]">
+                    <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#d5b08c]">
+                      Government at a glance
+                    </p>
+                    <h2 className="mt-2 font-display text-3xl font-black leading-tight">
+                      Public service, organized by office.
+                    </h2>
+                    <div className="mt-5 grid grid-cols-2 gap-3 border-t border-[#d5b08c]/20 pt-5">
+                      <div>
+                        <p className="font-display text-3xl font-black">
+                          {allRepresentatives.length}
+                        </p>
+                        <p className="mt-1 text-xs font-bold text-[#f8f4ec]/75">
+                          listed officials
+                        </p>
+                      </div>
+                      <div>
+                        <p className="font-display text-3xl font-black">4</p>
+                        <p className="mt-1 text-xs font-bold text-[#f8f4ec]/75">
+                          island districts
+                        </p>
+                      </div>
+                    </div>
+                  </div>
 
-                                    <motion.div
-                                        className="space-y-6 md:space-y-10"
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.2 }}
-                                    >
-                                        <div className="flex items-start gap-4 md:gap-6">
-                                            <div className="p-3 md:p-4 bg-brand-light/10 rounded-2xl text-brand-medium shrink-0">
-                                                <Target size={24} />
-                                            </div>
-                                            <div>
-                                                <h3 className="text-[10px] font-display uppercase tracking-widest text-foreground mb-1 md:mb-2 font-bold">Mission</h3>
-                                                <p className="text-lg md:text-xl leading-snug text-foreground italic font-medium">
-                                                    "{selectedRep.mission}"
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-start gap-4 md:gap-6">
-                                            <div className="p-3 md:p-4 bg-brand-muted/10 rounded-2xl text-brand-muted shrink-0">
-                                                <Mail size={24} />
-                                            </div>
-                                            <div>
-                                                <h3 className="text-[10px] font-display uppercase tracking-widest text-foreground mb-1 md:mb-2 font-bold">Official Email</h3>
-                                                <p className="text-lg md:text-xl font-bold text-foreground tracking-tight break-all">
-                                                    {selectedRep.email}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </motion.div>
-
-
-                                </div>
+                  <div className="grid gap-3">
+                    {GOVERNMENT_CUES.map((cue) => {
+                      const Icon = cue.icon;
+                      return (
+                        <div
+                          key={cue.title}
+                          className="rounded-2xl border border-[#ded6c9] bg-[#fbfaf7] p-4 shadow-sm"
+                        >
+                          <div className="flex items-start gap-3">
+                            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#f8f4ec] text-[#b98d63]">
+                              <Icon size={19} />
+                            </span>
+                            <div>
+                              <h3 className="font-display text-xl font-black leading-tight text-[#173b3f]">
+                                {cue.title}
+                              </h3>
+                              <p className="mt-2 text-sm font-semibold leading-relaxed text-[#48605b]">
+                                {cue.text}
+                              </p>
                             </div>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </aside>
+              </div>
+            )}
+          </div>
+        </section>
+      </main>
+
+      <Footer />
+
+      {selectedRep && (
+        <div className="fixed inset-0 z-[140] flex items-center justify-center bg-[#142323]/72 p-4 md:p-8">
+          <button
+            type="button"
+            aria-label="Close representative profile"
+            className="absolute inset-0 h-full w-full cursor-default"
+            onClick={() => setSelectedRep(null)}
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="representative-profile-title"
+            className="relative z-10 grid max-h-[calc(100vh-2rem)] w-full max-w-5xl overflow-hidden rounded-3xl border border-[#ded6c9] bg-[#fbfaf7] shadow-[0_30px_70px_rgba(20,35,35,0.35)] md:grid-cols-[340px_minmax(0,1fr)]"
+          >
+            <button
+              type="button"
+              onClick={() => setSelectedRep(null)}
+              className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-lg bg-[#fbfaf7] text-[#173b3f] shadow-sm transition hover:bg-[#f8f4ec] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b98d63] active:scale-95"
+              aria-label="Close representative profile"
+            >
+              <X size={22} />
+            </button>
+
+            <div className="relative min-h-[260px] bg-[#173b3f] md:min-h-[560px]">
+              <Image
+                src={getRepImage(selectedRep)}
+                alt={selectedRep.name}
+                fill
+                sizes="(min-width: 768px) 340px, 100vw"
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-[#173b3f]/20" />
+            </div>
+
+            <div className="min-h-0 overflow-y-auto p-6 sm:p-8 md:p-10">
+              <p className="city-kicker text-[#48605b]">Official profile</p>
+              <h2
+                id="representative-profile-title"
+                className="mt-3 font-display text-4xl font-black leading-none text-[#173b3f] md:text-5xl"
+              >
+                {selectedRep.name}
+              </h2>
+              <p className="mt-3 text-sm font-black uppercase tracking-[0.18em] text-[#3f6256]">
+                {selectedRep.role}
+              </p>
+
+              <div className="mt-8 grid gap-5">
+                <section className="rounded-2xl border border-[#ded6c9] bg-[#f8f4ec] p-5">
+                  <div className="flex items-start gap-4">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#173b3f] text-[#f8f4ec]">
+                      <Target size={21} />
+                    </span>
+                    <div>
+                      <h3 className="font-display text-xl font-black text-[#173b3f]">
+                        Mission
+                      </h3>
+                      <p className="mt-2 text-base font-semibold leading-relaxed text-[#48605b]">
+                        {selectedRep.mission}
+                      </p>
+                    </div>
+                  </div>
+                </section>
+
+                <section className="rounded-2xl border border-[#ded6c9] bg-[#fbfaf7] p-5">
+                  <div className="flex items-start gap-4">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#b98d63] text-[#fbfaf7]">
+                      <Mail size={21} />
+                    </span>
+                    <div className="min-w-0">
+                      <h3 className="font-display text-xl font-black text-[#173b3f]">
+                        Official email
+                      </h3>
+                      <a
+                        href={`mailto:${selectedRep.email}`}
+                        className="mt-2 inline-flex break-all text-base font-black text-[#173b3f] underline decoration-[#b98d63]/45 underline-offset-4 transition hover:text-[#3f6256] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b98d63]"
+                      >
+                        {selectedRep.email}
+                      </a>
+                    </div>
+                  </div>
+                </section>
+
+                <div className="grid gap-3 border-t border-[#ded6c9] pt-5 sm:grid-cols-2">
+                  <div className="flex items-center gap-3 text-sm font-bold text-[#48605b]">
+                    <Landmark size={18} className="text-[#b98d63]" />
+                    City of Willstone
+                  </div>
+                  <div className="flex items-center gap-3 text-sm font-bold text-[#48605b]">
+                    <Users size={18} className="text-[#b98d63]" />
+                    Resident service office
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-    );
+      )}
+    </div>
+  );
 }

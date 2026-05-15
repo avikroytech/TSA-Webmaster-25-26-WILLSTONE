@@ -13,8 +13,20 @@
   --brand-dark: #3f6256;
   --brand-text: #173b3f;
   --accessibility-font-scale: 1;
-  --font-andada: "Inter", "Segoe UI", Arial;
-  --font-righteous: "Source Sans 3", "Segoe UI", Arial;
+  --space-page-x: clamp(1.25rem, 3vw, 3rem);
+  --space-section: clamp(4rem, 7vw, 6.5rem);
+  --space-section-tight: clamp(2.75rem, 5vw, 4.5rem);
+  --space-section-deep: clamp(5.5rem, 9vw, 8rem);
+  --space-group-tight: clamp(0.75rem, 1.2vw, 1rem);
+  --space-group: clamp(1.25rem, 2vw, 2rem);
+  --space-group-loose: clamp(2rem, 4vw, 4rem);
+  --font-body: "Inter", "Segoe UI Variable Text", "Segoe UI", Arial, sans-serif;
+  --font-display-family:
+    "Source Sans 3", "Segoe UI Variable Display", "Segoe UI", Arial, sans-serif;
+  --font-label:
+    "Inter", "Segoe UI Variable Text", "Segoe UI", Arial, sans-serif;
+  --font-andada: var(--font-body);
+  --font-righteous: var(--font-display-family);
 }
 
 :root[data-theme="dark"] {
@@ -37,36 +49,44 @@
   --color-marking: var(--brand-muted);
   --color-highlight: var(--brand-light);
 
-  --font-sans: var(--font-andada);
-  --font-display: var(--font-righteous);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display-family);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-andada), Georgia, serif;
+  font-family: var(--font-body);
   font-size: calc(1rem * var(--accessibility-font-scale));
+  font-kerning: normal;
+  font-optical-sizing: auto;
+  font-synthesis-weight: none;
+  line-height: 1.65;
   transition: background-color 0.3s ease;
-  text-rendering: geometricPrecision;
+  text-rendering: optimizeLegibility;
 }
 
-/* Headings use Righteous */
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-righteous), sans-serif;
+  font-family: var(--font-display-family);
   letter-spacing: 0;
+  line-height: 1.08;
 }
 
 .font-display {
-  font-family: var(--font-righteous), sans-serif;
+  font-family: var(--font-display-family);
 }
 
 .font-sans {
-  font-family: var(--font-andada), Georgia, serif;
+  font-family: var(--font-body);
+}
+
+.font-righteous {
+  font-family: var(--font-display-family);
 }
 
 .text-foreground {
@@ -75,12 +95,23 @@ h6 {
 
 .city-shell {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(248, 244, 236, 0) 320px),
-    var(--background);
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.45),
+      rgba(248, 244, 236, 0) 320px
+    ), var(--background);
 }
 
 .city-section {
-  padding: 4.5rem 1.5rem;
+  padding: var(--space-section) var(--space-page-x);
+}
+
+.city-section-tight {
+  padding-block: var(--space-section-tight);
+}
+
+.city-section-deep {
+  padding-block: var(--space-section-deep);
 }
 
 .city-container {
@@ -92,15 +123,42 @@ h6 {
   color: var(--brand-dark);
   font-size: 0.75rem;
   font-weight: 900;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .city-heading {
   color: var(--brand-medium);
-  font-family: var(--font-righteous), sans-serif;
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 4vw, 3.75rem);
+  font-weight: 900;
   line-height: 0.98;
+  letter-spacing: 0;
+}
+
+.city-label {
+  color: inherit;
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.city-copy {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.7;
+  max-width: 70ch;
+}
+
+.city-meta {
+  font-family: var(--font-label);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.35;
 }
 
 .city-card {
@@ -219,7 +277,7 @@ html {
 }
 
 @media (max-width: 640px) {
-  .resource-gallery-mobile-safe>div {
+  .resource-gallery-mobile-safe > div {
     max-height: 360px;
     overflow: hidden;
   }

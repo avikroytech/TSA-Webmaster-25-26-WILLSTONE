@@ -1,24 +1,24 @@
-import Footer from "@/components/home/Footer";
 import Calendar from "@/components/calendar/Calendar";
+import Footer from "@/components/home/Footer";
 import SubpageHero from "@/components/layout/SubpageHero";
 
 export default function CalendarPage() {
-    return (
-        <div className="flex flex-col min-h-screen">
-            <main className="flex flex-col flex-1 min-h-0 bg-background pb-8">
-                <SubpageHero
-                    title="Calendar"
-                    eyebrow="Events and meetings"
-                    description="Track city meetings, cultural events, seasonal programs, and neighborhood gatherings."
-                    image="/img/city-home2.jpg"
-                />
-                <div className="px-4 md:px-8">
-                <div className="max-w-[1400px] mx-auto w-full flex-1 min-h-0 flex flex-col">
-                    <Calendar />
-                </div>
-                </div>
-            </main>
-            <Footer />
-        </div>
-    );
+  return (
+    <div className="flex min-h-screen flex-col bg-background">
+      <main className="flex-1">
+        <SubpageHero
+          title="Calendar"
+          eyebrow="Events and meetings"
+          description="Track city meetings, cultural events, seasonal programs, and neighborhood gatherings."
+          image="/img/city-home2.jpg"
+        />
+        <section className="city-section city-section-tight">
+          <div className="city-container">
+            <Calendar />
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
 }

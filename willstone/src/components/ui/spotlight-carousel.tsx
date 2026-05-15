@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
-import { ArrowUpRight, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export interface CarouselItem {
   id: string | number;
@@ -25,15 +25,14 @@ export function SpotlightCarouselGallery({
   autoPlayInterval = 6000,
 }: SpotlightCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    if (isPaused || items.length <= 1) return;
+    if (items.length <= 1) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % items.length);
     }, autoPlayInterval);
     return () => clearInterval(interval);
-  }, [isPaused, items.length, autoPlayInterval]);
+  }, [items.length, autoPlayInterval]);
 
   if (!items || items.length === 0) return null;
 
@@ -46,174 +45,180 @@ export function SpotlightCarouselGallery({
   const bottomItem = items.length > 2 ? getSlotItem(2) : topItem; // Fallback if only 2 items
 
   return (
-    <section className="w-full bg-background mt-4 mb-4">
-      <div className="max-w-7xl mx-auto px-6">
-        {/* Carousel Grid */}
+    <div className="w-full">
+      <div className="flex w-full flex-col gap-4 lg:h-[560px] lg:flex-row lg:gap-5">
+        {/* Main Slot */}
         <div
-          className="flex flex-col lg:flex-row gap-6 w-full lg:h-[600px]"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
+          className={`relative h-[420px] w-full ${items.length > 1 ? "lg:w-[68%]" : "lg:w-full"} lg:h-full`}
         >
-          {/* Main Slot */}
-          <div className={`w-full ${items.length > 1 ? 'lg:w-[65%]' : 'lg:w-full'} h-[400px] lg:h-full relative`}>
-            <AnimatePresence mode="popLayout">
-              <motion.div
-                key={`main-${mainItem.id}`}
-                layoutId={`card-${mainItem.id}`}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute inset-0 rounded-2xl overflow-hidden group shadow-lg cursor-pointer"
-                onClick={() => setCurrentIndex((currentIndex + 1) % items.length)}
-              >
-                <Image
-                  src={mainItem.image}
-                  alt={mainItem.title || "Carousel Image"}
-                  fill
-                  className="object-cover"
-                />
-                
-                {(mainItem.title || mainItem.description || mainItem.linkUrl) && (
-                  <>
-                    {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <AnimatePresence mode="popLayout">
+            <motion.div
+              key={`main-${mainItem.id}`}
+              layoutId={`card-${mainItem.id}`}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute inset-0 overflow-hidden rounded-2xl shadow-lg group"
+            >
+              <Image
+                src={mainItem.image}
+                alt={mainItem.title || "Carousel Image"}
+                fill
+                className="object-cover"
+              />
 
-                    {/* Content */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3, duration: 0.5 }}
-                      className="absolute bottom-0 left-0 p-8 md:p-12 w-full text-white"
-                    >
-                      {mainItem.title && (
-                        <h3 className="font-display text-4xl md:text-5xl lg:text-5xl tracking-tight mb-4 drop-shadow-md">
-                          {mainItem.title}
-                        </h3>
-                      )}
-                      {mainItem.description && (
-                        <p className="font-sans text-lg md:text-xl text-brand-muted max-w-2xl mb-6">
-                          {mainItem.description}
-                        </p>
-                      )}
-                      {mainItem.linkUrl && (
-                        <Link
-                          href={mainItem.linkUrl}
-                          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#264D52] hover:bg-[#1a383c] text-white font-bold transition-transform hover:-translate-y-1"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          {mainItem.linkText || "Learn More"}
-                          <ArrowRight className="w-4 h-4" />
-                        </Link>
-                      )}
-                    </motion.div>
-                  </>
-                )}
-              </motion.div>
-            </AnimatePresence>
-          </div>
+              {(mainItem.title || mainItem.description || mainItem.linkUrl) && (
+                <>
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-          {/* Side Stack */}
-          {items.length > 1 && (
-            <div className="w-full lg:w-[35%] flex flex-col gap-6 h-[400px] lg:h-full">
-              {/* Top Right Slot */}
-              <div className="relative w-full h-1/2 rounded-2xl overflow-hidden cursor-pointer" onClick={() => setCurrentIndex((currentIndex + 1) % items.length)}>
-                <AnimatePresence mode="popLayout">
-                  {topItem && (
-                    <motion.div
-                      key={`top-${topItem.id}`}
-                      layoutId={`card-${topItem.id}`}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                      className="absolute inset-0 group shadow-md"
-                    >
-                      <Image
-                        src={topItem.image}
-                        alt={topItem.title || "Carousel Image"}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                      {topItem.title && (
-                        <>
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-                          <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.3 }}
-                            className="absolute bottom-0 left-0 p-6 pointer-events-none"
-                          >
-                            <h3 className="font-display text-2xl text-white tracking-wide drop-shadow-md group-hover:text-brand-light transition-colors">
-                              {topItem.title}
-                            </h3>
-                          </motion.div>
-                        </>
-                      )}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {/* Bottom Right Slot */}
-              <div className="relative w-full h-1/2 rounded-2xl overflow-hidden cursor-pointer" onClick={() => setCurrentIndex((currentIndex + 2) % items.length)}>
-                <AnimatePresence mode="popLayout">
-                  {bottomItem && (
-                    <motion.div
-                      key={`bottom-${bottomItem.id}`}
-                      layoutId={`card-${bottomItem.id}`}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                      className="absolute inset-0 group shadow-md"
-                    >
-                      <Image
-                        src={bottomItem.image}
-                        alt={bottomItem.title || "Carousel Image"}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                      {bottomItem.title && (
-                        <>
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-                          <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.3 }}
-                            className="absolute bottom-0 left-0 p-6 pointer-events-none"
-                          >
-                            <h3 className="font-display text-2xl text-white tracking-wide drop-shadow-md group-hover:text-brand-light transition-colors">
-                              {bottomItem.title}
-                            </h3>
-                          </motion.div>
-                        </>
-                      )}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
-          )}
+                  {/* Content */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.5 }}
+                    className="absolute bottom-0 left-0 w-full p-6 text-white md:p-10"
+                  >
+                    {mainItem.title && (
+                      <h3 className="font-display text-4xl md:text-5xl lg:text-5xl tracking-tight mb-4 drop-shadow-md">
+                        {mainItem.title}
+                      </h3>
+                    )}
+                    {mainItem.description && (
+                      <p className="mb-6 max-w-2xl font-sans text-lg text-brand-muted md:text-xl">
+                        {mainItem.description}
+                      </p>
+                    )}
+                    {mainItem.linkUrl && (
+                      <Link
+                        href={mainItem.linkUrl}
+                        className="inline-flex items-center gap-2 rounded-lg bg-[#264D52] px-5 py-3 font-bold text-white transition-transform hover:-translate-y-1 hover:bg-[#1a383c]"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {mainItem.linkText || "Learn More"}
+                        <ArrowRight className="w-4 h-4" />
+                      </Link>
+                    )}
+                  </motion.div>
+                </>
+              )}
+            </motion.div>
+          </AnimatePresence>
         </div>
 
-        {/* Progress Dots */}
+        {/* Side Stack */}
         {items.length > 1 && (
-          <div className="w-full flex justify-center items-center gap-3 mt-8">
-            {items.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentIndex(i)}
-                className={`h-2 transition-all duration-500 rounded-full ${i === currentIndex
-                  ? "w-12 bg-[var(--brand-dark)]"
-                  : "w-2 bg-[var(--brand-dark)]/50 hover:bg-[var(--brand-dark)]"
-                  }`}
-                aria-label={`Go to slide ${i + 1}`}
-              />
-            ))}
+          <div className="flex h-[360px] w-full flex-col gap-4 lg:h-full lg:w-[32%] lg:gap-5">
+            {/* Top Right Slot */}
+            <button
+              type="button"
+              className="relative h-1/2 w-full cursor-pointer overflow-hidden rounded-2xl text-left"
+              onClick={() => setCurrentIndex((currentIndex + 1) % items.length)}
+              aria-label={`Show ${topItem?.title || "next spotlight"}`}
+            >
+              <AnimatePresence mode="popLayout">
+                {topItem && (
+                  <motion.div
+                    key={`top-${topItem.id}`}
+                    layoutId={`card-${topItem.id}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                    className="absolute inset-0 group shadow-md"
+                  >
+                    <Image
+                      src={topItem.image}
+                      alt={topItem.title || "Carousel Image"}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    {topItem.title && (
+                      <>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.3 }}
+                          className="pointer-events-none absolute bottom-0 left-0 p-5"
+                        >
+                          <h3 className="font-display text-2xl text-white tracking-wide drop-shadow-md group-hover:text-brand-light transition-colors">
+                            {topItem.title}
+                          </h3>
+                        </motion.div>
+                      </>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </button>
+
+            {/* Bottom Right Slot */}
+            <button
+              type="button"
+              className="relative h-1/2 w-full cursor-pointer overflow-hidden rounded-2xl text-left"
+              onClick={() => setCurrentIndex((currentIndex + 2) % items.length)}
+              aria-label={`Show ${bottomItem?.title || "next spotlight"}`}
+            >
+              <AnimatePresence mode="popLayout">
+                {bottomItem && (
+                  <motion.div
+                    key={`bottom-${bottomItem.id}`}
+                    layoutId={`card-${bottomItem.id}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                    className="absolute inset-0 group shadow-md"
+                  >
+                    <Image
+                      src={bottomItem.image}
+                      alt={bottomItem.title || "Carousel Image"}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    {bottomItem.title && (
+                      <>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.3 }}
+                          className="pointer-events-none absolute bottom-0 left-0 p-5"
+                        >
+                          <h3 className="font-display text-2xl text-white tracking-wide drop-shadow-md group-hover:text-brand-light transition-colors">
+                            {bottomItem.title}
+                          </h3>
+                        </motion.div>
+                      </>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </button>
           </div>
         )}
       </div>
-    </section>
+
+      {/* Progress Dots */}
+      {items.length > 1 && (
+        <div className="mt-6 flex w-full items-center justify-center gap-3">
+          {items.map((item, i) => (
+            <button
+              type="button"
+              key={item.id}
+              onClick={() => setCurrentIndex(i)}
+              className={`h-2 transition-all duration-500 rounded-full ${
+                i === currentIndex
+                  ? "w-12 bg-[var(--brand-dark)]"
+                  : "w-2 bg-[var(--brand-dark)]/50 hover:bg-[var(--brand-dark)]"
+              }`}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

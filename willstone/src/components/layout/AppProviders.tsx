@@ -1,13 +1,20 @@
 "use client";
 
-import React from "react";
+import type React from "react";
 import { AuthProvider } from "@/context/AuthContext";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { SavedResourcesProvider } from "@/context/SavedResourcesContext";
 
-export default function AppProviders({ children }: { children: React.ReactNode }) {
+export default function AppProviders({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <AuthProvider>
-      <LanguageProvider>{children}</LanguageProvider>
+      <SavedResourcesProvider>
+        <LanguageProvider>{children}</LanguageProvider>
+      </SavedResourcesProvider>
     </AuthProvider>
   );
 }

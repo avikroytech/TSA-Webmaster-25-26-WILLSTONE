@@ -1,12 +1,5 @@
 "use client";
-import {
-  AnimatePresence,
-  motion,
-  useAnimationFrame,
-  useMotionValue,
-  useReducedMotion,
-  useTransform,
-} from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Calendar as CalendarIcon, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -73,7 +66,6 @@ const defaultEvents: CalendarEvent[] = [
   },
 ];
 
-const DURATION_MS = 10000;
 type EventRow = {
   id: string | number;
   title: string;
@@ -84,64 +76,10 @@ type EventRow = {
   type?: string | null;
 };
 
-// --- ProgressBar Component ---
-const ProgressBar = ({
-  isPaused,
-  onComplete,
-  color,
-  reduceMotion,
-}: {
-  isPaused: boolean;
-  onComplete: () => void;
-  color: string;
-  reduceMotion: boolean;
-}) => {
-  const progress = useMotionValue(0);
-  const width = useTransform(progress, [0, DURATION_MS], ["0%", "100%"]);
-  const prefersReducedMotion = useReducedMotion();
-  const motionDisabled = reduceMotion || Boolean(prefersReducedMotion);
-
-  useAnimationFrame((_time, delta) => {
-    if (isPaused || motionDisabled) return;
-    const nextValue = progress.get() + delta;
-    if (nextValue >= DURATION_MS) {
-      progress.set(DURATION_MS);
-      onComplete();
-    } else {
-      progress.set(nextValue);
-    }
-  });
-
-  if (motionDisabled) return null;
-
-  return (
-    <div className="absolute bottom-0 left-0 right-0 h-3 bg-gray-100 pointer-events-none rounded-b-3xl overflow-hidden">
-      <motion.div style={{ width }} className={`h-full ${color}`} />
-    </div>
-  );
-};
-
 export default function CalendarSection() {
   const [activeTab, setActiveTab] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
   const [events, setEvents] = useState<CalendarEvent[]>(defaultEvents);
-  const [reduceMotion, setReduceMotion] = useState(false);
-
-  useEffect(() => {
-    const syncReduceMotion = () => {
-      setReduceMotion(
-        document.documentElement.classList.contains("reduce-motion"),
-      );
-    };
-
-    syncReduceMotion();
-    window.addEventListener("willstone-accessibility-change", syncReduceMotion);
-    return () =>
-      window.removeEventListener(
-        "willstone-accessibility-change",
-        syncReduceMotion,
-      );
-  }, []);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     async function fetchEvents() {
@@ -181,24 +119,19 @@ export default function CalendarSection() {
     fetchEvents();
   }, []);
 
-  const handleNext = () => {
-    setActiveTab((prev) => (prev + 1) % events.length);
-  };
-
   return (
-    <section className="city-section bg-[#173b3f] text-white overflow-hidden relative">
+    <section className="city-section city-section-deep bg-[#173b3f] text-white overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-4 gap-4">
+        <div className="mb-8 flex flex-col gap-4 pb-4 md:flex-row md:items-end md:justify-between">
           <div className="text-left">
-            <p className="city-kicker text-[#d5b08c]">Public calendar</p>
-            <h2 className="mt-2 text-4xl md:text-5xl font-black text-white leading-none capitalize py-1">
+            <h2 className="mt-2 font-display text-4xl md:text-5xl font-black text-white leading-none capitalize py-1">
               Upcoming Events
             </h2>
           </div>
           <Link
             href="/calendar"
-            className="group flex items-center gap-2 text-white font-bold mt-4 md:mt-0 relative pb-1 overflow-hidden"
+            className="group flex items-center gap-2 text-white font-semibold mt-4 md:mt-0 relative pb-1 overflow-hidden"
           >
             <span className="relative z-10">View Full Calendar</span>
             <ArrowRight className="w-5 h-5 relative z-10 transition-transform group-hover:translate-x-1" />
@@ -206,22 +139,23 @@ export default function CalendarSection() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 min-h-[560px]">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.85fr)] lg:gap-5">
           {/* LEFT: Visual Stage (Active Item) */}
-          <div className="lg:col-span-7 relative rounded-2xl overflow-hidden shadow-sm bg-[#f5f0eb] min-h-[420px]">
+          <div className="relative min-h-[420px] overflow-hidden rounded-2xl bg-[#f5f0eb] shadow-sm lg:min-h-[560px]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.8 }}
+                transition={{ duration: prefersReducedMotion ? 0 : 0.45 }}
                 className="absolute inset-0"
               >
                 <Image
                   src={events[activeTab].image}
                   alt={events[activeTab].title}
                   fill
+                  sizes="(min-width: 1024px) 58vw, 100vw"
                   className="object-cover"
                 />
                 {/* Subtle Gradient Overlay */}
@@ -229,24 +163,24 @@ export default function CalendarSection() {
               </motion.div>
             </AnimatePresence>
 
-            <div className="absolute bottom-0 left-0 p-8 md:p-12 z-20 w-full text-left">
+            <div className="absolute bottom-0 left-0 z-20 w-full p-6 text-left md:p-10">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeTab}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.4 }}
+                  transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
                 >
                   <h3 className="text-3xl md:text-4xl font-black mb-4 text-white leading-[1.1] capitalize tracking-tight drop-shadow-sm">
                     {events[activeTab].title}
                   </h3>
 
-                  <p className="text-white/90 text-[15px] md:text-base mb-6 max-w-xl font-medium leading-relaxed drop-shadow-sm opacity-90 pr-4">
+                  <p className="text-white/90 text-base mb-6 max-w-xl font-medium leading-relaxed drop-shadow-sm opacity-90 pr-4">
                     {events[activeTab].description}
                   </p>
 
-                  <div className="flex flex-wrap items-center gap-6 text-white text-sm font-bold tracking-wide drop-shadow-sm uppercase opacity-90">
+                  <div className="flex flex-wrap items-center gap-6 text-white text-sm font-semibold drop-shadow-sm opacity-90">
                     <div className="flex items-center gap-2">
                       <CalendarIcon className="w-[18px] h-[18px] flex-shrink-0" />
                       <span>
@@ -270,7 +204,7 @@ export default function CalendarSection() {
           </div>
 
           {/* RIGHT: List Controls */}
-          <div className="lg:col-span-5 flex flex-col justify-between gap-4 h-full pr-1">
+          <div className="flex h-full flex-col gap-3 lg:py-1">
             {events.map((event, index) => {
               const isActive = activeTab === index;
               return (
@@ -278,28 +212,16 @@ export default function CalendarSection() {
                   type="button"
                   key={event.id}
                   onClick={() => setActiveTab(index)}
-                  onMouseEnter={() => isActive && setIsPaused(true)}
-                  onMouseLeave={() => isActive && setIsPaused(false)}
                   aria-pressed={isActive}
-                  className={`relative flex items-center w-full p-[22px] text-left transition-all duration-300 cursor-pointer rounded-3xl overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d5b08c] ${
-                    isActive
-                      ? "bg-[#fbfaf7] shadow-md transform scale-[1.01]"
-                      : "bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5"
-                  }`}
+                  className={`relative flex w-full cursor-pointer items-center overflow-hidden rounded-xl p-4 text-left transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d5b08c] ${isActive
+                      ? "bg-[#fbfaf7] shadow-sm"
+                      : "bg-white/95 hover:bg-[#fbfaf7]"
+                    }`}
                 >
-                  {isActive && (
-                    <ProgressBar
-                      isPaused={isPaused}
-                      onComplete={handleNext}
-                      color={event.color}
-                      reduceMotion={reduceMotion}
-                    />
-                  )}
-
                   <div
-                    className={`flex-shrink-0 flex flex-col items-center justify-center w-[76px] h-[84px] rounded-xl text-white shadow-sm ${event.color}`}
+                    className={`flex h-[76px] w-[68px] flex-shrink-0 flex-col items-center justify-center rounded-lg text-white shadow-sm ${event.color}`}
                   >
-                    <span className="text-[11px] font-black uppercase tracking-widest mt-1 opacity-90">
+                    <span className="text-xs font-bold uppercase tracking-[0.08em] mt-1 opacity-90">
                       {event.date.toLocaleString("default", { month: "short" })}
                     </span>
                     <span className="text-[32px] font-display font-black leading-none mt-0.5">
@@ -307,13 +229,13 @@ export default function CalendarSection() {
                     </span>
                   </div>
 
-                  <div className="ml-6 flex-1 pr-2">
-                    <h4 className="text-[20px] font-display font-bold text-[#264D52] mb-1.5 leading-tight">
+                  <div className="ml-5 flex-1 pr-2">
+                    <h4 className="font-display text-xl font-black text-[#264D52] mb-1.5 leading-tight">
                       {event.title}
                     </h4>
 
-                    <p className="text-[13px] text-[#496A49]/80 leading-[1.6] font-medium line-clamp-2">
-                      {event.description}
+                    <p className="city-meta text-[#496A49]/80">
+                      {event.category} | {event.location}
                     </p>
                   </div>
                 </button>

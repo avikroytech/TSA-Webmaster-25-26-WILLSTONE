@@ -4,12 +4,11 @@ import {
   AlertTriangle,
   CheckCircle,
   ChevronDown,
-  Info,
   MapPin,
   Send,
-  Tag,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 import { sendConfirmationEmail } from "@/utils/sendEmail";
 import { supabase } from "@/utils/supabase/client";
 
@@ -18,6 +17,7 @@ type CategoryRow = {
 };
 
 export default function RequestForm() {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -44,6 +44,17 @@ export default function RequestForm() {
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const categoryRef = useRef<HTMLDivElement>(null);
   const maxChars = 500;
+
+  useEffect(() => {
+    if (!user) return;
+    const [firstName = user.name, ...restName] = user.name.split(/\s+/);
+    setFormData((prev) => ({
+      ...prev,
+      first_name: prev.first_name || firstName,
+      last_name: prev.last_name || restName.join(" ") || "Resident",
+      email: prev.email || user.email,
+    }));
+  }, [user]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -167,23 +178,26 @@ export default function RequestForm() {
         );
       }
 
-      const savedSubmissions = window.localStorage.getItem(
-        "willstone-submissions",
-      );
+      const savedSubmissions = user
+        ? window.localStorage.getItem(`willstone-submissions-${user.id}`)
+        : null;
       const submissions = savedSubmissions ? JSON.parse(savedSubmissions) : [];
-      window.localStorage.setItem(
-        "willstone-submissions",
-        JSON.stringify(
-          [
-            {
-              ...formData,
-              id: crypto.randomUUID(),
-              submitted_at: new Date().toISOString(),
-            },
-            ...submissions,
-          ].slice(0, 25),
-        ),
-      );
+      if (user) {
+        window.localStorage.setItem(
+          `willstone-submissions-${user.id}`,
+          JSON.stringify(
+            [
+              {
+                ...formData,
+                id: crypto.randomUUID(),
+                status: "reviewing",
+                submitted_at: new Date().toISOString(),
+              },
+              ...submissions,
+            ].slice(0, 25),
+          ),
+        );
+      }
 
       setSubmittedData(formData);
       setStatus("success");
@@ -210,11 +224,11 @@ export default function RequestForm() {
 
   // Shared tailwind classes for inputs
   const inputClasses =
-    "w-full px-4 py-3 bg-white border-2 border-[#264D52]/20 rounded-xl text-[#264D52] focus:outline-none focus:border-[#496A49] focus:ring-1 focus:ring-[#496A49] transition-all placeholder:text-[#264D52]/40";
+    "w-full px-4 py-3 bg-white border border-[#264D52]/25 rounded-lg text-[#264D52] focus:outline-none focus:border-[#496A49] focus:ring-4 focus:ring-[#d5b08c]/20 transition-all placeholder:text-[#264D52]/40";
   const darkInputClasses =
-    "w-full px-4 py-3 bg-[#264D52] border-2 border-[#264D52] rounded-xl text-white focus:outline-none focus:border-[#496A49] focus:ring-1 focus:ring-[#496A49] transition-all placeholder:text-white/50";
+    "w-full px-4 py-3 bg-[#264D52] border border-[#264D52] rounded-lg text-white focus:outline-none focus:border-[#d5b08c] focus:ring-4 focus:ring-[#d5b08c]/20 transition-all placeholder:text-white/50";
   const labelClasses =
-    "flex items-center gap-2 text-[#264D52] font-black tracking-widest text-sm mb-2";
+    "flex items-center gap-2 text-[#264D52] font-bold text-sm mb-2";
   const RequiredMarker = () => (
     <span className="ml-1 text-[#8a3f19]" aria-hidden="true">
       *
@@ -227,27 +241,25 @@ export default function RequestForm() {
 
   if (status === "success" && submittedData) {
     return (
-      <div className="bg-white/90 backdrop-blur-sm p-8 md:p-12 border border-[#264D52]/10 rounded-3xl shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="bg-white/90 p-6 md:p-8 border border-[#264D52]/10 rounded-2xl shadow-lg animate-in fade-in slide-in-from-bottom-4 duration-500">
         <div className="border-b-2 border-[#264D52]/10 pb-6 mb-8 text-center flex flex-col items-center">
           <CheckCircle size={48} className="text-[#496A49] mb-4" />
           <h2 className="text-3xl font-display font-black text-[#264D52]">
-            Resource <span className="text-[#496A49]">Submitted</span>
+            Resource Submitted
           </h2>
-          <p className="text-[#264D52] text-sm font-medium mt-2 uppercase tracking-widest">
-            Thank you for contributing to Willstone. An email has been sent to
-            you with the details of your request.
+          <p className="text-[#264D52]/75 text-sm font-semibold mt-2 max-w-xl leading-relaxed">
+            Thank you. City reviewers received your request and emailed a copy
+            to {submittedData.email}.
           </p>
         </div>
 
-        <div className="space-y-4 mb-10">
-          <h3 className="font-black text-[#264D52] uppercase tracking-widest text-sm border-b-2 border-[#496A49]/30 pb-2 flex items-center gap-2">
-            <Info size={16} /> Submission Details
+        <div className="space-y-4 mb-8">
+          <h3 className="city-label text-[#264D52] border-b border-[#496A49]/30 pb-2">
+            Submission details
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-[#f5f0eb]/50 border-2 border-[#264D52]/10 rounded-2xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-5 bg-[#f5f0eb]/50 border border-[#264D52]/10 rounded-xl">
             <div>
-              <p className="text-[#496A49] text-[10px] font-bold uppercase tracking-widest mb-1">
-                Submitted By
-              </p>
+              <p className="city-meta text-[#496A49] mb-1">Submitted By</p>
               <p className="text-[#264D52] font-medium">
                 {submittedData.first_name} {submittedData.last_name}
               </p>
@@ -257,27 +269,25 @@ export default function RequestForm() {
               <p className="text-[#264D52]/70 text-sm">{submittedData.phone}</p>
             </div>
             <div>
-              <p className="text-[#496A49] text-[10px] font-bold uppercase tracking-widest mb-1">
-                Resource Info
-              </p>
+              <p className="city-meta text-[#496A49] mb-1">Resource Info</p>
               <p className="text-[#264D52] font-black text-lg">
                 {submittedData.title}
               </p>
-              <p className="text-[#264D52] capitalize text-sm font-bold my-1">
+              <p className="text-[#264D52] capitalize text-sm font-semibold my-1">
                 {submittedData.category === "other"
                   ? submittedData.custom_category
                   : submittedData.category}
               </p>
-              <p className="text-[#264D52]/80 text-sm flex items-start gap-1 mt-2">
-                <MapPin size={14} className="mt-0.5 shrink-0" />{" "}
-                {submittedData.address}
-              </p>
+              {submittedData.address && (
+                <p className="text-[#264D52]/80 text-sm flex items-start gap-1 mt-2">
+                  <MapPin size={14} className="mt-0.5 shrink-0" />{" "}
+                  {submittedData.address}
+                </p>
+              )}
             </div>
-            <div className="md:col-span-2 pt-4 border-t-2 border-[#264D52]/10">
-              <p className="text-[#496A49] text-[10px] font-bold uppercase tracking-widest mb-2">
-                Description
-              </p>
-              <p className="rounded-xl border border-[#496A49]/20 bg-[#496A49]/5 p-4 text-[#264D52] font-medium leading-relaxed italic">
+            <div className="md:col-span-2 pt-4 border-t border-[#264D52]/10">
+              <p className="city-meta text-[#496A49] mb-2">Description</p>
+              <p className="rounded-lg border border-[#496A49]/20 bg-[#496A49]/5 p-4 text-[#264D52] font-medium leading-relaxed">
                 {submittedData.description}
               </p>
             </div>
@@ -290,13 +300,9 @@ export default function RequestForm() {
             setStatus("idle");
             setSubmittedData(null);
           }}
-          className="group w-full relative overflow-hidden rounded-xl"
+          className="group w-full rounded-lg bg-[#264D52] px-5 py-4 text-sm font-bold text-[#f5f0eb] transition-colors hover:bg-[#496A49]"
         >
-          <div className="bg-[#264D52] text-[#f5f0eb] font-black uppercase tracking-[0.2em] text-sm py-4 group-hover:bg-[#496A49] transition-all flex items-center justify-center gap-3 active:translate-y-1">
-            <div className="flex items-center gap-2">
-              Submit Another Resource
-            </div>
-          </div>
+          Submit Another Resource
         </button>
       </div>
     );
@@ -305,31 +311,31 @@ export default function RequestForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-8 bg-white/90 backdrop-blur-sm p-8 md:p-12 rounded-3xl shadow-2xl"
+      className="space-y-8 bg-white/90 p-6 md:p-10 rounded-2xl border border-[#264D52]/10 shadow-lg"
     >
-      <div className="border-b-2 border-[#264D52]/10 pb-6 mb-8">
+      <div className="border-b border-[#264D52]/10 pb-6 mb-8">
         <h1 className="text-4xl text-center font-display font-black text-[#264D52]">
           Submit A Resource
         </h1>
-        <p className="text-[var(--brand-dark)] text-sm font-medium mt-1 tracking-widest">
-          Suggest a program/service to add to the community
+        <p className="text-[var(--brand-dark)] text-sm font-semibold mt-2 text-center">
+          Suggest a program or service for the community directory.
         </p>
-        <div className="mt-4 flex items-center gap-1.5 bg-[#264D52]/5 px-4 py-2 rounded-xl text-xs font-bold text-[#264D52] border border-[#264D52]/10 w-fit">
+        <div className="city-meta mt-4 flex items-center gap-1.5 text-[#264D52]">
           <span
             className="text-[#8a3f19] text-lg leading-none"
             aria-hidden="true"
           >
             *
           </span>
-          <span className="text-sm">Indicates a mandatory field</span>
+          <span>Required field</span>
         </div>
       </div>
 
       {status === "error" && (
-        <div className="bg-red-50 border-2 border-red-500 rounded-2xl p-4 mb-8 flex items-start gap-3 animate-in fade-in zoom-in-95 duration-300 shadow-sm">
+        <div className="bg-red-50 border border-red-500 rounded-xl p-4 mb-8 flex items-start gap-3 animate-in fade-in zoom-in-95 duration-300">
           <AlertTriangle className="text-red-500 shrink-0 mt-0.5" size={20} />
           <div>
-            <p className="font-black uppercase tracking-widest text-red-600 text-sm mb-1">
+            <p className="font-bold text-red-600 text-sm mb-1">
               Submission Error
             </p>
             <p className="text-red-800 font-medium text-sm">{errorMessage}</p>
@@ -415,7 +421,7 @@ export default function RequestForm() {
       {/* Resource Title */}
       <div>
         <label htmlFor="title" className={labelClasses}>
-          <Info size={14} /> Resource Title <RequiredMarker />
+          Resource Title <RequiredMarker />
         </label>
         <input
           id="title"
@@ -435,7 +441,7 @@ export default function RequestForm() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
         <div ref={categoryRef} className="relative z-50">
           <span id="category-label" className={labelClasses}>
-            <Tag size={14} /> Category <RequiredMarker />
+            Category <RequiredMarker />
           </span>
           <button
             type="button"
@@ -467,7 +473,7 @@ export default function RequestForm() {
           {isCategoryOpen && (
             <div
               role="listbox"
-              className="absolute top-full left-0 right-0 mt-2 bg-[#264D52] border-2 border-[#264D52] rounded-xl overflow-hidden shadow-2xl animate-in fade-in slide-in-from-top-2 z-50"
+              className="absolute top-full left-0 right-0 mt-2 bg-[#264D52] border border-[#264D52] rounded-lg overflow-hidden shadow-lg animate-in fade-in slide-in-from-top-2 z-50"
             >
               {[
                 ...categories.map((cat) => ({
@@ -530,7 +536,7 @@ export default function RequestForm() {
       {/* Address */}
       <div>
         <label htmlFor="address" className={labelClasses}>
-          <MapPin size={14} /> Location / Address
+          Location / Address
         </label>
         <input
           id="address"
@@ -556,11 +562,11 @@ export default function RequestForm() {
           maxLength={maxChars}
           placeholder="Provide details about this resource..."
           required
-          className={`${inputClasses} resize-none h-32 rounded-xl`}
+          className={`${inputClasses} resize-none h-32 rounded-lg`}
           aria-invalid={Boolean(fieldErrors.description)}
         />
         <FieldError name="description" />
-        <p className="text-[#496A49] text-[10px] font-bold uppercase tracking-widest mt-2 text-right">
+        <p className="city-meta mt-2 text-right text-[#496A49]">
           {charCount} / {maxChars} Characters
         </p>
       </div>
@@ -569,23 +575,19 @@ export default function RequestForm() {
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="group w-full relative overflow-hidden rounded-xl"
+        className="group flex w-full items-center justify-center gap-2 rounded-lg bg-[#264D52] px-5 py-4 text-sm font-black text-[#f5f0eb] transition-colors hover:bg-[#496A49] disabled:cursor-not-allowed disabled:opacity-70"
       >
-        <div className="bg-[#264D52] text-[#f5f0eb] font-black uppercase tracking-[0.2em] text-sm py-4 group-hover:bg-[#496A49] transition-all flex items-center justify-center gap-3 active:translate-y-1">
-          <div className="flex items-center gap-2">
-            {status === "submitting" ? (
-              "Processing..."
-            ) : (
-              <>
-                Submit Entry{" "}
-                <Send
-                  size={16}
-                  className="group-hover:translate-x-1 transition-transform"
-                />
-              </>
-            )}
-          </div>
-        </div>
+        {status === "submitting" ? (
+          "Submitting..."
+        ) : (
+          <>
+            Submit Resource
+            <Send
+              size={16}
+              className="group-hover:translate-x-1 transition-transform"
+            />
+          </>
+        )}
       </button>
     </form>
   );

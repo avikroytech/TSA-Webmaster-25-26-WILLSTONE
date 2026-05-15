@@ -20,10 +20,14 @@ export default function ImpactStats() {
   useEffect(() => {
     async function fetchCounts() {
       const [resources, events, guides, submissions] = await Promise.all([
-        supabase.from("community_resources").select("id", { count: "exact", head: true }),
+        supabase
+          .from("community_resources")
+          .select("id", { count: "exact", head: true }),
         supabase.from("events").select("id", { count: "exact", head: true }),
         supabase.from("guides").select("id", { count: "exact", head: true }),
-        supabase.from("community_requests").select("id", { count: "exact", head: true }),
+        supabase
+          .from("community_requests")
+          .select("id", { count: "exact", head: true }),
       ]);
 
       setStats({
@@ -42,43 +46,60 @@ export default function ImpactStats() {
       { label: "Resources Listed", value: stats.resources, icon: FolderOpen },
       { label: "Events Tracked", value: stats.events, icon: CalendarDays },
       { label: "Guides Available", value: stats.guides, icon: LibraryBig },
-      { label: "Resident Submissions", value: stats.submissions, icon: UsersRound },
+      {
+        label: "Resident Submissions",
+        value: stats.submissions,
+        icon: UsersRound,
+      },
     ],
     [stats],
   );
 
   return (
-    <section ref={ref} className="city-section border-b border-[#ded6c9] bg-[#f8f4ec]">
-      <div className="city-container mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="city-kicker">Community snapshot</p>
-          <h2 className="city-heading mt-2 text-3xl md:text-5xl">A working hub for every island.</h2>
+    <section
+      ref={ref}
+      className="city-section city-section-tight border-b border-[#ded6c9] bg-[#f8f4ec]"
+    >
+      <div className="city-container grid gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.35fr)] lg:items-end">
+        <div className="max-w-2xl">
+          <h2 className="city-heading mt-2">A working hub for every island.</h2>
+          <p className="mt-5 max-w-xl text-sm font-semibold leading-6 text-[#48605b]">
+            Live directory counts make the site feel accountable, current, and
+            civic rather than decorative.
+          </p>
         </div>
-        <p className="max-w-xl text-sm font-semibold leading-6 text-[#48605b]">
-          Live directory counts make the site feel accountable, current, and civic rather than decorative.
-        </p>
-      </div>
-      <div className="city-container grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {items.map((item, index) => {
-          const Icon = item.icon;
-          return (
-            <motion.div
-              key={item.label}
-              initial={{ opacity: 0, y: 16 }}
-              animate={isInView ? { opacity: 1, y: 0 } : undefined}
-              transition={{ delay: index * 0.08 }}
-              className="city-card flex min-h-[126px] items-center gap-4 p-5"
-            >
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#173b3f] text-white">
-                <Icon size={23} />
-              </div>
-              <div>
-                <p className="text-4xl font-black text-[#173b3f]">{isInView ? item.value : 0}</p>
-                <p className="mt-1 text-xs font-black uppercase tracking-[0.12em] text-[#3f6256]">{item.label}</p>
-              </div>
-            </motion.div>
-          );
-        })}
+        <div className="grid gap-3 sm:grid-cols-3">
+          {items.map((item, index) => {
+            const Icon = item.icon;
+            const isPrimary = index === 0;
+            return (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, y: 16 }}
+                animate={isInView ? { opacity: 1, y: 0 } : undefined}
+                transition={{ delay: index * 0.08 }}
+                className={`city-card flex min-h-[126px] items-center gap-4 p-5 ${isPrimary ? "sm:col-span-3 sm:min-h-[150px] sm:p-6" : ""
+                  }`}
+              >
+                <div
+                  className={`flex shrink-0 items-center justify-center rounded-lg bg-[#173b3f] text-white ${isPrimary ? "h-14 w-14" : "h-11 w-11"
+                    }`}
+                >
+                  <Icon size={isPrimary ? 28 : 23} />
+                </div>
+                <div>
+                  <p
+                    className={`font-black text-[#173b3f] ${isPrimary ? "text-5xl md:text-6xl" : "text-3xl"
+                      }`}
+                  >
+                    {isInView ? item.value : 0}
+                  </p>
+                  <p className="city-label mt-1 text-[#3f6256]">{item.label}</p>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

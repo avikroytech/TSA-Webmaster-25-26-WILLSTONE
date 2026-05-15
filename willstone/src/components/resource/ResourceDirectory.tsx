@@ -21,6 +21,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
+import SavedResourceButton from "@/components/resource/SavedResourceButton";
 import { supabase } from "@/utils/supabase/client";
 
 const getCategoryIcon = (category: string) => {
@@ -236,12 +237,12 @@ export default function ResourceDirectory() {
   };
 
   const renderFilters = (isMobile = false) => (
-    <div className={`${isMobile ? "p-8 space-y-10" : "flex flex-col gap-10"}`}>
-      <div className="flex flex-col gap-4">
+    <div className={`${isMobile ? "p-6 space-y-8" : "flex flex-col gap-8"}`}>
+      <div className="flex flex-col gap-3">
         <h2
-          className={`text-3xl font-black ${isMobile ? "text-asphalt" : "text-road-paint"}`}
+          className={`font-display text-2xl font-black ${isMobile ? "text-asphalt" : "text-road-paint"}`}
         >
-          {isMobile ? "Filter Resources" : "Filter Resources"}
+          Filter Resources
         </h2>
         <div className="h-px w-full bg-road-paint/20" />
       </div>
@@ -251,14 +252,12 @@ export default function ResourceDirectory() {
         className="flex flex-col gap-2"
         ref={isMobile ? null : sortDropdownRef}
       >
-        <h3 className="text-xl font-black font-display text-asphalt tracking-widest uppercase text-xs">
-          Sort By
-        </h3>
+        <h3 className="city-label text-asphalt">Sort By</h3>
         <div className="relative">
           <button
             type="button"
             onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
-            className="w-full flex justify-between items-center bg-white border-2 border-road-paint/20 py-4 px-5 rounded-2xl text-base font-bold text-asphalt focus:outline-none transition-all cursor-pointer shadow-sm hover:border-asphalt/50"
+            className="w-full flex justify-between items-center bg-white border border-road-paint/20 py-3 px-4 rounded-lg text-base font-semibold text-asphalt focus:outline-none focus-visible:ring-4 focus-visible:ring-[#d5b08c]/25 transition-all cursor-pointer hover:border-asphalt/50"
           >
             <span className="truncate">
               {sortBy === "default"
@@ -280,7 +279,7 @@ export default function ResourceDirectory() {
                 exit={{ opacity: 0, y: -10 }}
                 role="listbox"
                 aria-label="Sort resources"
-                className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-road-paint/10 rounded-2xl overflow-hidden shadow-xl z-[60]"
+                className="absolute top-full left-0 right-0 mt-2 bg-white border border-road-paint/15 rounded-lg overflow-hidden shadow-lg z-[60]"
               >
                 {sortOptions.map((option) => (
                   <button
@@ -298,7 +297,7 @@ export default function ResourceDirectory() {
                         setIsSortDropdownOpen(false);
                       })
                     }
-                    className={`block w-full px-5 py-4 text-left font-bold transition-colors cursor-pointer border-b border-road-paint/5 last:border-0 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#d5b08c] ${sortBy === option.value ? "bg-asphalt text-white" : "text-asphalt hover:bg-asphalt/5"}`}
+                    className={`block w-full px-4 py-3 text-left font-semibold transition-colors cursor-pointer border-b border-road-paint/5 last:border-0 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#d5b08c] ${sortBy === option.value ? "bg-asphalt text-white" : "text-asphalt hover:bg-asphalt/5"}`}
                   >
                     {option.label}
                   </button>
@@ -314,16 +313,14 @@ export default function ResourceDirectory() {
         className="flex flex-col gap-2 items-start w-full"
         ref={isMobile ? null : categoryDropdownRef}
       >
-        <h3 className="text-xl font-black font-display text-asphalt tracking-widest uppercase text-xs">
-          Category
-        </h3>
+        <h3 className="city-label text-asphalt">Category</h3>
         <div className="relative w-full">
           <button
             type="button"
             onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
             aria-haspopup="listbox"
             aria-expanded={isCategoryDropdownOpen}
-            className="w-full flex justify-between items-center bg-white border-2 border-road-paint/20 py-4 px-5 rounded-2xl text-base font-bold text-asphalt focus:outline-none transition-all cursor-pointer shadow-sm hover:border-asphalt/50"
+            className="w-full flex justify-between items-center bg-white border border-road-paint/20 py-3 px-4 rounded-lg text-base font-semibold text-asphalt focus:outline-none focus-visible:ring-4 focus-visible:ring-[#d5b08c]/25 transition-all cursor-pointer hover:border-asphalt/50"
           >
             <div className="flex items-center gap-3 overflow-hidden">
               <motion.div
@@ -350,7 +347,7 @@ export default function ResourceDirectory() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 role="listbox"
-                className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-road-paint/10 rounded-2xl overflow-hidden shadow-xl z-50 max-h-80 overflow-y-auto custom-scrollbar"
+                className="absolute top-full left-0 right-0 mt-2 bg-white border border-road-paint/15 rounded-lg overflow-hidden shadow-lg z-50 max-h-80 overflow-y-auto custom-scrollbar"
               >
                 {allCategoryOptions.map((cat) => (
                   <button
@@ -368,7 +365,7 @@ export default function ResourceDirectory() {
                         setIsCategoryDropdownOpen(false);
                       })
                     }
-                    className={`flex w-full items-center gap-3 px-5 py-4 text-left font-bold transition-colors cursor-pointer border-b border-road-paint/5 last:border-0 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#d5b08c] ${activeCategory === cat ? "bg-asphalt text-white" : "text-asphalt hover:bg-asphalt/5"}`}
+                    className={`flex w-full items-center gap-3 px-4 py-3 text-left font-semibold transition-colors cursor-pointer border-b border-road-paint/5 last:border-0 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#d5b08c] ${activeCategory === cat ? "bg-asphalt text-white" : "text-asphalt hover:bg-asphalt/5"}`}
                   >
                     <div
                       className={`shrink-0 ${activeCategory === cat ? "text-marking" : "text-asphalt/40"}`}
@@ -389,16 +386,14 @@ export default function ResourceDirectory() {
         className="flex flex-col gap-2 items-start w-full"
         ref={isMobile ? null : typeDropdownRef}
       >
-        <h3 className="text-xl font-black font-display text-[var(--brand-medium)] tracking-widest uppercase text-xs">
-          Resource Type
-        </h3>
+        <h3 className="city-label text-[var(--brand-medium)]">Resource Type</h3>
         <div className="relative w-full">
           <button
             type="button"
             onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}
             aria-haspopup="listbox"
             aria-expanded={isTypeDropdownOpen}
-            className="w-full flex justify-between items-center bg-white border-2 border-[var(--brand-medium)]/20 py-4 px-5 rounded-2xl text-base font-bold text-[var(--brand-medium)] focus:outline-none transition-all cursor-pointer shadow-sm hover:border-[var(--brand-medium)]/50"
+            className="w-full flex justify-between items-center bg-white border border-[var(--brand-medium)]/20 py-3 px-4 rounded-lg text-base font-semibold text-[var(--brand-medium)] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#d5b08c]/25 transition-all cursor-pointer hover:border-[var(--brand-medium)]/50"
           >
             <div className="flex items-center gap-3 overflow-hidden">
               <Tag size={20} className="text-[var(--brand-medium)] shrink-0" />
@@ -416,7 +411,7 @@ export default function ResourceDirectory() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 role="listbox"
-                className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-[var(--brand-medium)]/10 rounded-2xl overflow-hidden shadow-xl z-40 max-h-80 overflow-y-auto custom-scrollbar"
+                className="absolute top-full left-0 right-0 mt-2 bg-white border border-[var(--brand-medium)]/15 rounded-lg overflow-hidden shadow-lg z-40 max-h-80 overflow-y-auto custom-scrollbar"
               >
                 {["All Resource Types", ...types].map((type) => (
                   <button
@@ -434,7 +429,7 @@ export default function ResourceDirectory() {
                         setIsTypeDropdownOpen(false);
                       })
                     }
-                    className={`flex w-full items-center gap-3 px-5 py-4 text-left font-bold transition-colors cursor-pointer border-b border-[var(--brand-medium)]/5 last:border-0 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#d5b08c] ${activeType === type ? "bg-[var(--brand-medium)] text-white" : "text-[var(--brand-medium)] hover:bg-[var(--brand-medium)]/5"}`}
+                    className={`flex w-full items-center gap-3 px-4 py-3 text-left font-semibold transition-colors cursor-pointer border-b border-[var(--brand-medium)]/5 last:border-0 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#d5b08c] ${activeType === type ? "bg-[var(--brand-medium)] text-white" : "text-[var(--brand-medium)] hover:bg-[var(--brand-medium)]/5"}`}
                   >
                     {type}
                   </button>
@@ -446,16 +441,9 @@ export default function ResourceDirectory() {
       </div>
 
       {/* Island Location */}
-      <div className="flex flex-col gap-5">
-        <h3 className="text-xl font-black font-display text-asphalt tracking-widest uppercase text-xs">
-          Island Location
-        </h3>
-        <div className="rounded-xl border border-road-paint/15 bg-road-paint/5 p-4">
-          <p className="text-[11px] font-bold text-asphalt uppercase leading-relaxed tracking-wider">
-            Click an island to filter by location.
-          </p>
-        </div>
-        <div className="relative w-full aspect-square bg-[var(--brand-medium)] rounded-3xl shadow-sm border border-road-paint/10 overflow-hidden p-6 flex items-center justify-center">
+      <div className="flex flex-col gap-4">
+        <h3 className="city-label text-asphalt">Island Location</h3>
+        <div className="relative w-full aspect-square bg-[var(--brand-medium)] rounded-2xl border border-road-paint/10 overflow-hidden p-6 flex items-center justify-center">
           <IslandImageMap
             activeIsland={activeIsland}
             onIslandClick={setActiveIsland}
@@ -465,7 +453,7 @@ export default function ResourceDirectory() {
           <button
             type="button"
             onClick={() => setActiveIsland(null)}
-            className="w-full py-3 bg-marking/10 text-marking rounded-xl text-xs font-black uppercase tracking-widest hover:bg-marking/20 transition-colors"
+            className="w-full py-3 bg-marking/10 text-marking rounded-lg text-xs font-bold uppercase tracking-[0.08em] hover:bg-marking/20 transition-colors"
           >
             Clear Location Filter
           </button>
@@ -475,20 +463,20 @@ export default function ResourceDirectory() {
   );
 
   return (
-    <section className="w-full py-12 md:py-16 min-h-screen relative font-sans text-brand-text flex flex-col items-center bg-[#f8f4ec]">
+    <section className="relative flex min-h-screen w-full flex-col items-center bg-[#f8f4ec] px-[var(--space-page-x)] py-[var(--space-section-tight)] font-sans text-brand-text">
       {/* Mobile Sticky Filter Toggle */}
-      <div className="lg:hidden sticky top-[90px] w-full z-[80] px-6 mb-12">
+      <div className="sticky top-[90px] z-[80] mb-10 w-full lg:hidden">
         <motion.button
           onClick={() => setIsMobileFiltersOpen(!isMobileFiltersOpen)}
           layoutId="mobileFilterBar"
-          className="w-full bg-white border border-road-paint/10 rounded-2xl p-4 flex items-center justify-between shadow-lg text-asphalt"
+          className="w-full bg-white border border-road-paint/10 rounded-lg p-4 flex items-center justify-between shadow-md text-asphalt"
         >
           <div className="flex items-center gap-3">
             <div className="p-2 bg-asphalt text-white rounded-lg">
               <Tag size={18} />
             </div>
             <div className="flex flex-col items-start translate-y-[-1px]">
-              <span className="text-sm font-bold">Filters</span>
+              <span className="text-sm font-semibold">Filters</span>
             </div>
           </div>
           <motion.div
@@ -505,7 +493,7 @@ export default function ResourceDirectory() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="mt-2 bg-white border border-road-paint/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[70vh]"
+              className="mt-2 bg-white border border-road-paint/10 rounded-2xl overflow-hidden shadow-xl flex flex-col max-h-[70vh]"
             >
               <div className="overflow-y-auto flex-1 custom-scrollbar">
                 {renderFilters(true)}
@@ -514,7 +502,7 @@ export default function ResourceDirectory() {
                 <button
                   type="button"
                   onClick={() => setIsMobileFiltersOpen(false)}
-                  className="px-8 py-3 bg-asphalt text-white rounded-full text-sm font-bold tracking-widest hover:scale-105 transition-transform"
+                  className="px-8 py-3 bg-asphalt text-white rounded-lg text-sm font-bold tracking-[0.08em] hover:bg-harbor-green transition-colors"
                 >
                   Close Panel
                 </button>
@@ -524,9 +512,9 @@ export default function ResourceDirectory() {
         </AnimatePresence>
       </div>
 
-      <div className="w-full px-6 md:px-12 xl:px-20 relative z-10 w-full max-w-[1800px]">
+      <div className="relative z-10 w-full max-w-[1400px]">
         {/* Header Title */}
-        <div className="flex justify-center mb-16">
+        <div className="mb-12 flex justify-center">
           <motion.h2
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -536,16 +524,16 @@ export default function ResourceDirectory() {
           </motion.h2>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-12 xl:gap-20">
+        <div className="flex flex-col gap-10 lg:flex-row lg:items-start xl:gap-14">
           {/* Desktop Sidebar (hidden on mobile) */}
-          <div className="hidden lg:flex w-full lg:w-[320px] 2xl:w-[380px] shrink-0 flex-col gap-10">
+          <div className="hidden w-full shrink-0 flex-col gap-10 lg:sticky lg:top-[128px] lg:flex lg:w-[300px] xl:w-[340px]">
             {renderFilters()}
           </div>
 
           {/* Main Content */}
           <div className="flex-1 flex flex-col min-w-0">
             {/* Search Bar */}
-            <div className="mb-12 flex flex-col md:flex-row gap-4 items-center">
+            <div className="mb-8 flex flex-col items-center gap-4 md:flex-row">
               <div className="relative flex-1 w-full">
                 <input
                   type="text"
@@ -562,8 +550,8 @@ export default function ResourceDirectory() {
             </div>
 
             {!loading && (
-              <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-road-paint/10 bg-white/70 p-4 text-asphalt shadow-sm sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-sm font-black uppercase tracking-[0.1em] text-[#173b3f]">
+              <div className="mb-6 flex flex-col gap-3 rounded-lg border border-road-paint/10 bg-white/70 p-4 text-asphalt sm:flex-row sm:items-center sm:justify-between">
+                <p className="city-label text-[#173b3f]">
                   Showing {filteredResources.length} of {resources.length}{" "}
                   resources
                 </p>
@@ -575,7 +563,7 @@ export default function ResourceDirectory() {
                   <button
                     type="button"
                     onClick={resetFilters}
-                    className="min-h-11 rounded-md bg-[#173b3f] px-5 text-sm font-black text-white"
+                    className="min-h-11 rounded-md bg-[#173b3f] px-5 text-sm font-bold text-white hover:bg-[#3f6256]"
                   >
                     Clear Filters
                   </button>
@@ -596,7 +584,7 @@ export default function ResourceDirectory() {
                 initial="hidden"
                 animate="visible"
                 variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 md:gap-8"
+                className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,320px),1fr))] gap-5 md:gap-6"
               >
                 <AnimatePresence>
                   {filteredResources.map((resource) => {
@@ -621,8 +609,19 @@ export default function ResourceDirectory() {
                           y: 20,
                           transition: { duration: 0.2 },
                         }}
-                        className="city-card overflow-hidden transition-all duration-300 hover:-translate-y-1 flex flex-col group h-full"
+                        className="city-card group relative flex h-full flex-col overflow-hidden transition-all duration-300"
                       >
+                        <SavedResourceButton
+                          resource={{
+                            id: String(resource.id),
+                            title: resourceTitle,
+                            slug: resourceSlug,
+                            category: resourceCategory,
+                            address: resource.address,
+                            description: resource.description,
+                            image: resource.images?.[0],
+                          }}
+                        />
                         <Link
                           href={`/resource-hub/${resourceSlug}`}
                           className="flex flex-col h-full focus:outline-none focus-visible:ring-4 focus-visible:ring-asphalt/30 rounded-[2rem]"
@@ -644,20 +643,20 @@ export default function ResourceDirectory() {
                           </div>
 
                           {/* Text Section */}
-                          <div className="p-5 md:p-8 flex flex-col flex-1">
-                            <h3 className="text-xl md:text-2xl leading-tight font-black text-[#173b3f] mb-3">
+                          <div className="p-5 md:p-6 flex flex-col flex-1">
+                            <h3 className="font-display text-xl md:text-2xl leading-tight font-black text-[#173b3f] mb-3">
                               {resourceTitle}
                             </h3>
-                            <p className="mb-6 text-sm font-bold leading-relaxed text-asphalt/70">
+                            <p className="mb-5 text-sm font-semibold leading-relaxed text-asphalt/70">
                               {summarize(resource.description)}
                             </p>
 
-                            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-auto">
+                            <div className="flex flex-col gap-3 mt-auto">
                               <div className="flex items-center gap-3">
                                 <span className="text-asphalt flex-shrink-0 bg-asphalt/5 p-2 rounded-lg">
                                   {getCategoryIcon(resourceCategory)}
                                 </span>
-                                <span className="text-sm font-bold text-asphalt tracking-wide truncate">
+                                <span className="city-meta text-asphalt truncate">
                                   {resourceCategory}
                                 </span>
                               </div>
@@ -666,16 +665,15 @@ export default function ResourceDirectory() {
                                 <span className="text-marking flex-shrink-0 bg-marking/10 p-2 rounded-lg">
                                   <Target size={22} />
                                 </span>
-                                <span className="text-sm font-bold text-marking tracking-wide truncate">
+                                <span className="city-meta text-marking truncate">
                                   {resourceIsland}
                                 </span>
                               </div>
                             </div>
 
-                            <div className="mt-6 pt-5 border-t border-[#ded6c9]">
-                              <div className="inline-block group-hover:text-[#173b3f] relative text-sm font-black uppercase tracking-[0.1em] text-[#3f6256] transition-colors">
+                            <div className="mt-5 pt-4 border-t border-[#ded6c9]">
+                              <div className="inline-block group-hover:text-[#173b3f] relative text-sm font-bold text-[#3f6256] transition-colors">
                                 Learn More
-                                <span className="absolute -bottom-1.5 left-0 w-0 h-[2px] bg-[#b98d63] transition-all duration-300 ease-out group-hover:w-full" />
                               </div>
                             </div>
                           </div>
@@ -686,21 +684,21 @@ export default function ResourceDirectory() {
                 </AnimatePresence>
               </motion.div>
             ) : (
-              <div className="rounded-3xl border border-road-paint/10 bg-white p-10 text-center shadow-sm">
+              <div className="rounded-2xl border border-road-paint/10 bg-white p-10 text-center">
                 <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-asphalt/5 text-asphalt">
                   <Search size={28} />
                 </div>
                 <h3 className="font-display text-3xl text-road-paint">
                   No Resources Found
                 </h3>
-                <p className="mx-auto mt-3 max-w-lg text-sm font-bold leading-relaxed text-asphalt/70">
+                <p className="mx-auto mt-3 max-w-lg text-sm font-semibold leading-relaxed text-asphalt/70">
                   Try a broader search term, clear the island filter, or submit
                   a new resource for review.
                 </p>
                 <button
                   type="button"
                   onClick={resetFilters}
-                  className="mt-6 min-h-11 rounded-full bg-asphalt px-6 text-sm font-black text-white"
+                  className="mt-6 min-h-11 rounded-full bg-asphalt px-6 text-sm font-bold text-white"
                 >
                   Reset Search
                 </button>
@@ -713,7 +711,7 @@ export default function ResourceDirectory() {
   );
 }
 
-// ─── Sub-Component: Island Image Map ────────────────────────────────
+// Sub-component: Island image map
 
 function IslandImageMap({
   activeIsland,
@@ -763,7 +761,7 @@ function IslandImageMap({
       {/* Top Banner Label */}
       <div className="absolute top-0 left-0 right-0 flex justify-center z-40 pointer-events-none">
         <div
-          className={`px-5 py-2 rounded-full font-black text-xs tracking-[0.15em] uppercase transition-all duration-300 ${displayedIsland ? "opacity-100 bg-[#f5f0eb] text-[var(--brand-medium)] shadow-xl translate-y-0" : "opacity-0 -translate-y-2"}`}
+          className={`px-5 py-2 rounded-full text-xs font-bold tracking-[0.1em] uppercase transition-all duration-300 ${displayedIsland ? "opacity-100 bg-[#f5f0eb] text-[var(--brand-medium)] shadow-xl translate-y-0" : "opacity-0 -translate-y-2"}`}
         >
           {displayedIsland ? displayedIsland.name : "MAP"}
         </div>
