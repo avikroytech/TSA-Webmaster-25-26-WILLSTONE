@@ -237,7 +237,7 @@ export default function ResourceDirectory() {
   };
 
   const renderFilters = (isMobile = false) => (
-    <div className={`${isMobile ? "p-6 space-y-8" : "flex flex-col gap-8"}`}>
+    <div className={`${isMobile ? "p-6 space-y-7" : "flex flex-col gap-5"}`}>
       <div className="flex flex-col gap-3">
         <h2
           className={`font-display text-2xl font-black ${isMobile ? "text-asphalt" : "text-road-paint"}`}
@@ -257,7 +257,9 @@ export default function ResourceDirectory() {
           <button
             type="button"
             onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
-            className="w-full flex justify-between items-center bg-white border border-road-paint/20 py-3 px-4 rounded-lg text-base font-semibold text-asphalt focus:outline-none focus-visible:ring-4 focus-visible:ring-[#d5b08c]/25 transition-all cursor-pointer hover:border-asphalt/50"
+            aria-haspopup="listbox"
+            aria-expanded={isSortDropdownOpen}
+            className="w-full flex justify-between items-center bg-white border border-road-paint/20 py-3 px-4 rounded-lg text-sm font-semibold text-asphalt focus:outline-none focus-visible:ring-4 focus-visible:ring-[#d5b08c]/25 transition-all cursor-pointer hover:border-asphalt/50"
           >
             <span className="truncate">
               {sortBy === "default"
@@ -320,7 +322,7 @@ export default function ResourceDirectory() {
             onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
             aria-haspopup="listbox"
             aria-expanded={isCategoryDropdownOpen}
-            className="w-full flex justify-between items-center bg-white border border-road-paint/20 py-3 px-4 rounded-lg text-base font-semibold text-asphalt focus:outline-none focus-visible:ring-4 focus-visible:ring-[#d5b08c]/25 transition-all cursor-pointer hover:border-asphalt/50"
+            className="w-full flex justify-between items-center bg-white border border-road-paint/20 py-3 px-4 rounded-lg text-sm font-semibold text-asphalt focus:outline-none focus-visible:ring-4 focus-visible:ring-[#d5b08c]/25 transition-all cursor-pointer hover:border-asphalt/50"
           >
             <div className="flex items-center gap-3 overflow-hidden">
               <motion.div
@@ -393,7 +395,7 @@ export default function ResourceDirectory() {
             onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}
             aria-haspopup="listbox"
             aria-expanded={isTypeDropdownOpen}
-            className="w-full flex justify-between items-center bg-white border border-[var(--brand-medium)]/20 py-3 px-4 rounded-lg text-base font-semibold text-[var(--brand-medium)] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#d5b08c]/25 transition-all cursor-pointer hover:border-[var(--brand-medium)]/50"
+            className="w-full flex justify-between items-center bg-white border border-[var(--brand-medium)]/20 py-3 px-4 rounded-lg text-sm font-semibold text-[var(--brand-medium)] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#d5b08c]/25 transition-all cursor-pointer hover:border-[var(--brand-medium)]/50"
           >
             <div className="flex items-center gap-3 overflow-hidden">
               <Tag size={20} className="text-[var(--brand-medium)] shrink-0" />
@@ -441,9 +443,9 @@ export default function ResourceDirectory() {
       </div>
 
       {/* Island Location */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         <h3 className="city-label text-asphalt">Island Location</h3>
-        <div className="relative w-full aspect-square bg-[var(--brand-medium)] rounded-2xl border border-road-paint/10 overflow-hidden p-6 flex items-center justify-center">
+        <div className="relative flex h-[210px] w-full items-center justify-center overflow-hidden rounded-xl border border-road-paint/10 bg-[var(--brand-medium)] p-4 sm:h-[240px] lg:h-[220px] xl:h-[235px]">
           <IslandImageMap
             activeIsland={activeIsland}
             onIslandClick={setActiveIsland}
@@ -514,7 +516,7 @@ export default function ResourceDirectory() {
 
       <div className="relative z-10 w-full max-w-[1400px]">
         {/* Header Title */}
-        <div className="mb-12 flex justify-center">
+        <div className="mb-8 flex justify-center lg:mb-10">
           <motion.h2
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -526,50 +528,56 @@ export default function ResourceDirectory() {
 
         <div className="flex flex-col gap-10 lg:flex-row lg:items-start xl:gap-14">
           {/* Desktop Sidebar (hidden on mobile) */}
-          <div className="hidden w-full shrink-0 flex-col gap-10 lg:sticky lg:top-[128px] lg:flex lg:w-[300px] xl:w-[340px]">
+          <div className="hidden w-full shrink-0 flex-col gap-10 lg:sticky lg:top-[118px] lg:flex lg:w-[292px] xl:w-[320px]">
             {renderFilters()}
           </div>
 
           {/* Main Content */}
           <div className="flex-1 flex flex-col min-w-0">
-            {/* Search Bar */}
-            <div className="mb-8 flex flex-col items-center gap-4 md:flex-row">
-              <div className="relative flex-1 w-full">
-                <input
-                  type="text"
-                  placeholder="Search by name, service, or address"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full bg-white border border-[#cfc7ba] py-4 pl-6 pr-14 rounded-lg text-base font-semibold text-[#173b3f] focus:outline-none focus:ring-4 focus:ring-[#d5b08c]/25 focus:border-[#173b3f] transition-all shadow-sm placeholder:text-[#173b3f]/40"
-                />
-                <Search
-                  className="absolute right-8 top-1/2 -translate-y-1/2 text-brand-text/40"
-                  size={24}
-                />
+            <div className="sticky top-[164px] z-40 mb-6 rounded-xl border border-road-paint/10 bg-[#f8f4ec] p-3 shadow-[0_18px_45px_rgba(23,59,63,0.10)] lg:top-[118px]">
+              {/* Search Bar */}
+              <div className="flex flex-col items-center gap-4 md:flex-row">
+                <div className="relative flex-1 w-full">
+                  <label htmlFor="resource-search" className="sr-only">
+                    Search resources
+                  </label>
+                  <input
+                    id="resource-search"
+                    type="text"
+                    placeholder="Search by name, service, or address"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full bg-white border border-[#cfc7ba] py-4 pl-5 pr-14 rounded-lg text-base font-semibold text-[#173b3f] focus:outline-none focus:ring-4 focus:ring-[#d5b08c]/25 focus:border-[#173b3f] transition-all shadow-sm placeholder:text-[#173b3f]/40"
+                  />
+                  <Search
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-brand-text/40"
+                    size={22}
+                  />
+                </div>
               </div>
-            </div>
 
-            {!loading && (
-              <div className="mb-6 flex flex-col gap-3 rounded-lg border border-road-paint/10 bg-white/70 p-4 text-asphalt sm:flex-row sm:items-center sm:justify-between">
-                <p className="city-label text-[#173b3f]">
-                  Showing {filteredResources.length} of {resources.length}{" "}
-                  resources
-                </p>
-                {(search ||
-                  activeCategory !== "All Categories" ||
-                  activeType !== "All Resource Types" ||
-                  activeIsland ||
-                  sortBy !== "default") && (
-                  <button
-                    type="button"
-                    onClick={resetFilters}
-                    className="min-h-11 rounded-md bg-[#173b3f] px-5 text-sm font-bold text-white hover:bg-[#3f6256]"
-                  >
-                    Clear Filters
-                  </button>
-                )}
-              </div>
-            )}
+              {!loading && (
+                <div className="mt-3 flex flex-col gap-3 rounded-lg border border-road-paint/10 bg-white p-3 text-asphalt sm:flex-row sm:items-center sm:justify-between">
+                  <p className="city-label text-[#173b3f]">
+                    Showing {filteredResources.length} of {resources.length}{" "}
+                    resources
+                  </p>
+                  {(search ||
+                    activeCategory !== "All Categories" ||
+                    activeType !== "All Resource Types" ||
+                    activeIsland ||
+                    sortBy !== "default") && (
+                    <button
+                      type="button"
+                      onClick={resetFilters}
+                      className="min-h-11 rounded-md bg-[#173b3f] px-5 text-sm font-bold text-white transition-colors hover:bg-[#3f6256] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#d5b08c]/35"
+                    >
+                      Clear Filters
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Grid */}
             {loading ? (
@@ -633,6 +641,7 @@ export default function ResourceDirectory() {
                                 src={resource.images[0]}
                                 alt={resourceTitle}
                                 fill
+                                sizes="(min-width: 1280px) 26vw, (min-width: 1024px) 32vw, (min-width: 768px) 45vw, 100vw"
                                 className="object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out"
                               />
                             ) : (
@@ -754,7 +763,7 @@ function IslandImageMap({
 
   return (
     <fieldset
-      className="relative w-full h-full min-h-[260px] border-0 p-0"
+      className="relative h-full min-h-0 w-full border-0 p-0"
       onMouseLeave={() => setHoveredIsland(null)}
     >
       <legend className="sr-only">Island location filters</legend>

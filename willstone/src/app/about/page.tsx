@@ -1,6 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import {
   Accessibility,
   ArrowRight,
@@ -25,6 +30,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRef } from "react";
 import Footer from "@/components/home/Footer";
 import SubpageHero from "@/components/layout/SubpageHero";
 
@@ -135,6 +141,201 @@ const residentRoutes = [
   },
 ];
 
+const storySignals = [
+  {
+    title: "Residents move first",
+    text: "Transit, resource access, and public information are planned around daily life.",
+  },
+  {
+    title: "Services cross water",
+    text: "The Resource Hub keeps support visible across every island, not buried by department.",
+  },
+  {
+    title: "The city listens back",
+    text: "Submissions, calendars, guides, and civic offices turn resident input into action.",
+  },
+];
+
+function CityStoryMotion() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const harborShift = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
+  const ferryShift = useTransform(scrollYProgress, [0.08, 0.92], ["2%", "82%"]);
+  const lineScale = useTransform(scrollYProgress, [0.2, 0.78], [0.14, 1]);
+  const civicPulse = useTransform(
+    scrollYProgress,
+    [0.18, 0.48, 0.82],
+    [0.82, 1.12, 0.94],
+  );
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative isolate overflow-hidden bg-[#173b3f] px-6 py-20 text-[#f8f4ec] md:py-28"
+      aria-labelledby="city-story-title"
+    >
+      <motion.div
+        aria-hidden="true"
+        style={{ x: prefersReducedMotion ? 0 : harborShift }}
+        className="absolute inset-x-[-12%] top-8 h-px bg-[#d5b08c]/35"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 opacity-[0.13]"
+        style={{
+          backgroundImage:
+            "linear-gradient(#f8f4ec 1px, transparent 1px), linear-gradient(90deg, #f8f4ec 1px, transparent 1px)",
+          backgroundSize: "44px 44px",
+        }}
+      />
+      <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-120px" }}
+          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <p className="city-kicker text-[#d5b08c]">City story</p>
+          <h2
+            id="city-story-title"
+            className="mt-4 font-display text-[clamp(3.4rem,9vw,8.5rem)] font-black leading-[0.82] tracking-normal text-[#f8f4ec]"
+          >
+            The city moves when residents do
+          </h2>
+          <p className="mt-7 max-w-xl text-lg font-semibold leading-8 text-[#f8f4ec]/78">
+            Willstone is not a static map. It is a working archipelago: ferries,
+            service desks, meeting rooms, calendars, neighbors, and resource
+            submissions moving in the same civic loop.
+          </p>
+        </motion.div>
+
+        <div className="relative min-h-[520px] overflow-hidden rounded-[28px] border border-[#d5b08c]/25 bg-[#f8f4ec] text-[#173b3f] shadow-[0_28px_80px_rgba(8,22,24,0.28)]">
+          <motion.div
+            aria-hidden="true"
+            style={{ scaleX: prefersReducedMotion ? 1 : lineScale }}
+            className="absolute left-[12%] right-[12%] top-1/2 z-10 h-2 origin-left rounded-full bg-[#b98d63]"
+          />
+          <motion.div
+            aria-hidden="true"
+            style={{ left: prefersReducedMotion ? "46%" : ferryShift }}
+            className="absolute top-[calc(50%-1.1rem)] z-20 flex h-9 w-16 items-center justify-center rounded-full border border-[#173b3f]/20 bg-[#173b3f] text-[10px] font-black uppercase tracking-[0.12em] text-[#f8f4ec] shadow-[0_14px_28px_rgba(23,59,63,0.28)]"
+          >
+            Line
+          </motion.div>
+
+          <motion.div
+            animate={
+              prefersReducedMotion
+                ? undefined
+                : { y: [0, -10, 0], rotate: [-1, 1, -1] }
+            }
+            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute left-[8%] top-[12%] w-[30%]"
+          >
+            <Image
+              src="/left.png"
+              alt="Emerald Island moving map shape"
+              width={360}
+              height={360}
+              className="h-auto w-full drop-shadow-2xl"
+            />
+          </motion.div>
+          <motion.div
+            animate={
+              prefersReducedMotion
+                ? undefined
+                : { y: [0, 12, 0], rotate: [1, -1, 1] }
+            }
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute right-[9%] top-[18%] w-[38%]"
+          >
+            <Image
+              src="/right.png"
+              alt="Coastal Island moving map shape"
+              width={460}
+              height={360}
+              className="h-auto w-full drop-shadow-2xl"
+            />
+          </motion.div>
+          <motion.div
+            animate={
+              prefersReducedMotion ? undefined : { y: [0, -8, 0], x: [0, 8, 0] }
+            }
+            transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute left-[30%] top-[42%] z-20 w-[19%]"
+          >
+            <Image
+              src="/small.png"
+              alt="Central Island moving map shape"
+              width={260}
+              height={260}
+              className="h-auto w-full drop-shadow-2xl"
+            />
+          </motion.div>
+          <motion.div
+            animate={
+              prefersReducedMotion
+                ? undefined
+                : { y: [0, 10, 0], rotate: [-0.7, 0.8, -0.7] }
+            }
+            transition={{ duration: 7.5, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute bottom-[5%] left-[18%] w-[62%]"
+          >
+            <Image
+              src="/bottom.png"
+              alt="Talon Island moving map shape"
+              width={720}
+              height={360}
+              className="h-auto w-full drop-shadow-2xl"
+            />
+          </motion.div>
+
+          {[
+            ["Resource Hub", "left-[12%] bottom-[18%]"],
+            ["Council", "right-[14%] top-[12%]"],
+            ["Calendar", "right-[18%] bottom-[18%]"],
+            ["Transit", "left-[44%] top-[16%]"],
+          ].map(([label, position], index) => (
+            <motion.div
+              key={label}
+              style={{ scale: prefersReducedMotion ? 1 : civicPulse }}
+              transition={{ delay: index * 0.05 }}
+              className={`absolute z-30 ${position} rounded-full border border-[#173b3f]/15 bg-[#fbfaf7] px-3 py-2 text-[11px] font-black uppercase tracking-[0.12em] text-[#173b3f] shadow-[0_12px_28px_rgba(23,59,63,0.14)]`}
+            >
+              {label}
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      <div className="relative mx-auto mt-10 grid max-w-7xl gap-3 md:grid-cols-3">
+        {storySignals.map((signal, index) => (
+          <motion.article
+            key={signal.title}
+            initial={{ opacity: 0, y: 22 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ delay: index * 0.08, duration: 0.45 }}
+            className="border border-[#d5b08c]/25 bg-[#f8f4ec]/8 p-5"
+          >
+            <p className="font-display text-2xl font-black leading-tight text-[#f8f4ec]">
+              {signal.title}
+            </p>
+            <p className="mt-3 text-sm font-semibold leading-7 text-[#f8f4ec]/72">
+              {signal.text}
+            </p>
+          </motion.article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
@@ -145,6 +346,8 @@ export default function AboutPage() {
           description="Willstone is a four-island city built around public access, civic trust, and the residents who keep the archipelago moving."
           image="/img/full_map.png"
         />
+
+        <CityStoryMotion />
 
         <section className="px-6 py-16 md:py-20">
           <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">

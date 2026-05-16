@@ -51,6 +51,15 @@ const GOVERNMENT_CUES: Array<{
 const getRepImage = (representative: Representative) =>
   representative.image || "/logo2.png";
 
+const summarizeMission = (mission: string) => {
+  const clean = mission.replace(/\s+/g, " ").trim();
+  if (clean.length <= 92) return clean;
+
+  const clipped = clean.slice(0, 89);
+  const lastSpace = clipped.lastIndexOf(" ");
+  return `${clipped.slice(0, lastSpace > 56 ? lastSpace : 89).trim()}...`;
+};
+
 export default function GovernmentPage() {
   const [allRepresentatives, setAllRepresentatives] = useState<
     Representative[]
@@ -226,35 +235,37 @@ export default function GovernmentPage() {
                       </p>
                     </div>
 
-                    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                      {otherReps.map((representative, index) => (
+                    <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,260px),1fr))] gap-5">
+                      {otherReps.map((representative) => (
                         <button
                           type="button"
                           key={representative.id || representative.email}
                           onClick={() => setSelectedRep(representative)}
-                          className={`group flex min-h-[172px] items-start gap-4 rounded-2xl border border-[#ded6c9] bg-[#fbfaf7] p-4 text-left shadow-sm transition-[background-color,border-color,box-shadow,transform] duration-200 ease-out hover:border-[#b98d63]/40 hover:bg-[#fdfbf6] hover:shadow-[0_16px_36px_rgba(23,59,63,0.08)] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#b98d63] motion-safe:hover:-translate-y-0.5 ${
-                            index < 2 ? "xl:col-span-2" : ""
-                          }`}
+                          className="group relative flex min-h-[292px] flex-col overflow-hidden rounded-2xl border border-[#ded6c9] bg-[#fbfaf7] text-left shadow-sm transition-[background-color,border-color,box-shadow,transform] duration-300 ease-out hover:border-[#b98d63]/70 hover:bg-[#fdfbf6] hover:shadow-[0_24px_52px_rgba(23,59,63,0.16)] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#b98d63] motion-safe:hover:-translate-y-2"
                         >
-                          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-[#173b3f]/10">
+                          <div className="relative h-36 w-full shrink-0 overflow-hidden bg-[#173b3f]/10">
                             <Image
                               src={getRepImage(representative)}
                               alt={representative.name}
                               fill
-                              sizes="80px"
-                              className="object-cover grayscale-[0.25] transition-transform duration-500 ease-out group-hover:scale-[1.05] group-hover:grayscale-0"
+                              sizes="(min-width: 1280px) 19vw, (min-width: 768px) 42vw, 100vw"
+                              className="object-cover grayscale-[0.25] transition-transform duration-700 ease-out group-hover:scale-[1.08] group-hover:grayscale-0"
                             />
+                            <div className="absolute inset-0 bg-[#173b3f]/10 transition-colors duration-300 group-hover:bg-[#173b3f]/0" />
                           </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#3f6256]">
+                          <div className="flex min-w-0 flex-1 flex-col p-5">
+                            <p className="break-words text-[11px] font-black uppercase tracking-[0.14em] text-[#3f6256]">
                               {representative.role}
                             </p>
-                            <h3 className="mt-1 font-display text-2xl font-black leading-tight text-[#173b3f] text-wrap">
+                            <h3 className="mt-2 break-words font-display text-[1.35rem] font-black leading-tight text-[#173b3f]">
                               {representative.name}
                             </h3>
-                            <p className="mt-3 line-clamp-2 text-sm font-semibold leading-relaxed text-[#48605b]">
-                              {representative.mission}
+                            <p className="mt-3 text-sm font-semibold leading-relaxed text-[#48605b]">
+                              {summarizeMission(representative.mission)}
                             </p>
+                            <span className="mt-auto inline-flex translate-y-1 items-center pt-5 text-sm font-black text-[#b98d63] opacity-75 transition-[color,opacity,transform] duration-300 group-hover:translate-y-0 group-hover:text-[#173b3f] group-hover:opacity-100">
+                              View civic profile
+                            </span>
                           </div>
                         </button>
                       ))}
