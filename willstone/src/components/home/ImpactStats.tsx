@@ -26,7 +26,7 @@ export default function ImpactStats() {
         supabase.from("events").select("id", { count: "exact", head: true }),
         supabase.from("guides").select("id", { count: "exact", head: true }),
         supabase
-          .from("community_requests")
+          .from("resource_submissions")
           .select("id", { count: "exact", head: true }),
       ]);
 
@@ -78,19 +78,22 @@ export default function ImpactStats() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={isInView ? { opacity: 1, y: 0 } : undefined}
                 transition={{ delay: index * 0.08 }}
-                className={`city-card flex min-h-[126px] items-center gap-4 p-5 ${isPrimary ? "sm:col-span-3 sm:min-h-[150px] sm:p-6" : ""
-                  }`}
+                className={`city-card flex min-h-[126px] items-center gap-4 p-5 ${
+                  isPrimary ? "sm:col-span-3 sm:min-h-[150px] sm:p-6" : ""
+                }`}
               >
                 <div
-                  className={`flex shrink-0 items-center justify-center rounded-lg bg-[#173b3f] text-white ${isPrimary ? "h-14 w-14" : "h-11 w-11"
-                    }`}
+                  className={`flex shrink-0 items-center justify-center rounded-lg bg-[#173b3f] text-white ${
+                    isPrimary ? "h-14 w-14" : "h-11 w-11"
+                  }`}
                 >
                   <Icon size={isPrimary ? 28 : 23} />
                 </div>
                 <div>
                   <p
-                    className={`font-black text-[#173b3f] ${isPrimary ? "text-5xl md:text-6xl" : "text-3xl"
-                      }`}
+                    className={`font-black text-[#173b3f] ${
+                      isPrimary ? "text-5xl md:text-6xl" : "text-3xl"
+                    }`}
                   >
                     {isInView ? item.value : 0}
                   </p>

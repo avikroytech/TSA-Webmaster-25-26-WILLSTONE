@@ -14,6 +14,7 @@ import RequireAuth from "@/components/auth/RequireAuth";
 import Footer from "@/components/home/Footer";
 import SubpageHero from "@/components/layout/SubpageHero";
 import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/utils/supabase/client";
 
 type Submission = {
   id: string;
@@ -24,6 +25,20 @@ type Submission = {
   status?: "reviewing" | "approved" | "needs_info";
   submitted_at: string;
 };
+
+type LegacySubmission = Submission & {
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+};
+
+const getLegacySubmissionsKey = (userId: string) =>
+  `willstone-submissions-${userId}`;
+
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 const statusDetails = {
   reviewing: {
@@ -65,17 +80,51 @@ const formatDate = (date: string) =>
 export default function DashboardPage() {
   const { user } = useAuth();
   const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [isLoadingSubmissions, setIsLoadingSubmissions] = useState(false);
+  const [submissionError, setSubmissionError] = useState("");
 
   useEffect(() => {
-    if (!user) return;
-    const saved =
-      window.localStorage.getItem(`willstone-submissions-${user.id}`) ||
-      window.localStorage.getItem("willstone-submissions");
-    try {
-      setSubmissions(saved ? JSON.parse(saved) : []);
-    } catch {
+    let active = true;
+
+    if (!user) {
       setSubmissions([]);
+      setIsLoadingSubmissions(false);
+      return;
     }
+
+    const loadSubmissions = async () => {
+      setIsLoadingSubmissions(true);
+      setSubmissionError("");
+
+      try {
+        const { data, error } = await supabase
+          .from("resource_submissions")
+          .select(
+            "id,title,category,custom_category,description,status,submitted_at",
+          )
+          .eq("user_id", user.id)
+          .order("submitted_at", { ascending: false });
+
+        if (error) throw error;
+        if (active) setSubmissions((data || []) as Submission[]);
+      } catch (error) {
+        console.warn("Resource submissions could not be loaded:", error);
+        if (active) {
+          setSubmissionError(
+            "We could not load your submissions. Please refresh or try again later.",
+          );
+          setSubmissions([]);
+        }
+      } finally {
+        if (active) setIsLoadingSubmissions(false);
+      }
+    };
+
+    loadSubmissions();
+
+    return () => {
+      active = false;
+    };
   }, [user]);
 
   const reviewingCount = submissions.filter(
@@ -150,18 +199,30 @@ export default function DashboardPage() {
 
               <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                  <p className="city-kicker text-[#48605b]">Resource queue</p>
                   <h2 className="mt-1 font-display text-3xl font-black text-[#173b3f]">
-                    Submitted resources
+                    Submitted Resources
                   </h2>
                 </div>
-                <p className="text-sm font-bold text-[#48605b]">
-                  Default status: Reviewing
-                </p>
               </div>
 
               <div className="grid gap-4">
-                {submissions.length > 0 ? (
+                {isLoadingSubmissions ? (
+                  <div className="rounded-2xl border border-[#ded6c9] bg-[#fbfaf7] p-8 text-center shadow-[0_12px_36px_rgba(23,59,63,0.07)]">
+                    <div className="mx-auto mb-5 h-12 w-12 animate-spin rounded-full border-4 border-[#ded6c9] border-t-[#173b3f]" />
+                    <h2 className="font-display text-3xl font-black text-[#173b3f]">
+                      Loading submissions
+                    </h2>
+                  </div>
+                ) : submissionError ? (
+                  <div className="rounded-2xl border border-[#b98d63]/40 bg-[#fbfaf7] p-8 text-center shadow-[0_12px_36px_rgba(23,59,63,0.07)]">
+                    <h2 className="font-display text-3xl font-black text-[#173b3f]">
+                      Submissions unavailable
+                    </h2>
+                    <p className="mx-auto mt-3 max-w-lg font-bold leading-relaxed text-[#48605b]">
+                      {submissionError}
+                    </p>
+                  </div>
+                ) : submissions.length > 0 ? (
                   submissions.map((submission) => {
                     const status =
                       statusDetails[submission.status ?? "reviewing"];

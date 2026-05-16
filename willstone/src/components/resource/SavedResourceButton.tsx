@@ -16,17 +16,17 @@ export default function SavedResourceButton({
   variant?: "card" | "detail";
 }) {
   const { user, isLoading } = useAuth();
-  const { isSaved, toggleSaved } = useSavedResources();
+  const { isLoadingSaved, isSaved, toggleSaved } = useSavedResources();
   const router = useRouter();
   const pathname = usePathname();
   const saved = isSaved(resource.id);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (!user) {
       router.push(`/auth?next=${encodeURIComponent(pathname || "/saved")}`);
       return;
     }
-    toggleSaved(resource);
+    await toggleSaved(resource);
   };
 
   const label = saved ? "Remove from saved resources" : "Save resource";
@@ -39,7 +39,7 @@ export default function SavedResourceButton({
     <button
       type="button"
       onClick={handleClick}
-      disabled={isLoading}
+      disabled={isLoading || isLoadingSaved}
       aria-pressed={saved}
       aria-label={label}
       className={variant === "detail" ? detailClasses : cardClasses}

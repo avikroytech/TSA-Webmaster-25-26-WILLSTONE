@@ -9,7 +9,7 @@ import SubpageHero from "@/components/layout/SubpageHero";
 import { useSavedResources } from "@/context/SavedResourcesContext";
 
 export default function SavedPage() {
-  const { savedResources, removeSaved } = useSavedResources();
+  const { isLoadingSaved, savedResources, removeSaved } = useSavedResources();
 
   return (
     <div className="min-h-screen bg-[#f8f4ec]">
@@ -23,7 +23,14 @@ export default function SavedPage() {
         <section className="px-[var(--space-page-x)] py-[var(--space-section-tight)]">
           <div className="mx-auto max-w-6xl">
             <RequireAuth redirectTo="/saved">
-              {savedResources.length > 0 ? (
+              {isLoadingSaved ? (
+                <div className="rounded-3xl border border-[#ded6c9] bg-[#fbfaf7] p-10 text-center shadow-sm">
+                  <div className="mx-auto mb-5 h-12 w-12 animate-spin rounded-full border-4 border-[#ded6c9] border-t-[#173b3f]" />
+                  <h2 className="font-display text-3xl font-black text-[#173b3f]">
+                    Loading saved resources
+                  </h2>
+                </div>
+              ) : savedResources.length > 0 ? (
                 <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                   {savedResources.map((resource) => (
                     <article
@@ -66,7 +73,9 @@ export default function SavedPage() {
                       <div className="border-t border-[#ded6c9] p-4">
                         <button
                           type="button"
-                          onClick={() => removeSaved(resource.id)}
+                          onClick={() => {
+                            void removeSaved(resource.id);
+                          }}
                           className="inline-flex min-h-10 items-center gap-2 rounded-md px-3 text-sm font-black text-[#173b3f] hover:bg-[#f8f4ec] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b98d63]"
                         >
                           <Trash2 size={16} />

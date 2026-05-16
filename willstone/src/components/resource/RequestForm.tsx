@@ -147,13 +147,18 @@ export default function RequestForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
+    if (!user) {
+      setStatus("error");
+      setErrorMessage("Please sign in before submitting a resource.");
+      return;
+    }
     setStatus("submitting");
     setErrorMessage("");
 
     try {
       const { error } = await supabase
-        .from("community_requests")
-        .insert([formData]);
+        .from("resource_submissions")
+        .insert([{ ...formData, status: "reviewing", user_id: user.id }]);
 
       if (error) {
         console.error("Error inserting record:", error);
@@ -175,27 +180,6 @@ export default function RequestForm() {
         console.warn(
           "Database succeeded, but email failed:",
           emailResult.error,
-        );
-      }
-
-      const savedSubmissions = user
-        ? window.localStorage.getItem(`willstone-submissions-${user.id}`)
-        : null;
-      const submissions = savedSubmissions ? JSON.parse(savedSubmissions) : [];
-      if (user) {
-        window.localStorage.setItem(
-          `willstone-submissions-${user.id}`,
-          JSON.stringify(
-            [
-              {
-                ...formData,
-                id: crypto.randomUUID(),
-                status: "reviewing",
-                submitted_at: new Date().toISOString(),
-              },
-              ...submissions,
-            ].slice(0, 25),
-          ),
         );
       }
 
