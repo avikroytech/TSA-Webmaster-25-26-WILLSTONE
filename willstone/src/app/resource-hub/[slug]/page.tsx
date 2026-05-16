@@ -84,17 +84,27 @@ export default async function ResourcePage({
 }) {
   const { slug } = await params;
 
-  const { data: resourceData, error } = await supabase
+  const { data: slugResourceData, error: slugError } = await supabase
     .from("community_resources")
     .select("*")
     .eq("slug", slug)
-    .single();
+    .maybeSingle();
 
-  const resource = resourceData as CommunityResource | null;
+  const { data: idResourceData, error: idError } = slugResourceData
+    ? { data: null, error: null }
+    : await supabase
+        .from("community_resources")
+        .select("*")
+        .eq("id", slug)
+        .maybeSingle();
 
-  if (error) console.warn(error);
+  const resource = (slugResourceData ||
+    idResourceData) as CommunityResource | null;
 
-  if (error || !resource) {
+  if (slugError) console.warn(slugError);
+  if (idError) console.warn(idError);
+
+  if (!resource) {
     return (
       <div className="min-h-screen flex flex-col bg-[var(--background)]">
         <main className="flex-1 flex flex-col items-center justify-center">
